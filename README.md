@@ -1,5 +1,7 @@
 # CDIO2020Corona
 
+![7-Kabale](https://www.spilsolitaire.dk/uploads/thumbnails/solitaire_classic_big.jpg)
+
 the CDIO project for spring 2020
 
 group 10 on 62410 CDIO-PROJEKT course
