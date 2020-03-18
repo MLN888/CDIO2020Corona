@@ -28,3 +28,13 @@ tbd
 -------------------------------------------------------
 
 
+Links:
+Asana
+https://app.asana.com/0/1167069482012506/list
+
+Instagantt
+https://app.instagantt.com/r#projects/5e71d5f71a13245a5324cd79/1167069482012506
+
+Google Drive
+https://drive.google.com/drive/folders/1SP0ZwmR7mOAbenM19TVPN648JEgvP5uC
+
