@@ -22,3 +22,16 @@ cap = cv2.VideoCapture(1);  #setup video capture. might need to change to 0 depe
 #set resolution to 1920x1080
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920);
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080);
+
+
+while(True):
+    ret, frame = cap.read() #read from camera and store
+
+
+    cv2.imshow('Webcam',frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+    continue
+
+cap.release()
+cv2.destroyAllWindows()
