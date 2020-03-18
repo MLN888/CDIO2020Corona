@@ -27,7 +27,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080);
 while(True):
     ret, frame = cap.read() #read from camera and store
 
-     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
     lower = np.array([0,220,200])              #set lover accept boundury
     upper = np.array([10,255,255])            #set higher accept boundury
     mask = cv2.inRange(hsv, lower, upper)    #make mask of boundurys
