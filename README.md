@@ -1,5 +1,7 @@
 # CDIO2020Corona
 
+![7-Kabale](https://www.spilsolitaire.dk/uploads/thumbnails/solitaire_classic_big.jpg)
+
 the CDIO project for spring 2020
 
 group 10 on 62410 CDIO-PROJEKT course
@@ -25,4 +27,15 @@ solitaire set without human brainpower.
 tbd
 -------------------------------------------------------
 
+
+Links:
+
+Asana
+https://app.asana.com/0/1167069482012506/list
+
+Instagantt
+https://app.instagantt.com/r#projects/5e71d5f71a13245a5324cd79/1167069482012506
+
+Google Drive
+https://drive.google.com/drive/folders/1SP0ZwmR7mOAbenM19TVPN648JEgvP5uC
 
