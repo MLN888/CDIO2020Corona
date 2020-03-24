@@ -46,8 +46,8 @@ while(True):
         contours,_ = cv2.findContours(grayed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
         #reletevistic characteristics for coordinate estimation. Subject to change!
-        x_rel = 0.028 
-        y_rel = 0.026
+        x_rel = 0 
+        y_rel = 0
         for contour in contours:
             (x,y,w,h) = cv2.boundingRect(contour)
             start_point_x = x+(w*x_rel)
@@ -56,10 +56,10 @@ while(True):
             end_point_y = start_point_y + (h-(h*y_rel)*2)
             cv2.rectangle(img, (int(start_point_x),int(start_point_y)), (int(end_point_x),int(end_point_y)), (0,255,0), 2) #draw field box
 
-            cv2.circle(img, (int(start_point_x), int(start_point_y)), 7, (255, 0, 0), 2)  #draw top left
-            cv2.circle(img, (int(start_point_x + (w-(w*x_rel)*2)), int(start_point_y)), 7, (255, 0, 0), 2) #draw top right
-            cv2.circle(img, (int(start_point_x), int(start_point_y + (h-(h*y_rel)*2))), 7, (255, 0, 0), 2) #draw bottom left
-            cv2.circle(img, (int(start_point_x + (w-(w*x_rel)*2)), int(start_point_y+(h-(h*y_rel)*2))), 7, (255, 0, 0), 2) #draw bottom right
+            cv2.circle(img, (int(start_point_x), int(start_point_y)), 1, (255, 0, 0), 2)  #draw top left
+            cv2.circle(img, (int(start_point_x + (w-(w*x_rel)*2)), int(start_point_y)), 1, (255, 0, 0), 2) #draw top right
+            cv2.circle(img, (int(start_point_x), int(start_point_y + (h-(h*y_rel)*2))), 1, (255, 0, 0), 2) #draw bottom left
+            cv2.circle(img, (int(start_point_x + (w-(w*x_rel)*2)), int(start_point_y+(h-(h*y_rel)*2))), 1, (255, 0, 0), 2) #draw bottom right
 
         cv2.imshow('card',img)
         cv2.imshow('card mask',res)
