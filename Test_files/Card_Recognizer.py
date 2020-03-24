@@ -42,7 +42,7 @@ while(True):
     ret, frame = cap.read() #read from camera and store. not currently used but can substitute img in code
 
     #read from test image file
-    file_path = os.path.abspath("Test_files\\test_card.jpg") 
+    file_path = os.path.abspath("Test_files\\test_card2.jpg") 
     img = cv2.imread(file_path,1)
 
     #if on absolute path aka errorcheck
