@@ -29,7 +29,8 @@ def draw_counter(img,contours):
             cv2.circle(img, (x+w, y+h), 1, (255, 0, 0), 2) #draw bottom right
 
 
-def find_counter(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper):
+#find counters with img input, HVS lower and HVS upper
+def find_counter(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
      hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
      lower = np.array([H_lower,S_lower,V_lower])              #set lover accept boundury
      upper = np.array([H_upper,S_upper,V_upper])            #set higher accept boundury
@@ -41,7 +42,7 @@ def find_counter(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper):
 
      contours,_ = cv2.findContours(grayed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
      draw_counter(img,contours)
-     cv2.imshow('card mask',res)
+     cv2.imshow(str,res)
 
 cap = cv2.VideoCapture(1);  #setup video capture. might need to change to 0 depenting on own setup
 
@@ -61,8 +62,7 @@ while(True):
     if not img is None or img.size == 0:
     
        
-        find_counter(img,0,100,100,255,255,255)
-        
+        find_counter(img,150,100,150,255,255,255,'red') #find and draw red
 
         cv2.imshow('card',img)
         
