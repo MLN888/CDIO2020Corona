@@ -35,7 +35,7 @@ while(True):
     if not img is None or img.size == 0:
     
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
-        lower = np.array([0,220,200])              #set lover accept boundury
+        lower = np.array([0,0,200])              #set lover accept boundury
         upper = np.array([10,255,255])            #set higher accept boundury
         mask = cv2.inRange(hsv, lower, upper)    #make mask of boundurys
         res = cv2.bitwise_and(img,img, mask= mask) #get only desired color
@@ -62,6 +62,7 @@ while(True):
             cv2.circle(img, (int(start_point_x + (w-(w*x_rel)*2)), int(start_point_y+(h-(h*y_rel)*2))), 7, (255, 0, 0), 2) #draw bottom right
 
         cv2.imshow('card',img)
+        cv2.imshow('card mask',res)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         continue
