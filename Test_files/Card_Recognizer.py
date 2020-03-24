@@ -35,8 +35,8 @@ while(True):
     if not img is None or img.size == 0:
     
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
-        lower = np.array([0,0,200])              #set lover accept boundury
-        upper = np.array([10,255,255])            #set higher accept boundury
+        lower = np.array([0,100,100])              #set lover accept boundury
+        upper = np.array([255,255,255])            #set higher accept boundury
         mask = cv2.inRange(hsv, lower, upper)    #make mask of boundurys
         res = cv2.bitwise_and(img,img, mask= mask) #get only desired color
 
