@@ -19,8 +19,9 @@ import os
 
 def draw_counter(img,contours):
      #reletevistic characteristics for coordinate estimation. Subject to change!
-        for contour in contours:
-            (x,y,w,h) = cv2.boundingRect(contour)
+     for contour in contours:
+         (x,y,w,h) = cv2.boundingRect(contour)
+         if w > 10 and h > 10:
             cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2) #draw field box
 
             cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
@@ -55,7 +56,7 @@ while(True):
     ret, frame = cap.read() #read from camera and store. not currently used but can substitute img in code
 
     #read from test image file
-    file_path = os.path.abspath("Test_files\\test_card2.jpg") 
+    file_path = os.path.abspath("Test_files\\Queen_playing_cards.jpg") 
     img = cv2.imread(file_path,1)
 
     #if on absolute path aka errorcheck
