@@ -2,13 +2,13 @@
 ####################################################
 #          Test for tennisball collectror          #
 #                                                  #
-# version 0.1                                      #
+# version 0.2                                      #
 # description: A test file for finding cards in    #
 #              openCV 2                            #
 #												   #
 # auther:       Phillip Bomholtz                   #
 # created:      18-03-2020						   #
-# last updated: 18-03-2020						   #
+# last updated: 25-03-2020						   #
 #												   #
 ####################################################
 
@@ -17,7 +17,7 @@ import cv2
 import numpy as np 
 import os
 
-def draw_counter(img,contours):
+def draw_contour(img,contours):
      #reletevistic characteristics for coordinate estimation. Subject to change!
      for contour in contours:
          (x,y,w,h) = cv2.boundingRect(contour)
@@ -31,7 +31,7 @@ def draw_counter(img,contours):
 
 
 #find counters with img input, HVS lower and HVS upper
-def find_counter(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
+def find_contour(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
      hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
      lower = np.array([H_lower,S_lower,V_lower])              #set lover accept boundury
      upper = np.array([H_upper,S_upper,V_upper])            #set higher accept boundury
@@ -42,7 +42,7 @@ def find_counter(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
      grayed = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
 
      contours,_ = cv2.findContours(grayed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-     draw_counter(img,contours)
+     draw_contour(img,contours)
      cv2.imshow(str,res)
 
 cap = cv2.VideoCapture(1);  #setup video capture. might need to change to 0 depenting on own setup
@@ -63,7 +63,7 @@ while(True):
     if not img is None or img.size != 0:
     
        
-        find_counter(img,150,35,150,255,255,255,'red') #find and draw red
+        find_contour(img,150,35,150,255,255,255,'red') #find and draw red
 
         cv2.imshow('card',img)
         
