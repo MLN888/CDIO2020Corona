@@ -59,10 +59,10 @@ while(True):
     img = cv2.imread(file_path,1)
 
     #if on absolute path aka errorcheck
-    if not img is None or img.size == 0:
+    if not img is None or img.size != 0:
     
        
-        find_counter(img,150,100,150,255,255,255,'red') #find and draw red
+        find_counter(img,150,35,150,255,255,255,'red') #find and draw red
 
         cv2.imshow('card',img)
         
