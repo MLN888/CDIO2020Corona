@@ -56,14 +56,19 @@ while(True):
     ret, frame = cap.read() #read from camera and store. not currently used but can substitute img in code
 
     #read from test image file
-    file_path = os.path.abspath("Test_files\\Queen_playing_cards.jpg") 
+    file_path = os.path.abspath("Test_files\\test_img_Mads.png") 
     img = cv2.imread(file_path,1)
+
+    #img.itemset
 
     #if on absolute path aka errorcheck
     if not img is None or img.size != 0:
     
        
-        find_contour(img,150,35,150,255,255,255,'red') #find and draw red
+        
+
+        find_contour(img,0,0,160,255,80,231,'white') #find and draw red
+        find_contour(img,0,110,150,20,255,255,'red') #find and draw red
 
         cv2.imshow('card',img)
         
