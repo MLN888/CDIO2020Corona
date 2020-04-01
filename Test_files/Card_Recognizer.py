@@ -48,7 +48,7 @@ def find_contour(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
 def find_black(img):
     for i in range(img.shape[0]):
         for u in range(img.shape[1]):
-            if  img[i,u,0] < 20 and img[i,u,1] < 20 and img[i,u,2] < 20:
+            if  img[i,u,0] < 30 and img[i,u,0] > 10 and img[i,u,1] < 30 and img[i,u,1] > 10 and img[i,u,2] < 30 and img[i,u,2] > 10 :
                 print(i,u,img[i,u,0])
                 #set to green
                 img.itemset((i,u,0),20)
