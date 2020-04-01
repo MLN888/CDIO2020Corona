@@ -45,6 +45,19 @@ def find_contour(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
      draw_contour(img,contours)
      cv2.imshow(str,res)
 
+def find_black(img):
+    for i in range(img.shape[0]):
+        for u in range(img.shape[1]):
+            if  img[i,u,0] < 20 and img[i,u,1] < 20 and img[i,u,2] < 20:
+                print(i,u,img[i,u,0])
+                #set to green
+                img.itemset((i,u,0),20)
+                img.itemset((i,u,1),255)
+                img.itemset((i,u,2),52)
+
+    
+
+
 cap = cv2.VideoCapture(1);  #setup video capture. might need to change to 0 depenting on own setup
 
 #set resolution to 1920x1080
@@ -59,7 +72,7 @@ while(True):
     file_path = os.path.abspath("Test_files\\test_img_Mads.png") 
     img = cv2.imread(file_path,1)
 
-    #img.itemset
+    find_black(img)
 
     #if on absolute path aka errorcheck
     if not img is None or img.size != 0:
