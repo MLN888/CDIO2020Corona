@@ -46,10 +46,12 @@ class solitaire:
     card_list = []
     suit_list = []
     rank_list = []
+    filepath = ''
 
 ########## Constructor ################################
     def __init__(self):
         print("initialising the game instace of cards...")
+        self.filepath = os.path.abspath("Test_files\\Card_Imgs")
         self.read_suits()
         self.read_ranks()
         print("initialising done!")
@@ -58,10 +60,9 @@ class solitaire:
 ########## Function for reading suits ##################
     def read_suits(self):
         print("reading suits...",end ='')
-        filepath = os.path.abspath("Test_files\\Card_Imgs")
         i = 0
         for suit in ['Clubs','Diamonds','Hearts','Spades']:
-            self.suit_list.append(cv2.imread(filepath+'\\'+suit+'.jpg',1))
+            self.suit_list.append(cv2.imread(self.filepath+'\\'+suit+'.jpg',1))
             if  np.all(self.suit_list[i] is None) or np.all(self.suit_list[i] == 0):
                 print("critical error: no suit found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
                 exit()
@@ -71,10 +72,9 @@ class solitaire:
 ######### Function for reading ranks ###################
     def read_ranks(self):
         print("reading ranks...",end ='')
-        filepath = os.path.abspath("Test_files\\Card_Imgs")
         i = 0
         for rank in ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']:
-            self.rank_list.append(cv2.imread(filepath+'\\'+rank+'.jpg',1))
+            self.rank_list.append(cv2.imread(self.filepath+'\\'+rank+'.jpg',1))
             if  np.all(self.rank_list[i] is None) or np.all(self.rank_list[i] == 0):
                 print("critical error: no rank found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
                 exit()
@@ -91,7 +91,6 @@ class solitaire:
     def set_cards(self,img,contours,cardlist):
        for contour in contours:
             (x,y,w,h) = cv2.boundingRect(contour)
-            print("w: "+str(w)+ "h: "+str(h))
             if w*h > 25000:
                cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
 
