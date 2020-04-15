@@ -57,26 +57,26 @@ class solitaire:
 
 ########## Function for reading suits ##################
     def read_suits(self):
-        print("reading suits...")
+        print("reading suits...",end ='')
         filepath = os.path.abspath("Test_files\\Card_Imgs")
         i = 0
         for suit in ['Clubs','Diamonds','Hearts','Spades']:
-            self.suit_list.append(cv2.imread(filepath+suit+'.jpg',1))
-            if  self.suit_list[i] is None or self.suit_list[i] == 0:
-                print("critical error: no suit found.\nsince python is kind of shit, I would recomend checking the path to the image file.")
+            self.suit_list.append(cv2.imread(filepath+'\\'+suit+'.jpg',1))
+            if  np.all(self.suit_list[i] is None) or np.all(self.suit_list[i] == 0):
+                print("critical error: no suit found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
                 exit()
             i += 1
         print("done!")
 
 ######### Function for reading ranks ###################
     def read_ranks(self):
-        print("reading ranks...")
+        print("reading ranks...",end ='')
         filepath = os.path.abspath("Test_files\\Card_Imgs")
         i = 0
         for rank in ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']:
-            self.rank_list[i] = cv2.imread(filepath+rank+'.jpg',1)
-            if  self.rank_list[i] is None or self.rank_list[i] == 0:
-                print("critical error: no rank found.\nsince python is kind of shit, I would recomend checking the path to the image file.")
+            self.rank_list.append(cv2.imread(filepath+'\\'+rank+'.jpg',1))
+            if  np.all(self.rank_list[i] is None) or np.all(self.rank_list[i] == 0):
+                print("critical error: no rank found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
                 exit()
             i += 1
 
@@ -115,7 +115,7 @@ class solitaire:
         contours,_ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
      
-        self.set_cards(img,contours,cardlist)
+        self.set_cards(img,contours,self.card_list)
 
     
 
@@ -205,7 +205,7 @@ while(True):
             break
         continue
     else:
-        print("critical error: no image found.\nsince python is kind of shit, I would recomend checking the path to the image file.")
+        print("critical error: no image found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
         exit()
 
 cap.release()
