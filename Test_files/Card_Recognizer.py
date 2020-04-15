@@ -37,7 +37,7 @@ def draw_contour(img,contours):
      for contour in contours:
          (x,y,w,h) = cv2.boundingRect(contour)
          if w > 10 and h > 10:
-            cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2) #draw field box
+            cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
 
             cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
             cv2.circle(img, (x+w, y), 1, (255, 0, 0), 2) #draw top right
@@ -61,21 +61,21 @@ def find_contour(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
      cv2.imshow(str,res)
 
 def find_black(img,cardlist):
-    print('start')
-    print(len(cardlist))
+
     for a in range(len(cardlist)):
         i = cardlist[a].start_y  
         while i < cardlist[a].end_y:
             u = cardlist[a].start_x
             while u < cardlist[a].end_x:
-               if  img[i,u,0] < 50 and img[i,u,0] > 0 and img[i,u,1] < 50 and img[i,u,1] > 0 and img[i,u,2] < 50 and img[i,u,2] > 0 :
+               if  img[i,u,0] < 70 and img[i,u,0] > 0 and img[i,u,1] < 70 and img[i,u,1] > 0 and img[i,u,2] < 70 and img[i,u,2] > 0 :
                     #set to green
                     img.itemset((i,u,0),20)
                     img.itemset((i,u,1),255)
                     img.itemset((i,u,2),52)
                u +=1
             i +=1
-    print('stop')
+    find_contour(img,0,233,254,80,235,255,"black")
+
 
 
 def set_cards(img,contours,cardlist):
@@ -84,7 +84,7 @@ def set_cards(img,contours,cardlist):
      for contour in contours:
          (x,y,w,h) = cv2.boundingRect(contour)
          if w > 50 and h > 50:
-            cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2) #draw field box
+            cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
             cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
             cv2.circle(img, (x+w, y), 1, (255, 0, 0), 2) #draw top right
             cv2.circle(img, (x, y+h), 1, (255, 0, 0), 2) #draw bottom left
