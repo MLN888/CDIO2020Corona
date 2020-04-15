@@ -26,8 +26,6 @@ class Card:
         self.end_x = x2
         self.end_y = y2
 
-    def print_vars(self):
-        print("my vars: "+str(self.start_x)+" "+str(self.end_x)+" "+str(self.start_y)+" "+str(self.end_y))
 
 
 
@@ -67,7 +65,7 @@ def find_black(img,cardlist):
         while i < cardlist[a].end_y:
             u = cardlist[a].start_x
             while u < cardlist[a].end_x:
-               if  img[i,u,0] < 70 and img[i,u,0] > 0 and img[i,u,1] < 70 and img[i,u,1] > 0 and img[i,u,2] < 70 and img[i,u,2] > 0 :
+               if  img[i,u,0] < 70  and img[i,u,1] < 70  and img[i,u,2] < 70:
                     #set to green
                     img.itemset((i,u,0),20)
                     img.itemset((i,u,1),255)
@@ -79,36 +77,45 @@ def find_black(img,cardlist):
 
 
 def set_cards(img,contours,cardlist):
-     #reletevistic characteristics for coordinate estimation. Subject to change!
-     i = 0;
-     for contour in contours:
+    for contour in contours:
          (x,y,w,h) = cv2.boundingRect(contour)
-         if w > 50 and h > 50:
+         print("w: "+str(w)+ "h: "+str(h))
+         if w*h > 25000:
             cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
+
             cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
             cv2.circle(img, (x+w, y), 1, (255, 0, 0), 2) #draw top right
             cv2.circle(img, (x, y+h), 1, (255, 0, 0), 2) #draw bottom left
             cv2.circle(img, (x+w, y+h), 1, (255, 0, 0), 2) #draw bottom right
-            cv2.putText(img, "card "+str(i), (x+10,y+10), cv2.FONT_HERSHEY_PLAIN, 2, 255)
-            card = Card(x,y,x+w,y+h)
-            cardlist.append(card)
-            i = i+1
+
+            
 
 
 def find_cards(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str,cardlist):
 
-     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
-     lower = np.array([H_lower,S_lower,V_lower])              #set lover accept boundury
-     upper = np.array([H_upper,S_upper,V_upper])            #set higher accept boundury
-     mask = cv2.inRange(hsv, lower, upper)    #make mask of boundurys
-     res = cv2.bitwise_and(img,img, mask= mask) #get only desired color
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
+    lower = np.array([H_lower,S_lower,V_lower])              #set lover accept boundury
+    upper = np.array([H_upper,S_upper,V_upper])            #set higher accept boundury
+    mask = cv2.inRange(hsv, lower, upper)    #make mask of boundurys
+    res = cv2.bitwise_and(img,img, mask= mask) #get only desired color
 
-     rgb = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
-     grayed = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
+    rgb = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
+    grayed = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
 
-     contours,_ = cv2.findContours(grayed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-     set_cards(img,contours,cardlist)
-     cv2.imshow(str,res)
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray,(3,3),0)
+
+    img_w, img_h = np.shape(img)[:2]
+    bkg_level = gray[int(img_h/100)][int(img_w/2)]
+    thresh_level = bkg_level + 64
+
+    retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
+
+    contours,_ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+     
+    set_cards(img,contours,cardlist)
+    cv2.imshow(str,thresh)
 
 
 cap = cv2.VideoCapture(1);  #setup video capture. might need to change to 0 depenting on own setup
@@ -132,8 +139,8 @@ while(True):
     if not img is None or img.size != 0:
     
         find_cards(img,0,0,160,255,80,231,"white",card_list) #find white
-        find_black(img,card_list)
-        find_contour(img,0,110,150,20,255,255,'red') #find and draw red
+       # find_black(img,card_list)
+       # find_contour(img,0,110,150,20,255,255,'red') #find and draw red
 
         cv2.imshow('card',img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
