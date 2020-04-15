@@ -51,34 +51,46 @@ class solitaire:
 ########## Constructor ################################
     def __init__(self):
         print("initialising the game instace of cards...")
-        self.filepath = os.path.abspath("Test_files\\Card_Imgs")
-        self.read_suits()
-        self.read_ranks()
+        self.filepath = os.path.abspath("Test_files\\Card_Imgs")  #set global path to local files
+        self.read_suits()                                         #read all suit images
+        self.read_ranks()                                         #read all rank images
         print("initialising done!")
 
 
 ########## Function for reading suits ##################
     def read_suits(self):
         print("reading suits...",end ='')
-        i = 0
+
+        i = 0 #set index
+
+        #loop through all suits
         for suit in ['Clubs','Diamonds','Hearts','Spades']:
-            self.suit_list.append(cv2.imread(self.filepath+'\\'+suit+'.jpg',1))
+            self.suit_list.append(cv2.imread(self.filepath+'\\'+suit+'.jpg',1))     #read and add to list of suits
+
+            #check if what added is actually valid
             if  np.all(self.suit_list[i] is None) or np.all(self.suit_list[i] == 0):
                 print("critical error: no suit found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
-                exit()
-            i += 1
+                exit() #die
+
+            i += 1 #move index
         print("done!")
 
 ######### Function for reading ranks ###################
     def read_ranks(self):
         print("reading ranks...",end ='')
-        i = 0
+
+        i = 0 #set index
+
+        #loop through all ranks
         for rank in ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']:
-            self.rank_list.append(cv2.imread(self.filepath+'\\'+rank+'.jpg',1))
+            self.rank_list.append(cv2.imread(self.filepath+'\\'+rank+'.jpg',1))                                    #read and add to list
+
+            #check if what added is actually valid
             if  np.all(self.rank_list[i] is None) or np.all(self.rank_list[i] == 0):
                 print("critical error: no rank found.\nsince python is kind of shit, I would recomend checking the path to the image file.\n\nProgram will now kill itself XP")
-                exit()
-            i += 1
+                exit() #die
+
+            i += 1 #move index
 
         print("done!")
 
@@ -91,7 +103,12 @@ class solitaire:
     def set_cards(self,img,contours,cardlist):
        for contour in contours:
             (x,y,w,h) = cv2.boundingRect(contour)
-            if w*h > 25000:
+
+            #if of card size
+            #this can vary with camera position but is needed to filter out non card contours
+            #this part of the code should be changed so as to be more universal if it can
+            #also can be made more tolorant depending on light reflection on bagground surface
+            if w*h > 24000:
                cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
 
                cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
@@ -100,21 +117,21 @@ class solitaire:
                cv2.circle(img, (x+w, y+h), 1, (255, 0, 0), 2) #draw bottom right
 
 
-###### Find cards in an image
+###### Find cards in an image ##########################
     def find_cards(self,img):
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  #greyscale
-        blur = cv2.GaussianBlur(gray,(3,3),0)        
+        blur = cv2.GaussianBlur(gray,(3,3),0)        #blur with gauss algorythm
 
-        img_w, img_h = np.shape(img)[:2]
-        bkg_level = gray[int(img_h/100)][int(img_w/2)]
+        img_w, img_h = np.shape(img)[:2]               #get hight and width of image
+        bkg_level = gray[int(img_h/100)][int(img_w/2)] 
         thresh_level = bkg_level + 64
 
-        retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
+        retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)  
 
-        contours,_ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours,_ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  #find contours in the blurred and grayscaled image
 
      
-        self.set_cards(img,contours,self.card_list)
+        self.set_cards(img,contours,self.card_list) #process contours
 
     
 
@@ -182,6 +199,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920);
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080);
 
 
+gameinstance = solitaire()
 
 while(True):
     ret, frame = cap.read() #read from camera and store. not currently used but can substitute img in code
@@ -189,7 +207,7 @@ while(True):
     #read from test image file
     file_path = os.path.abspath("Test_files\\test_img_Mads.png") 
     img = cv2.imread(file_path,1)
-    gameinstance = solitaire()
+
     
 
     #if on absolute path aka errorcheck
