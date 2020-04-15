@@ -2,13 +2,13 @@
 ####################################################
 #          Test for tennisball collectror          #
 #                                                  #
-# version 0.2                                      #
+# version 0.3                                      #
 # description: A test file for finding cards in    #
 #              openCV 2                            #
 #												   #
 # auther:       Phillip Bomholtz                   #
 # created:      18-03-2020						   #
-# last updated: 25-03-2020						   #
+# last updated: 15-04-2020						   #
 #												   #
 ####################################################
 
@@ -20,12 +20,49 @@ import time
 
 class Card:
 
-    def __init__(self,x1,y1,x2,y2):
+    def __init__(self,x1,y1,x2,y2,type,num):
         self.start_x = x1
         self.start_y = y1
         self.end_x = x2
         self.end_y = y2
+        self.type = type
+        self.num = num
 
+class solitaire:
+    card_list = []
+    suit_list = []
+    rank_list = []
+
+    def __init__(self):
+        read_suits()
+        read_ranks()
+
+    def read_suits(self):
+        filepath = os.path.abspath("Test_files\\Card_Imgs")
+        i = 0
+        for suit in ['Clubs','Diamonds','Hearts','Spades']:
+            self.suit_list[i] = cv2.imread(filepath+suit+'.jpg',1)
+            if  self.suit_list[i] is None or self.suit_list[i] == 0:
+                print("critical error: no suit found.\n since python is kind of shit, I would recomend checking the path to the image file.")
+                exit()
+            i += 1
+
+
+    def read_ranks(self):
+        filepath = os.path.abspath("Test_files\\Card_Imgs")
+        i = 0
+        for rank in ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']:
+            self.rank_list[i] = cv2.imread(filepath+rank+'.jpg',1)
+            if  self.rank_list[i] is None or self.rank_list[i] == 0:
+                print("critical error: no rank found.\n since python is kind of shit, I would recomend checking the path to the image file.")
+                exit()
+            i += 1
+
+    def add_card(self,card):
+        self.card_list.append(card)
+
+
+    
 
 
 
@@ -132,7 +169,7 @@ while(True):
     #read from test image file
     file_path = os.path.abspath("Test_files\\test_img_Mads.png") 
     img = cv2.imread(file_path,1)
-    card_list = []
+    
     
 
     #if on absolute path aka errorcheck
