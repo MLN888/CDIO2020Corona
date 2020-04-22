@@ -2,13 +2,13 @@
 ####################################################
 #          Test for tennisball collectror          #
 #                                                  #
-# version 0.3                                      #
+# version 0.5                                      #
 # description: A test file for finding cards in    #
 #              openCV 2                            #
 #												   #
 # auther:       Phillip Bomholtz                   #
 # created:      18-03-2020						   #
-# last updated: 15-04-2020						   #
+# last updated: 22-04-2020						   #
 #												   #
 ####################################################
 
@@ -100,7 +100,7 @@ class solitaire:
         self.card_list.append(card)
 
 
-###### Set a cards variables (WIP) #####################
+###### Set a cards variables and draw (WIP) ############
     def set_cards(self,img,contours,cardlist):
        for contour in contours:
             (x,y,w,h) = cv2.boundingRect(contour)
@@ -112,18 +112,20 @@ class solitaire:
             #this can vary with camera position but is needed to filter out non card contours
             #this part of the code should be changed so as to be more universal if it can
             #also can be made more tolorant depending on light reflection on bagground surface
-            if w*h > 24000:
-               print("here:"+str(pts))
-               #cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
+            if w*h > 24000 and len(pts) == 4:
+               print(len(pts))
+               cv2.circle(img, (pts[0,0,0], pts[0,0,1]), 1, (255, 0, 0), 2) #draw first point
+               cv2.circle(img, (pts[1,0,0], pts[1,0,1]), 1, (255, 0, 0), 2) #draw second point
+               cv2.circle(img, (pts[2,0,0], pts[2,0,1]), 1, (255, 0, 0), 2) #draw third point
+               cv2.circle(img, (pts[3,0,0], pts[3,0,1]), 1, (255, 0, 0), 2) #draw fourth point
+               cv2.line(img,(pts[0,0,0], pts[0,0,1]),(pts[1,0,0], pts[1,0,1]),(0,200,100),thickness = 6,lineType=8) #first to second
+               cv2.line(img,(pts[1,0,0], pts[1,0,1]),(pts[2,0,0], pts[2,0,1]),(0,200,100),thickness = 6,lineType=8) #second to third
+               cv2.line(img,(pts[2,0,0], pts[2,0,1]),(pts[3,0,0], pts[3,0,1]),(0,200,100),thickness = 6,lineType=8) #third to fourth
+               cv2.line(img,(pts[3,0,0], pts[3,0,1]),(pts[0,0,0], pts[0,0,1]),(0,200,100),thickness = 6,lineType=8) #fourth to first
 
-               cv2.circle(img, (pts[0,0,0], pts[0,0,1]), 1, (255, 0, 0), 2) #draw top left
-               cv2.circle(img, (pts[1,0,0], pts[1,0,1]), 1, (255, 0, 0), 2) #draw top right
-               cv2.circle(img, (pts[2,0,0], pts[2,0,1]), 1, (255, 0, 0), 2) #draw bottom left
-               cv2.circle(img, (pts[3,0,0], pts[3,0,1]), 1, (255, 0, 0), 2) #draw bottom right
-               cv2.line(img,(pts[0,0,0], pts[0,0,1]),(pts[1,0,0], pts[1,0,1]),(0,200,100),thickness = 6,lineType=8)
-               cv2.line(img,(pts[1,0,0], pts[1,0,1]),(pts[2,0,0], pts[2,0,1]),(0,200,100),thickness = 6,lineType=8)
-               cv2.line(img,(pts[2,0,0], pts[2,0,1]),(pts[3,0,0], pts[3,0,1]),(0,200,100),thickness = 6,lineType=8)
-               cv2.line(img,(pts[3,0,0], pts[3,0,1]),(pts[0,0,0], pts[0,0,1]),(0,200,100),thickness = 6,lineType=8)
+
+
+               
 
 ###### Find cards in an image ##########################
     def find_cards(self,img):
