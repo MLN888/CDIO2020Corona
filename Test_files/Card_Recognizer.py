@@ -113,7 +113,6 @@ class solitaire:
             #this part of the code should be changed so as to be more universal if it can
             #also can be made more tolorant depending on light reflection on bagground surface
             if w*h > 24000 and len(pts) == 4:
-               print(len(pts))
                cv2.circle(img, (pts[0,0,0], pts[0,0,1]), 1, (255, 0, 0), 2) #draw first point
                cv2.circle(img, (pts[1,0,0], pts[1,0,1]), 1, (255, 0, 0), 2) #draw second point
                cv2.circle(img, (pts[2,0,0], pts[2,0,1]), 1, (255, 0, 0), 2) #draw third point
@@ -123,6 +122,8 @@ class solitaire:
                cv2.line(img,(pts[2,0,0], pts[2,0,1]),(pts[3,0,0], pts[3,0,1]),(0,200,100),thickness = 6,lineType=8) #third to fourth
                cv2.line(img,(pts[3,0,0], pts[3,0,1]),(pts[0,0,0], pts[0,0,1]),(0,200,100),thickness = 6,lineType=8) #fourth to first
 
+               
+                   
 
 
                
