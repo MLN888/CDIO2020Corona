@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Test_files"
+    "\\Test_files",
+    "\\Test_files\\Card_Imgs"
   ],
-  "SelectedNode": "\\Test_files\\Card_Recognizer.py",
+  "SelectedNode": "\\Test_files\\Card_Imgs",
   "PreviewInSolutionExplorer": false
 }

@@ -47,6 +47,7 @@ class solitaire:
     suit_list = []
     rank_list = []
     filepath = ''
+    light_sens = 56
 
 ########## Constructor ################################
     def __init__(self):
@@ -103,34 +104,41 @@ class solitaire:
     def set_cards(self,img,contours,cardlist):
        for contour in contours:
             (x,y,w,h) = cv2.boundingRect(contour)
-
+            peri = cv2.arcLength(contour,True)
+            approx = cv2.approxPolyDP(contour,0.01*peri,True)
+            pts = np.float32(approx)
+            
             #if of card size
             #this can vary with camera position but is needed to filter out non card contours
             #this part of the code should be changed so as to be more universal if it can
             #also can be made more tolorant depending on light reflection on bagground surface
             if w*h > 24000:
-               cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
+               print("here:"+str(pts))
+               #cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
 
-               cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
-               cv2.circle(img, (x+w, y), 1, (255, 0, 0), 2) #draw top right
-               cv2.circle(img, (x, y+h), 1, (255, 0, 0), 2) #draw bottom left
-               cv2.circle(img, (x+w, y+h), 1, (255, 0, 0), 2) #draw bottom right
-
+               cv2.circle(img, (pts[0,0,0], pts[0,0,1]), 1, (255, 0, 0), 2) #draw top left
+               cv2.circle(img, (pts[1,0,0], pts[1,0,1]), 1, (255, 0, 0), 2) #draw top right
+               cv2.circle(img, (pts[2,0,0], pts[2,0,1]), 1, (255, 0, 0), 2) #draw bottom left
+               cv2.circle(img, (pts[3,0,0], pts[3,0,1]), 1, (255, 0, 0), 2) #draw bottom right
+               cv2.line(img,(pts[0,0,0], pts[0,0,1]),(pts[1,0,0], pts[1,0,1]),(0,200,100),thickness = 6,lineType=8)
+               cv2.line(img,(pts[1,0,0], pts[1,0,1]),(pts[2,0,0], pts[2,0,1]),(0,200,100),thickness = 6,lineType=8)
+               cv2.line(img,(pts[2,0,0], pts[2,0,1]),(pts[3,0,0], pts[3,0,1]),(0,200,100),thickness = 6,lineType=8)
+               cv2.line(img,(pts[3,0,0], pts[3,0,1]),(pts[0,0,0], pts[0,0,1]),(0,200,100),thickness = 6,lineType=8)
 
 ###### Find cards in an image ##########################
     def find_cards(self,img):
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  #greyscale
-        blur = cv2.GaussianBlur(gray,(3,3),0)        #blur with gauss algorythm
+        blur = cv2.GaussianBlur(gray,(5,5),0)        #blur with gauss algorythm
 
         img_w, img_h = np.shape(img)[:2]               #get hight and width of image
         bkg_level = gray[int(img_h/100)][int(img_w/2)] 
-        thresh_level = bkg_level + 64
+        thresh_level = bkg_level + self.light_sens
 
         retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)  
-
         contours,_ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)  #find contours in the blurred and grayscaled image
-
-     
+        cv2.imshow('lul',thresh)
+        
+        
         self.set_cards(img,contours,self.card_list) #process contours
 
     
