@@ -144,64 +144,6 @@ class solitaire:
         
         self.set_cards(img,contours,self.card_list) #process contours
 
-    
-
-
-
-
-def draw_contour(img,contours):
-     #reletevistic characteristics for coordinate estimation. Subject to change!
-     for contour in contours:
-         (x,y,w,h) = cv2.boundingRect(contour)
-         if w > 10 and h > 10:
-            cv2.rectangle(img, (x,y), (x+w,y+h), (200,255,0), 2) #draw field box
-
-            cv2.circle(img, (x, y), 1, (255, 0, 0), 2)  #draw top left
-            cv2.circle(img, (x+w, y), 1, (255, 0, 0), 2) #draw top right
-            cv2.circle(img, (x, y+h), 1, (255, 0, 0), 2) #draw bottom left
-            cv2.circle(img, (x+w, y+h), 1, (255, 0, 0), 2) #draw bottom right
-
-
-#find counters with img input, HVS lower and HVS upper
-def find_contour(img,H_lower,S_lower,V_lower,H_upper,S_upper,V_upper,str):
-     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   #converte rgb to hvs
-     lower = np.array([H_lower,S_lower,V_lower])              #set lover accept boundury
-     upper = np.array([H_upper,S_upper,V_upper])            #set higher accept boundury
-     mask = cv2.inRange(hsv, lower, upper)    #make mask of boundurys
-     res = cv2.bitwise_and(img,img, mask= mask) #get only desired color
-
-     rgb = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
-     grayed = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
-
-     contours,_ = cv2.findContours(grayed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-     draw_contour(img,contours)
-     cv2.imshow(str,res)
-
-def find_black(img,cardlist):
-
-    for a in range(len(cardlist)):
-        i = cardlist[a].start_y  
-        while i < cardlist[a].end_y:
-            u = cardlist[a].start_x
-            while u < cardlist[a].end_x:
-               if  img[i,u,0] < 70  and img[i,u,1] < 70  and img[i,u,2] < 70:
-                    #set to green
-                    img.itemset((i,u,0),20)
-                    img.itemset((i,u,1),255)
-                    img.itemset((i,u,2),52)
-               u +=1
-            i +=1
-    find_contour(img,0,233,254,80,235,255,"black")
-
-
-
-
-
-            
-
-
-
-
 
 cap = cv2.VideoCapture(1);  #setup video capture. might need to change to 0 depenting on own setup
 
