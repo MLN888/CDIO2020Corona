@@ -27,7 +27,7 @@ RANK_HEIGHT = 105
 
 # Dimensions of suit train images
 SUIT_WIDTH = 70
-SUIT_HEIGHT = 93
+SUIT_HEIGHT = 100
 
 RANK_DIFF_MAX = 2000
 SUIT_DIFF_MAX = 700

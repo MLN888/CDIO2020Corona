@@ -99,13 +99,15 @@ while cam_quit == 0:
                 temp_cnts.append(cards[i].contour)
             cv2.drawContours(image,temp_cnts, -1, (255,0,0), 2)
     
-    time.sleep(0.2)
+    #time.sleep(0.2)
     # Draw framerate in the corner of the image. Framerate is calculated at the end of the main loop,
     # so the first time this runs, framerate will be shown as 0.
     cv2.putText(image,"FPS: "+str(int(frame_rate_calc)),(10,26),font,0.7,(255,0,255),2,cv2.LINE_AA)
 
     # Finally, display the image with the identified cards!
-    cv2.imshow("Card Detector",image)
+    dim = (1280, 720)
+    image2 = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+    cv2.imshow("Card Detector",image2)
 
     # Calculate framerate
     t2 = cv2.getTickCount()
