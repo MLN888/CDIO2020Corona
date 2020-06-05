@@ -1,0 +1,26 @@
+Lige en kort intro, hvis man vil prøve at køre kabalebanditten:
+
+Man skal kopiere stien til filen "tablefile" ind i FileHandler-klassen.
+
+Så kan man eventuelt starte et 7-kabalespil op i et andet vindue for at kunne fodre spillet med rigtige data.
+
+"tablefile"-filen ændres, så den afspejler 7-kabalen.
+
+Det kunne for eksempel se sådan her ud:
+
+AS,UU,UU,UU,UU,5D,QS,KC,0D,2S,7C,AD
+
+Første bogstaver, AS, betyder Ace of Spades i trækbunken
+De 4 'UU' refererer til byggebunkerne, men de bliver ikke brugt af programmet, så der kan bare stå to tilfældige bogstaver.
+De sidste 7 bogstavssæt svarer til det øverste kort i hver søjle, og betyder her: 5 of Diamonds, Queen of Spades, King of Clubs,
+10 of Diamonds, 2 of Spades, 7 of Clubs og Ace of Diamonds.
+
+Derefter kan man starte programmet. Programmet fortæller hvad du skal flytte. 
+Efter du har flyttet, opdaterer du "tablefile"-filen, så den afspejler 7-kabalens nye udseende. Husk at opdatere både den søjle
+ du flytter TIL og den søjle du flytter FRA, da begge søjler vil have fået nyt øverste kort.
+
+Nice to know: I Main-klassen findes en variabel, boolean deBug. Hvis denne er sat TRUE vil en masse tekst om spillets gang også blive 
+printet til konsollen. Sættes denne til FALSE, kommer der kun træk-besked fra spillet.
+
+Jeg skriver senere noget mere fyldigt.
+
