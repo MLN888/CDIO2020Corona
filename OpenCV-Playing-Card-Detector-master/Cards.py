@@ -307,7 +307,8 @@ def draw_results(image, qCard):
     cv2.putText(image,(rank_name+' of'),(x-60,y-10),font,1,(50,200,200),2,cv2.LINE_AA)
 
     # x value
-    #cv2.putText(image,('x: '+ str(x)),(x-100,y-10),font,1,(50,200,200),2,cv2.LINE_AA)
+    cv2.putText(image,('x: '+ str(x)),(x-100,y+80),font,1,(0,0,0),3,cv2.LINE_AA)
+    cv2.putText(image,('x: '+ str(x)),(x-100,y+80),font,1,(50,200,200),2,cv2.LINE_AA)
 
     cv2.putText(image,suit_name,(x-60,y+25),font,1,(0,0,0),3,cv2.LINE_AA)
     cv2.putText(image,suit_name,(x-60,y+25),font,1,(50,200,200),2,cv2.LINE_AA)
@@ -319,6 +320,9 @@ def draw_results(image, qCard):
     s_diff = str(qCard.suit_diff)
     #cv2.putText(image,r_diff,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
     #cv2.putText(image,s_diff,(x+20,y+50),font,0.5,(0,0,255),1,cv2.LINE_AA)
+
+    image = cv2.line(image, (0,350), (1920,350), (0, 0, 153), 3) 
+    image = cv2.line(image, (550,350), (550,0), (153, 0, 0), 3) 
 
     return image
 
