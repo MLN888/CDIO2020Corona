@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class FileHandler {
 
-    private String fileName = "C:/Users/janmu/IdeaProjects/Solitaire/src/tableFile";
+    private String fileName = "C:/Users/MLN/Desktop/CDIO/CDIO2020Corona/Solitaire/src/tableFile";
     private String splitter = ",";
     private String[] cards;
 

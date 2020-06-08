@@ -106,6 +106,8 @@ def load_suits(filepath):
 def preprocess_image(image):
     """Returns a grayed, blurred, and adaptively thresholded camera image."""
 
+    #image = cv2.imread('C:\\Users\\MLN\\Desktop\\CDIO\\CDIO2020Corona\\OpenCV-Playing-Card-Detector-master\\test.jpg', cv2.IMREAD_COLOR) 
+    #print(image)
     gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(5,5),0)
 

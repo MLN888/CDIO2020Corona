@@ -55,7 +55,6 @@ while cam_quit == 0:
 
     # Grab frame from video stream
     image = videostream.read()
-
     # Start timer (for calculating frame rate)
     t1 = cv2.getTickCount()
 
