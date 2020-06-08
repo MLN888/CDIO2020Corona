@@ -1,14 +1,16 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.*;
 
 public class FileHandler {
 
-    private String fileName = "C:/Users/MLN/Desktop/CDIO/CDIO2020Corona/Solitaire/src/tableFile";
+    private String fileName;
     private String splitter = ",";
     private String[] cards;
 
     public FileHandler() {
+        this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath();
     }
 
     public void updateTable() { // This is the only public method in this class. Amazing encapsulation.
