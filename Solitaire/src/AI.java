@@ -144,10 +144,10 @@ public class AI {
 
             // Delete card group from source column
             for (int i = selectedMove.getCut(); i < sizeColumnFrom; i++) {                          // Iterate subgroup of cards and remove them from Table
-                Table.position.get(selectedMove.getFromPosition()).remove(selectedMove.getCut());
                 if (Table.debugText) {
                     System.out.println("Deleting " + Table.position.get(selectedMove.getFromPosition()).get(selectedMove.getCut()) + " from column " + selectedMove.getFromPosition());
                 }
+                Table.position.get(selectedMove.getFromPosition()).remove(selectedMove.getCut());
                 if (Table.position.get(selectedMove.getFromPosition()).size() == 1 && Table.unseen[selectedMove.getFromPosition()] > 0) { // If column now empty
                     Table.unseen[selectedMove.getFromPosition()]--; // Remove an unseen card from column, if any unseen cards remain.
                     if (Table.debugText)
