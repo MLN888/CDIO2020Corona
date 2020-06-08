@@ -11,7 +11,7 @@ group 10 on 62410 CDIO-PROJEKT course
 * 1 Alexander Ege
 * 2 Anders Dahlerup Johansson
 * 3 Andreas Silla
-* 4 Jamie Grønbæk Callan
+* 4 ~~Jamie Grønbæk Callan~~
 * 5 Jan Münster Jensen
 * 6 Mads Lund Nerengård
 * 7 Mikkel Amtrup Krohn
