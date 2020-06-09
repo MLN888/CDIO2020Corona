@@ -17,6 +17,12 @@ import Cards
 ###################################
 
 
+def fileWriter(string):
+    f = open("pythonOutput.txt", "w")
+    f.write(string)
+    f.close
+    
+
 def translateRankToString(e):
 
     ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']
@@ -96,7 +102,7 @@ def GrabImage():
         
         print('#########################################')
 
-        stringBuilder = (translateRankToString(drawPile) + translateSuitToString(drawPile))
+        stringBuilder = (translateRankToString(drawPile) + ",UU,UU,UU,UU," + translateSuitToString(drawPile))
 
         
 
@@ -109,6 +115,7 @@ def GrabImage():
             #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
         print(stringBuilder)
+        fileWriter(stringBuilder)
         
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
