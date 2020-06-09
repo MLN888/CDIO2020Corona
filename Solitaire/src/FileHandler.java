@@ -10,7 +10,7 @@ public class FileHandler {
     private String[] cards;
 
     public FileHandler() {
-        this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath(); //hej JAN! Sov godt!!
+        this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath(); //hej JAN, Sov godt!
     }
 
     public void updateTable() { // This is the only public method in this class. Amazing encapsulation.
