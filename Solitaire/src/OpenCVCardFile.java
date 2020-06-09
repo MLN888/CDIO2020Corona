@@ -6,8 +6,8 @@ public class OpenCVCardFile {
   }
 
   public void skrivTilOpenCV() {
-    createOpenCVstring();// metode 1 (Genererer Staring med kort)
-    createOpenCVfile();
+    createOpenCVstring(); // metode 1 (Genererer String med kortene)
+    createOpenCVfile();   // metode 2 
     return;
   }
 
