@@ -10,6 +10,8 @@ public class AI {
      *   When player wins or loses, game is stopped by setting Table.gameOn = false.
      * */
 
+     OpenCVCardFile openCVCardFile = new OpenCVCardFile();
+
     public void thinkHard(ArrayList<Move> legalMoves) {
         System.out.println("\nTænker dybt...\n");
 
@@ -180,12 +182,14 @@ public class AI {
     }
 
     private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
+        openCVCardFile.skrivTilOpenCV();
         System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
         Scanner myScanner = new Scanner(System.in);
         String input = myScanner.nextLine();
         if (input.equals("o")) {
             Table.gameOn = false;
         }
+       
     }
 
     private boolean checkIfWon() {

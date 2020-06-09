@@ -1,1 +1,1 @@
-Test
+KS,5S,5H,QC,7H,XX,9D,8D
