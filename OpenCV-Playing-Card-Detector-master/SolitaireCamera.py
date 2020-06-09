@@ -36,7 +36,7 @@ def GrabImage():
         # k indexes the newly made array of cards.
         cards = []
         
-        drawPile
+        drawPile = []
         BuildPiles = []
         piles = []
 
@@ -56,7 +56,10 @@ def GrabImage():
                 #print("Card:" + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                 # Draw center point and match result on the image.
 
-                if (cards[k].center[1] > 450):
+                if (cards[k].center[0] < 550 and cards[k].center[1] < 550):
+                    print("Draw: " + cards[k].best_rank_match + " " + cards[k].best_suit_match)
+                    
+                if (cards[k].center[1] > 550):
                     piles.append(cards[k])
                     #print("Card:" + piles[m].best_rank_match + " " + piles[m].best_suit_match)
                     m = m + 1
@@ -66,11 +69,11 @@ def GrabImage():
         
         print('#########################################')
 
-        l = len(piles)
+        pilesNum = len(piles)
 
         piles.sort(key=getPos)
 
-        for h in range(l):
+        for h in range(pilesNum):
             print("Pos: " + str(h) + " " + piles[h].best_rank_match + " " + piles[h].best_suit_match)
 
         # Draw card contours on image (have to do contours all at once or
