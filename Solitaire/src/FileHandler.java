@@ -10,7 +10,7 @@ public class FileHandler {
     private String[] cards;
 
     public FileHandler() { // test til git foretaget kl 09:42 9. juni
-        this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath(); //hej
+        this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath(); //hej JAN! Sov Godt!
         // Virker det her???
     }
 
