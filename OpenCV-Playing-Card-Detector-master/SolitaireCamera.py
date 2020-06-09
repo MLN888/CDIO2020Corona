@@ -102,9 +102,7 @@ def GrabImage():
         
         print('#########################################')
 
-        stringBuilder = (translateRankToString(drawPile) + ",UU,UU,UU,UU," + translateSuitToString(drawPile))
-
-        
+        stringBuilder = (translateRankToString(drawPile) + translateSuitToString(drawPile) + ",UU,UU,UU,UU,")
 
         pilesNum = len(piles)
         piles.sort(key=getPos)
