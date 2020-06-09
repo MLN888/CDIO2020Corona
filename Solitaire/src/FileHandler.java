@@ -9,9 +9,8 @@ public class FileHandler {
     private String splitter = ",";
     private String[] cards;
 
-    public FileHandler() { // test til git foretaget kl 09:42 9. juni
+    public FileHandler() {
         this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath(); //hej
-        // Virker det her???
     }
 
     public void updateTable() { // This is the only public method in this class. Amazing encapsulation.
@@ -19,7 +18,7 @@ public class FileHandler {
         populateTable();        // Method that fills in the Table with the cards from the file
         if (Table.debugText) Table.printTable();    // Print the Table after it is updated with new cards from file
     }
-
+ 
     private void readFile() {
         // Standard csv file reader
         if (Table.debugText) System.out.println("\n******* NOW READING FILE *******");
