@@ -29,7 +29,6 @@ public class OpenCVCardFile {
     for (int i = 0; i < 7; i++) {
       int topCardOfColumnIndex = Table.position.get(i).size();
       String topCardofColumni = Table.position.get(i).get(topCardOfColumnIndex - 1);
-      if(Table.debugText) System.out.println("Card being concatted to the string: "+topCardofColumni);
       cardsToOpenCV = cardsToOpenCV.concat(topCardofColumni);
       if (i != 6) {
         cardsToOpenCV = cardsToOpenCV.concat(",");
@@ -45,7 +44,7 @@ public class OpenCVCardFile {
     // PrintWriter pw = null; Bruges til append
     try {
       // Definerer string som skal skrives til filen
-      String string = this.cardsToOpenCV;
+      String string = cardsToOpenCV;
       // filnavn og path (i dette tilfælde bliver den lagt i workspace)
       File file = new File("myfile.txt");
 
@@ -79,7 +78,5 @@ public class OpenCVCardFile {
         System.out.println("Error in closing the BufferedWriter" + ex);
       }
     }
-
   }
-
 }
