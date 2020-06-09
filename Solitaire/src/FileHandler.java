@@ -11,6 +11,7 @@ public class FileHandler {
 
     public FileHandler() { // test til git foretaget kl 09:42 9. juni
         this.fileName = new File("Solitaire\\src\\tableFile").getAbsolutePath(); //hej
+        // Virker det her???
     }
 
     public void updateTable() { // This is the only public method in this class. Amazing encapsulation.
