@@ -10,11 +10,13 @@ public class Main {
         FindLegalMoves findLegalMoves = new FindLegalMoves();   // New findLegalMoves object.
         AI ai = new AI();                                       // New AI object
         FileHandler fileHandler = new FileHandler();            // New FileHandler object
+        //OpenCVCardFile openCVCardFile = new OpenCVCardFile();   // New OpenCVCardFile object
 
         while (Table.gameOn) {                          // Game loops forever while 'gameOn' is true
             fileHandler.updateTable();                  // This method reads file created by OpenCV and updates Table accordingly
             legalMoves = findLegalMoves.findMoves();    // Call method findMoves(). Returns an ArrayList of legal Moves
             ai.thinkHard(legalMoves);                   // Call method thinkHard. Argument is the ArrayList of legal Moves
+            //openCVCardFile.skrivTilOpenCV();            // Call method to write txt file with cards, to be used by OpenCV
         }
     }
 }
