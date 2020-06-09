@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class OpenCVCardFile {
 
   String cardsToOpenCV = "";
@@ -31,6 +37,47 @@ public class OpenCVCardFile {
 
   private void createOpenCVfile(){
     // Lækker kode fra Anders
+
+    BufferedWriter bw = null;
+    //PrintWriter pw = null;    Bruges til append 
+    try {
+        //Definerer string som skal skrives til filen
+        String string = "Test";
+        // filnavn og path (i dette tilfælde bliver den lagt i workspace)
+        File file = new File("myfile.txt"); 
+        
+        // Laver fil hvis den ikke eksisterer
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+
+        // Skaber file writer og bruger til at definere bw
+        FileWriter fw = new FileWriter(file);
+        bw = new BufferedWriter(fw);
+        // pw = new PrintWriter(bw);   Bruges til append
+        
+        // Skriver til fil
+        bw.write(string);
+        // pw.println(string);   Append string til fil
+        System.out.println("Filen er blevet skrevet");
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    // Bruger finally til at rydde op. (lukke filen i dette tilfælde)
+    finally {
+        try {
+            if (bw != null)
+                bw.close();
+                //pw.close();   close append printer
+        } catch (Exception ex) {
+            System.out.println("Error in closing the BufferedWriter" + ex);
+        }
+    }
+
+
+
   }
 
 }
