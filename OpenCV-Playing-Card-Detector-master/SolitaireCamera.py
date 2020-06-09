@@ -16,6 +16,32 @@ import Cards
 
 ###################################
 
+
+def translateRankToString(e):
+
+    ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']
+    letter = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '1', 'J', 'Q', 'K']
+    index = 0
+
+    for rank in ranks:
+        if e.best_rank_match == rank:
+            return letter[index]
+        index += 1
+    return 'U'
+
+
+def translateSuitToString(e):
+
+    suits = ['Spades','Diamonds','Clubs','Hearts']
+    letter = ['S','D','C','H']
+    index = 0
+
+    for suit in suits:
+        if e.best_suit_match == suit:
+            return letter[index]
+        index += 1
+    return 'U'
+
 def getPos(e):
   return e.center[0]
 
@@ -36,7 +62,7 @@ def GrabImage():
         # k indexes the newly made array of cards.
         cards = []
         
-        drawPile = []
+        
         BuildPiles = []
         piles = []
 
@@ -57,6 +83,7 @@ def GrabImage():
                 # Draw center point and match result on the image.
 
                 if (cards[k].center[0] < 550 and cards[k].center[1] < 550):
+                    drawPile = cards[k]
                     print("Draw: " + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                     
                 if (cards[k].center[1] > 550):
@@ -69,13 +96,20 @@ def GrabImage():
         
         print('#########################################')
 
-        pilesNum = len(piles)
+        stringBuilder = (translateRankToString(drawPile) + translateSuitToString(drawPile))
 
+        
+
+        pilesNum = len(piles)
         piles.sort(key=getPos)
 
         for h in range(pilesNum):
-            print("Pos: " + str(h) + " " + piles[h].best_rank_match + " " + piles[h].best_suit_match)
+            #print("Pos: " + str(h) + " " + piles[h].best_rank_match + " " + piles[h].best_suit_match)
+            stringBuilder = stringBuilder + (',' + translateRankToString(piles[h]) + translateSuitToString(piles[h]))
+            #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
+        print(stringBuilder)
+        
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
         if (len(cards) != 0):
