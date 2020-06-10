@@ -12,10 +12,79 @@ import numpy as np
 import time
 import os
 import Cards
+import csv
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    DEFAULT ="\033[0;00m" 
 
 ###################################
 
+def compareDecks(camera, ref):
+
+    outputPiles = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+    j = 0
+    for i in range(0,7):
+        if camera[j] == ref[i] and camera[j] != 'UU' and ref[i] != 'UU':
+            print(bcolors.OKGREEN + "MATCH FOUND at " + str(i) + ".")
+            outputPiles == ref[i]
+
+
+        if (camera[j][0] == 'U' or camera[j][1] == 'U') and ref[i] == 'UU':
+
+            if camera[j] == 'UU':
+                print(bcolors.FAIL + "UNKNOWN CARD FOUND at " + str(i) + ". Pleas reseat card and rescan")
+
+            elif camera[j][0] == 'U':
+                print(bcolors.FAIL + "UNKNOWN RANK at pile " + str(i) + ". Pleas reseat card and rescan")
+
+            elif camera[j][1] == 'U':
+                print(bcolors.FAIL + "UNKNOWN SUIT at pile " + str(i) + ". Pleas reseat card and rescan")
+ 
+            outputPiles[i] = camera[j]
+        
+        if (camera[j][0] != 'U' and camera[j][1] != 'U') and ref[i] == 'UU':
+            print(bcolors.OKBLUE + "UNKNOWN CARD at " + str(i) + ". Grabbing card from camera")
+            outputPiles[i] = camera[i]
+
+        if camera[j] != ref[i] and ref[i] != 'UU' and ref[i] != 'XX':
+            print(bcolors.WARNING + "MISMATCH FOUND at " + str(i) + ". Grabbing card from last known card")
+            outputPiles[i] = ref[i]
+        
+        if ref[i] == 'XX':
+            
+            print(bcolors.OKBLUE + "EMPTY SPACE FOUND at " + str(i) + ", moving to next pile")
+            outputPiles[i] = 'XX'
+            j = j - 1
+        
+        j = j + 1
+
+        
+    print(bcolors.DEFAULT)
+    return outputPiles
+
+def fileReader():
+    
+    tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+    f = open("myfile.txt", "r")
+    csv_reader = csv.reader(f, delimiter=',')
+
+    for row in csv_reader:
+        for i in range(0,7):
+            tokens[i]=row[i]
+
+    f.close
+    return tokens
+
+    
 
 def fileWriter(string):
     f = open("pythonOutput.txt", "w")
@@ -102,18 +171,32 @@ def GrabImage():
         
         print('#########################################')
 
-        stringBuilder = (translateRankToString(drawPile) + translateSuitToString(drawPile) + ",UU,UU,UU,UU,")
+    
+        #stringBuilder = (translateRankToString(drawPile) + translateSuitToString(drawPile) + ",UU,UU,UU,UU,")
+        
+        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+        #stringBuilder[0] = (translateRankToString(drawPile) + translateSuitToString(drawPile))
 
         pilesNum = len(piles)
         piles.sort(key=getPos)
 
         for h in range(pilesNum):
             #print("Pos: " + str(h) + " " + piles[h].best_rank_match + " " + piles[h].best_suit_match)
-            stringBuilder = stringBuilder + (',' + translateRankToString(piles[h]) + translateSuitToString(piles[h]))
+            #stringBuilder = stringBuilder + (',' + translateRankToString(piles[h]) + translateSuitToString(piles[h]))
             #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
-        print(stringBuilder)
-        fileWriter(stringBuilder)
+            stringBuilder[h] = translateRankToString(piles[h]) + translateSuitToString(piles[h])
+
+
+        #print(stringBuilder)
+        #fileWriter(stringBuilder)
+        refArray = fileReader()
+
+        compareDecks(stringBuilder, refArray)
+
+        print(refArray[0])
+        print("lol " + refArray[0][0])
+
         
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
