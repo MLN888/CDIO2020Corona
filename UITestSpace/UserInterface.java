@@ -22,6 +22,8 @@ version: 0.2
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 
 public class UserInterface{
 
@@ -112,6 +114,7 @@ public class UserInterface{
     private int std_stack_delta = 167;
 
 
+    boolean readErr = false;  //if the init read has produced an error
 
 
     public UserInterface(boolean fancyOrNah) {
@@ -136,7 +139,7 @@ public class UserInterface{
         System.out.println("setting cards...");
         setCards();     //generate the cards
         System.out.println("displaying cards...");
-        displayCards(fancyOrNah); //display initial set cards
+        displayCards(fancyOrNah,initListRead()); //display initial set cards
 
 
         
@@ -167,7 +170,7 @@ public class UserInterface{
     }
 
 
-    private void displayCards(boolean fancyOrNah)
+    private void displayCards(boolean fancyOrNah, ArrayList<ArrayList<String>> a)
     {
         for(int i = 0; i < 24; i++)
         {
@@ -183,10 +186,10 @@ public class UserInterface{
                 if(fancyOrNah)sleep(50);
             }
             if(fancyOrNah)sleep(100);
-            stackList.get(i).get(u-1).doAFlip("Spade","A",ImgPath);
+            stackList.get(i).get(u-1).doAFlip(a.get(i-1).get(0),a.get(i-1).get(1),ImgPath);
 
         }
-
+        System.out.println(a.get(0).get(0) + "    "+ a.get(0).get(1));
     }
 
     public void moveSug(int startIndex,int startReach,int destIndex,int steps)
@@ -228,7 +231,7 @@ public class UserInterface{
     {
         for(int i = 1; i <= 7; i++)
         {
-            for(int u = 0; u < i; u++)
+            for(int u = 0; u < stackList.get(i).size(); u++)
             {
                System.out.println("(x,y): ("+ stackList.get(i).get(u).posX + "," + stackList.get(i).get(u).posY + ") at displaydepth: "+stackList.get(i).get(u).displayDepth);
             }
@@ -236,7 +239,68 @@ public class UserInterface{
         }
     }
 
+    private ArrayList<ArrayList<String>> initListRead()
+    {
+        System.out.println("UI device attempting fileread of tableFile");
 
+        ArrayList<ArrayList<String>> cards = new ArrayList<ArrayList<String>>();
+        String Path = new File("tableFile.txt").getAbsolutePath();
+
+        String input ="";
+        try
+        {
+            BufferedReader r = new BufferedReader(new FileReader(Path));
+            input = r.readLine();
+            r.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            System.out.println("UI read fail! prociding with caution");
+        }
+
+        //if everything whent fine
+        if(!input.equals(""))
+        {
+            StringTokenizer st = new StringTokenizer(input,",");
+            for(int i = 0; i < 5; i++)st.nextToken();
+            for(int i = 0; i < 7; i++)
+            {
+                if(!st.hasMoreTokens()) System.out.println("err: to few tokens to fill all table positions");
+                String holder = st.nextToken();
+                ArrayList<String> builder = new ArrayList<String>();
+                builder.add(suitInterpreter(holder.charAt(1)));
+                builder.add(String.valueOf(holder.charAt(0)));
+                cards.add(builder);
+            }
+            if(st.hasMoreTokens()) System.out.println("err: tokens not exausted. too many tokens");
+            System.out.println("UI reading succes!");
+        }
+        else
+        {
+            readErr = true;
+            System.out.println("UI reading failure!");
+        }
+        return cards;
+    }
+
+
+    private String suitInterpreter(char s)
+    {
+        switch(s)
+        {
+            case 'H':
+                return "Heart";
+            case 'D':
+                return "Diamond";
+            case 'C':
+                return "Clover"; 
+            case 'S':
+                return "Spade";
+            default:
+                return "err";
+        }
+    }
 
 
     private void sleep(int s)
