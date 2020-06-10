@@ -1,3 +1,24 @@
+/*--------------------------------------
+The user interface implementation class
+for the CDIO 2020 spring solitaire
+solver. Its purpose is to display the
+current move to be made.
+
+author:       Phillip Eg Bomholtz
+created:      08-06-2020
+Last updated: 10-06-2020
+
+version: 0.2
+
+
+
+----------------------------------------*/
+
+
+
+
+
+
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -5,41 +26,66 @@ import java.util.ArrayList;
 public class UserInterface{
 
 
+    /*
+    *   small private class to describe how display cards should be percived.
+    *   The card for this implementation are 153x230 px.
+    *   Since this is a simple implementaion that are the only dimensions
+    *   accounted for,
+    */
     private class UICard {
         public int posX;
         public int posY;
-        public int displayDepth;
-        public String Rank;
-        public String Suit;
-        private JLabel myLabel;
+        public int displayDepth;  //the layer this card should be drawn on
+        public String Rank;       //i.e. the number or J,Q and so on
+        public String Suit;       //i.e. heart, spade and so on
+        private JLabel myLabel;   //the drawable component
     
         public UICard(int x, int y,int depth, String assetPath)
         {
+            //init position
             this.posX = x;
             this.posY = y;
-            this.displayDepth = depth;
+
+            this.displayDepth = depth; //set depth
+
+            //init identity
             this.Rank = "UNDEFINED";
             this.Suit = "UNDEFINED";
     
+            //init label (the drawable component)
             this.myLabel = new JLabel(new ImageIcon(assetPath+"\\card_back.png"));
             this.myLabel.setBounds(posX,posY,posX+153,posY+230);
     
         }
     
+        /*
+        *   flip the card to what is on its face.
+        *   s:         The suit of the card
+        *   r:         The rank of the card
+        *   assetPath: Path to the asset folder
+        */
         public void doAFlip(String s, String r, String assetPath)
         {
             Rank = r;
             Suit = s;
-            myLabel.setIcon(new ImageIcon(assetPath+"\\"+Suit+"_"+Rank+".png"));
+            myLabel.setIcon(new ImageIcon(assetPath+"\\"+Suit+"_"+Rank+".png"));  //update label
         }
     
+        /*
+        *   simple function for moving a card
+        *   x: destination x axis value
+        *   y: destination y axis value
+        */
         public void move(int x, int y)
         {
             posX = x;
             posY = y;
-            this.myLabel.setBounds(posX,posY,posX+153,posY+230);
+            this.myLabel.setBounds(posX,posY,posX+153,posY+230);  //reset bounds and move
         }
     
+        /*
+        *   return the drawable component
+        */
         public JLabel getLabel()
         {
             return this.myLabel;
@@ -50,7 +96,8 @@ public class UserInterface{
     JFrame UIFrame;                              //frame for the UI to be placed in
     JLayeredPane UIPanel;                        //the layerd panel of the UI that allows cards to be placed over one another
 
-    /* an important data structure to understand!
+    /* 
+    *  an important data structure to understand!
     *  This list hold severel list of cards that that are used
     *  on the board. 0 is used for the card deck normally on the 
     *  top right. 1-7 are used for the card stacks on the play 
