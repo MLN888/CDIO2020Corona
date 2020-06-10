@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 
@@ -21,20 +20,24 @@ public class OpenCVCardFile {
 
   private void createOpenCVstring() {
 
-    int topCardOfDrawpileIndex = Table.position.get(11).size();
-    String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);
-    cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);
-    cardsToOpenCV = cardsToOpenCV.concat(",");
+    int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
+    String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
+    cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
+    cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
 
-    for (int i = 0; i < 7; i++) {
-      int topCardOfColumnIndex = Table.position.get(i).size();
-      String topCardofColumni = Table.position.get(i).get(topCardOfColumnIndex - 1);
-      cardsToOpenCV = cardsToOpenCV.concat(topCardofColumni);
-      if (i != 6) {
-        cardsToOpenCV = cardsToOpenCV.concat(",");
+    for (int i = 0; i < 7; i++) {                                     // Iterate the 7 columns
+      int topCardOfColumnIndex = Table.position.get(i).size();        // Get size of current column
+      String topCardofColumni = Table.position.get(i).get(topCardOfColumnIndex - 1);    // Grab top card in column i 
+      if (Table.unseen[i] > 0 && topCardofColumni.equals("XX")) {     // If top card is "XX" and there is unseen cards...
+        cardsToOpenCV = cardsToOpenCV.concat("UU");                   // ... add "UU" instead
+      } else {
+        cardsToOpenCV = cardsToOpenCV.concat(topCardofColumni);       // Else: Just add whatever was the top card to the String
+      }
+      if (i != 6) {                                   // Only if column is not the last column....
+        cardsToOpenCV = cardsToOpenCV.concat(",");    // ... add a comma
       }
     }
-  
+
   }
 
   private void createOpenCVfile() {
@@ -46,7 +49,7 @@ public class OpenCVCardFile {
       // Definerer string som skal skrives til filen
       String string = cardsToOpenCV;
       // filnavn og path (i dette tilfælde bliver den lagt i workspace)
-      File file = new File("myfile.txt");
+      File file = new File("fileToOpenCV.txt");
 
       // Laver fil hvis den ikke eksisterer
       if (!file.exists()) {
@@ -62,7 +65,7 @@ public class OpenCVCardFile {
       bw.write(string);
       // pw.println(string); Append string til fil
       if (Table.debugText)
-        System.out.println("Filen er blevet skrevet " + string);
+        System.out.println("Filen til OpenCV er blevet skrevet " + string);
 
     } catch (IOException e) {
       e.printStackTrace();
