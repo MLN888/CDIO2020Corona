@@ -36,6 +36,10 @@ public class Move {
         return type;
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public String getCard() {
         return card;
     }

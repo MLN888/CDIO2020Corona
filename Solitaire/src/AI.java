@@ -3,14 +3,13 @@ import java.util.Scanner;
 
 public class AI {
 
+    boolean fundetValg = false;
     /*  The AI receives the ArrayList with legal move objects via the "thinkHard" method
      *   The AI selects the best move.
      *   The AI prints to console what the best move is
      *   The AI updates Table to reflect the move (always assuming that the player performs move correctly)
      *   When player wins or loses, game is stopped by setting Table.gameOn = false.
      * */
-
-     OpenCVCardFile openCVCardFile = new OpenCVCardFile();
 
     public void thinkHard(ArrayList<Move> legalMoves) {
         System.out.println("\nTænker dybt...\n");
@@ -179,21 +178,32 @@ public class AI {
             promptUser();
             return;
         }
-    }
+
+        if (selectedMove.getType() == 5) {
+            System.out.println("Du skal vende et nyt kort fra trækbunken!");
+            if(Table.debugText) System.out.println("Type 5 move!");
+            Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
+            if (Table.debugText) {
+                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
+            }
+            promptUser();
+            return;
+        }
+
+
+        }
 
     private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
-        openCVCardFile.skrivTilOpenCV();
         System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
         Scanner myScanner = new Scanner(System.in);
         String input = myScanner.nextLine();
         if (input.equals("o")) {
             Table.gameOn = false;
         }
-       
     }
 
     private boolean checkIfWon() {
-        for (int i = 0; i < 6; i++) {       // Loop through the columns
+        for (int i = 0; i < 7; i++) {       // Loop through the columns
             if (Table.unseen[i] > 0) {      // Check if there are any columns, that still have unseen cards.
                 return false;               // If so, the game is not yet finished.
             }
@@ -202,6 +212,108 @@ public class AI {
     }
 
     private Move pickBestMove(ArrayList<Move> legalMoves) {
-        return legalMoves.get(0);            // AI uncritically selects first move from legalMoves
+
+
+        System.out.println(legalMoves.size());
+        Move currentChosen = legalMoves.get(0);
+        for (int i = 0; i < legalMoves.size(); i++) {           // Vi itererer igennem alle lovlige moves
+            if(Table.debugText) System.out.println("Checking legalmove:" + legalMoves.get(i)+ "  Unseens:" + Table.unseen[legalMoves.get(i).getFromPosition()]);
+
+            currentChosen = checkForEs(legalMoves, i, currentChosen);           //Metode der finder et es eller en 2'er der kan placeres i byggebunken
+            if (fundetValg) {
+                fundetValg = false;
+                return currentChosen;
+            }
+
+            currentChosen = checkForColumnKings(legalMoves, i, currentChosen);        //Metode der finder konger fra søjler med unseen kort.
+            if (fundetValg) {
+                fundetValg = false;
+                return currentChosen;
+            }
+
+            currentChosen = checkForFriKortTraek(legalMoves, i, currentChosen); //Funktion der finder træk der vender usete kort
+            if(fundetValg){
+                fundetValg = false;
+                return currentChosen;
+            }
+
+            currentChosen = checkForTraekKings(legalMoves, i, currentChosen);   //Funktion der tager konge fra trækbunke og ligger på en fri plads
+            if (fundetValg) {
+                fundetValg = false;
+                return currentChosen;
+            }
+        }
+
+        // Hvis Vi kan stadig kan blande bunken & trække kort, og der kun er type 1 træk til rådighed, vil vi hellere trække nyt kort fra trækbunken
+        if(Table.shuffles != 0 && Table.cardsLeftInDrawPile != 0 && legalMoves.get(legalMoves.size() - 1).getType() == 1){
+            currentChosen.setType(5);   // Type 5 = træk nyt kort
+            return currentChosen;
+
+        }
+        int counter = 0;
+        for (int i = 0; i < legalMoves.size(); i++) {   // Vi itererer lovlige træk
+            if(legalMoves.get(i).getType() == 1){       // Har vi fat i en type 1?
+                counter = counter + 1;                  // Så tæller vi counteren 1 op
+            }
+            if(counter == legalMoves.size()){           // Hvis alle træk har været type 1
+                return legalMoves.get(0);               // Så vælger vi gerne type 1
+            }
+
+        }
+        for (int i = 0; i < legalMoves.size(); i++) {   // Vi itererer lovlige træk
+            if(legalMoves.get(i).getType() != 1){       // Det første træk som IKKE er type 1...
+                currentChosen = legalMoves.get(i);      // ... vælger vi at bruge.
+                return currentChosen;
+            }
+        }
+
+        if (Table.debugText){
+        System.out.println("Ingen specielle træk er foretrukket. Vi vælger default legalMoves.get(0)");
+        System.out.println(legalMoves.get(0).toString());
+        }
+
+        return legalMoves.get(0);   }// AI uncritically selects first move from legalMoves
+
+
+
+    //Funktion der finder et es eller en 2'er der kan ligges i en byggebunke
+    private Move checkForEs(ArrayList<Move> legalMoves, int i, Move currentChosen) {
+        if (legalMoves.get(i).getType() == 1 && (legalMoves.get(i).getCard().startsWith("A") || legalMoves.get(i).getCard().startsWith("2"))) {
+            currentChosen = legalMoves.get(i);
+            fundetValg = true;
+            return currentChosen;
+        }
+        return legalMoves.get(0);
     }
+
+    // Funktion der finder konger fra søjler med unseen kort.
+    private Move checkForColumnKings(ArrayList<Move> legalMoves, int i, Move currentChosen){
+        if (legalMoves.get(i).getType() == 2) {
+            if (Table.unseen[legalMoves.get(i).getFromPosition()] > 0 && legalMoves.get(i).getCut() == 1) {
+                currentChosen = legalMoves.get(i);
+                fundetValg = true;
+                return currentChosen;
+            }
+        }
+        return legalMoves.get(0);
+    }
+
+    //Funktion der traeker konge fra traekbunke og ligger på en fri plads
+    private Move checkForTraekKings(ArrayList<Move> legalMoves, int i, Move currentChosen) {
+        if (legalMoves.get(i).getFromPosition() == 11 && legalMoves.get(i).getCard().startsWith("K")) {
+            fundetValg = true;
+            return currentChosen;
+        }
+        return legalMoves.get(0);
+    }
+
+    private Move checkForFriKortTraek(ArrayList<Move> legalMoves, int i, Move currentChosen){
+        if(Table.unseen[legalMoves.get(i).getFromPosition()] > 0 && legalMoves.get(i).getCut() == 1){
+            currentChosen = legalMoves.get(i);
+            fundetValg = true;
+            return currentChosen;
+        }
+        return legalMoves.get(0);
+    }
+
 }
