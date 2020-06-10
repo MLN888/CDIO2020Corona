@@ -144,10 +144,6 @@ public class UserInterface{
         System.out.println("displaying cards...");
         displayCards(fancyOrNah,initListRead()); //display initial set cards
 
-
-        
-
-
         System.out.println("****Done****");
     }
 
@@ -202,7 +198,7 @@ public class UserInterface{
 
         //end x and y from longest reach on dest
         int endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-        int endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY;
+        int endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;
 
         //make vector from start to end
         int vectorX = endX-startX;
@@ -233,7 +229,6 @@ public class UserInterface{
         int reach = startReach;
         while(reach != stackList.get(startIndex).size())
         {
-            System.out.println("reach: "+ reach);
             stackList.get(startIndex).get(reach).move(startX,startY+std_stack_card_offset * (reach - startReach));
             stackList.get(startIndex).get(reach).displayDepth = reach + 1;
             UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(stackList.get(startIndex).get(reach).displayDepth) * 100);
@@ -247,6 +242,7 @@ public class UserInterface{
     {
         for(int i = 1; i <= 7; i++)
         {
+            System.out.println("Stack nr.: "+i);
             for(int u = 0; u < stackList.get(i).size(); u++)
             {
                System.out.println("(x,y): ("+ stackList.get(i).get(u).posX + "," + stackList.get(i).get(u).posY + ") at displaydepth: "+stackList.get(i).get(u).displayDepth);
@@ -261,6 +257,29 @@ public class UserInterface{
         String rank = String.valueOf(r);
         stackList.get(index).get(stackList.get(index).size()-1).doAFlip(suit, rank, ImgPath);
     }
+
+    public void makeMove(int startIndex,int startReach,int destIndex)
+    {
+         //end x and y from longest reach on dest
+         int endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+         int endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY;
+
+         int reach = startReach;
+         while(reach != stackList.get(startIndex).size())
+         {
+            stackList.get(startIndex).get(reach).move(endX, endY + std_stack_card_offset * (reach - startReach + 1));
+            stackList.get(destIndex).add(stackList.get(startIndex).get(reach));
+            reach++;
+         }
+
+         reach = stackList.get(startIndex).size()-1;
+         while(reach >= startReach)
+         {
+            stackList.get(startIndex).remove(reach);
+            reach--;
+         }
+    }
+
 
     private ArrayList<ArrayList<String>> initListRead()
     {
