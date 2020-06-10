@@ -40,6 +40,7 @@ public class UserInterface{
         public int displayDepth;  //the layer this card should be drawn on
         public String Rank;       //i.e. the number or J,Q and so on
         public String Suit;       //i.e. heart, spade and so on
+        public boolean flipped;
         private JLabel myLabel;   //the drawable component
     
         public UICard(int x, int y,int depth, String assetPath)
@@ -49,6 +50,8 @@ public class UserInterface{
             this.posY = y;
 
             this.displayDepth = depth; //set depth
+
+            this.flipped = false;
 
             //init identity
             this.Rank = "UNDEFINED";
@@ -189,7 +192,6 @@ public class UserInterface{
             stackList.get(i).get(u-1).doAFlip(a.get(i-1).get(0),a.get(i-1).get(1),ImgPath);
 
         }
-        System.out.println(a.get(0).get(0) + "    "+ a.get(0).get(1));
     }
 
     public void moveSug(int startIndex,int startReach,int destIndex,int steps)
@@ -210,21 +212,35 @@ public class UserInterface{
         int stepX = vectorX / steps;
         int stepY = vectorY / steps;
 
-
         int destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
-        int startDisplayDepth = stackList.get(startIndex).get(startReach).displayDepth;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
         for(int i = 1; i <= steps; i++)
         {
-            stackList.get(startIndex).get(startReach).move(startX+(stepX*i),startY+(stepY*i));
+            int reach = startReach;
+            int startGap = 0;
+            while(reach != stackList.get(startIndex).size())
+            {
+                if(reach == startReach)startGap = 0;else startGap = 30;
+                stackList.get(startIndex).get(reach).move(startX+(stepX*i),startY+(stepY*i)+std_stack_card_offset * (reach - startReach)+startGap);
+                UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(1000+reach));
+                reach++;
+            }
             sleep(60);
-            if(steps - i == 3)UIPanel.setLayer(stackList.get(startIndex).get(startReach).getLabel(), new Integer(stackList.get(startIndex).get(startReach).displayDepth) * 100);
         }
 
-        stackList.get(startIndex).get(startReach).move(startX,startY);
-        stackList.get(startIndex).get(startReach).displayDepth = startDisplayDepth;
-        UIPanel.setLayer(stackList.get(startIndex).get(startReach).getLabel(), new Integer(stackList.get(startIndex).get(startReach).displayDepth) * 100);
+        
+        int reach = startReach;
+        while(reach != stackList.get(startIndex).size())
+        {
+            System.out.println("reach: "+ reach);
+            stackList.get(startIndex).get(reach).move(startX,startY+std_stack_card_offset * (reach - startReach));
+            stackList.get(startIndex).get(reach).displayDepth = reach + 1;
+            UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(stackList.get(startIndex).get(reach).displayDepth) * 100);
+            reach++;
+        }
+        
+       
     }
 
     public void failCheck()
@@ -237,6 +253,13 @@ public class UserInterface{
             }
 
         }
+    }
+
+    public void stackEndFlip(int index, char s, char r)
+    {
+        String suit = suitInterpreter(s);
+        String rank = String.valueOf(r);
+        stackList.get(index).get(stackList.get(index).size()-1).doAFlip(suit, rank, ImgPath);
     }
 
     private ArrayList<ArrayList<String>> initListRead()
