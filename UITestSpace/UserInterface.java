@@ -8,7 +8,7 @@ author:       Phillip Eg Bomholtz
 created:      08-06-2020
 Last updated: 10-06-2020
 
-version: 0.2
+version: 0.3
 
 
 
@@ -19,6 +19,7 @@ version: 0.2
 
 
 
+import javax.lang.model.util.ElementScanner6;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -165,6 +166,12 @@ public class UserInterface{
             stackList.add(stackTemp);
         }
 
+        for(int i = 0; i < 4; i++)
+        {
+            ArrayList<UICard> solveTemp = new ArrayList<UICard>();
+            stackList.add(solveTemp);
+        }
+
 
     }
 
@@ -197,8 +204,39 @@ public class UserInterface{
         int startY = stackList.get(startIndex).get(startReach).posY;
 
         //end x and y from longest reach on dest
-        int endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-        int endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;
+        int endX = 0;
+        int endY = 0;
+        
+        if(destIndex < 7 && destIndex > 0)
+        {
+            endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+            endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+        }
+        else if (destIndex == 8)
+        {
+            endX = 47;
+            endY = 20;
+        }
+        else if (destIndex == 9)
+        {
+            endX = 47 + 120;
+            endY = 20;
+        }
+        else if (destIndex == 10)
+        {
+            endX = 47 + 120 * 2;
+            endY = 20;
+        }
+        else if (destIndex == 11)
+        {
+            endX = 47 + 120 * 3;
+            endY = 20;
+        }
+        else 
+        {
+            System.out.println("yo dawg what you doin? you can't do that!");
+        }
+
 
         //make vector from start to end
         int vectorX = endX-startX;
@@ -208,7 +246,8 @@ public class UserInterface{
         int stepX = vectorX / steps;
         int stepY = vectorY / steps;
 
-        int destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
+        int destDisplayDepth = 1;
+        if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
         for(int i = 1; i <= steps; i++)
@@ -260,9 +299,40 @@ public class UserInterface{
 
     public void makeMove(int startIndex,int startReach,int destIndex)
     {
+        
          //end x and y from longest reach on dest
-         int endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-         int endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY;
+        int endX = 0;
+        int endY = 0;
+        
+        if(destIndex < 7 && destIndex > 0)
+        {
+            endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+            endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+        }
+        else if (destIndex == 8)
+        {
+            endX = 47;
+            endY = 10;
+        }
+        else if (destIndex == 9)
+        {
+            endX = 47 + 115;
+            endY = 10;
+        }
+        else if (destIndex == 10)
+        {
+            endX = 47 + 115 * 2;
+            endY = 10;
+        }
+        else if (destIndex == 11)
+        {
+            endX = 47 + 115 * 3;
+            endY = 10;
+        }
+        else 
+        {
+            System.out.println("yo dawg what you doin? you can't do that!");
+        }
 
          int reach = startReach;
          while(reach != stackList.get(startIndex).size())
@@ -279,7 +349,6 @@ public class UserInterface{
             reach--;
          }
     }
-
 
     private ArrayList<ArrayList<String>> initListRead()
     {
