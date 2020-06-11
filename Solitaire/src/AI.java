@@ -37,11 +37,13 @@ public class AI {
                 Table.shuffles--;                       // Draw pile is shuffled. Deduct one from allowed shuffles
                 Table.position.get(11).clear();         // Empty draw pile
                 Table.position.get(11).add("XX");       // Add an XX to indicate empty
+                UI.reshuffleSug();
                 Table.cardsLeftInDrawPile = 24 - Table.cardsRemovedFromDrawPile;       // Reinitialize drawpile to original amount (24) minus cards removed
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
                 promptUser();
+                UI.resetDeck();
                 return;
             }
 

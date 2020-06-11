@@ -123,7 +123,8 @@ public class UserInterface implements ActionListener{
 
     public UserInterface(boolean fancyOrNah) {
         System.out.println("****Setting up user interface****");
-        this.ImgPath = new File("assets").getAbsolutePath();        //set a path to the assets folder
+        this.ImgPath = new File("Solitaire\\src\\assets").getAbsolutePath();        //set a path to the assets folder
+        System.out.println(ImgPath);
         this.UIFrame = new JFrame("Ya like jazz?");                 //setup the widown frame
         this.UIPanel = new JLayeredPane();                          //setup the layerd panel for the frame
         this.myButt = new JButton("I have done this!");
@@ -411,7 +412,7 @@ public class UserInterface implements ActionListener{
         System.out.println("UI device attempting fileread of tableFile");
 
         ArrayList<ArrayList<String>> cards = new ArrayList<ArrayList<String>>();
-        String Path = new File("tableFile.txt").getAbsolutePath();
+        String Path = new File("Solitaire\\src\\tableFile").getAbsolutePath();
 
         String input ="";
         try
