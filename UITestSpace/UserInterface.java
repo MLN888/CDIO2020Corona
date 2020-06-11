@@ -110,18 +110,18 @@ public class UserInterface{
     private int std_stack_card_offset = 10;
     private int std_stack_delta = 167;
 
-    boolean fancyOrNah = false;
+    boolean fancyOrNah = false; //exclude or include some animations
 
     boolean readErr = false;  //if the init read has produced an error
 
 
     public UserInterface(boolean fancyOrNah) {
         System.out.println("****Setting up user interface****");
-        this.ImgPath = new File("assets").getAbsolutePath();
-        this.UIFrame = new JFrame();
-        this.UIPanel = new JLayeredPane();
-        this.stackList = new ArrayList<ArrayList<UICard>>();
-        this.fancyOrNah = fancyOrNah;
+        this.ImgPath = new File("assets").getAbsolutePath();        //set a path to the assets folder
+        this.UIFrame = new JFrame("Ya like jazz?");                 //setup the widown frame
+        this.UIPanel = new JLayeredPane();                          //setup the layerd panel for the frame
+        this.stackList = new ArrayList<ArrayList<UICard>>();        //set 2d struckture of cards of differens spots on the board
+        this.fancyOrNah = fancyOrNah;                               
 
         UIFrame.setSize(1823, 811); // dimensions equal to absolute background size
         UIFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // frame should exit on closing the window
@@ -129,7 +129,7 @@ public class UserInterface{
         // setting background
         JLabel j = new JLabel(new ImageIcon(ImgPath + "\\background.png"));
         j.setBounds(0, 0, 1823, 811);
-        UIPanel.add(j, new Integer(0)); 
+        UIPanel.add(j, new Integer(0)); //set background as first layer
 
         //adding panel to frame and setting visible
         UIFrame.add(UIPanel);
