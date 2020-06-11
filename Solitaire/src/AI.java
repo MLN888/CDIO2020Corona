@@ -3,7 +3,9 @@ import java.util.Scanner;
 
 public class AI {
 
-    boolean fundetValg = false;
+    private boolean fundetValg = false;                         // Flag used in selecting move
+    OpenCVCardFile openCVCardFile = new OpenCVCardFile();       // Feature to enable communication with OpenCV
+
     /*  The AI receives the ArrayList with legal move objects via the "thinkHard" method
      *   The AI selects the best move.
      *   The AI prints to console what the best move is
@@ -194,6 +196,8 @@ public class AI {
         }
 
     private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
+        openCVCardFile.skrivTilOpenCV();
+        if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
         System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
         Scanner myScanner = new Scanner(System.in);
         String input = myScanner.nextLine();
@@ -315,5 +319,4 @@ public class AI {
         }
         return legalMoves.get(0);
     }
-
 }

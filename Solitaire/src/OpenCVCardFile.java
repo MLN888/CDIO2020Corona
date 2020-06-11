@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class OpenCVCardFile {
 
-  String cardsToOpenCV = "";
+  private String cardsToOpenCV = "";
 
   OpenCVCardFile() {
   }
@@ -28,16 +28,17 @@ public class OpenCVCardFile {
     for (int i = 0; i < 7; i++) {                                     // Iterate the 7 columns
       int topCardOfColumnIndex = Table.position.get(i).size();        // Get size of current column
       String topCardofColumni = Table.position.get(i).get(topCardOfColumnIndex - 1);    // Grab top card in column i 
+
       if (Table.unseen[i] > 0 && topCardofColumni.equals("XX")) {     // If top card is "XX" and there is unseen cards...
         cardsToOpenCV = cardsToOpenCV.concat("UU");                   // ... add "UU" instead
       } else {
         cardsToOpenCV = cardsToOpenCV.concat(topCardofColumni);       // Else: Just add whatever was the top card to the String
       }
+
       if (i != 6) {                                   // Only if column is not the last column....
         cardsToOpenCV = cardsToOpenCV.concat(",");    // ... add a comma
       }
     }
-
   }
 
   private void createOpenCVfile() {
@@ -81,5 +82,9 @@ public class OpenCVCardFile {
         System.out.println("Error in closing the BufferedWriter" + ex);
       }
     }
+  }
+
+  public String getCardsToOpenCV(){
+    return this.cardsToOpenCV;
   }
 }
