@@ -16,9 +16,11 @@ import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
-public class UserInterface{
+public class UserInterface implements ActionListener{
 
 
     /*
@@ -93,6 +95,7 @@ public class UserInterface{
     public String ImgPath;                       //path to image assets
     JFrame UIFrame;                              //frame for the UI to be placed in
     JLayeredPane UIPanel;                        //the layerd panel of the UI that allows cards to be placed over one another
+    JButton myButt;
 
     /* 
     *  an important data structure to understand!
@@ -114,12 +117,14 @@ public class UserInterface{
 
     boolean readErr = false;  //if the init read has produced an error
 
+    boolean inputMade = false;
 
     public UserInterface(boolean fancyOrNah) {
         System.out.println("****Setting up user interface****");
         this.ImgPath = new File("assets").getAbsolutePath();        //set a path to the assets folder
         this.UIFrame = new JFrame("Ya like jazz?");                 //setup the widown frame
         this.UIPanel = new JLayeredPane();                          //setup the layerd panel for the frame
+        this.myButt = new JButton("I have done this!");
         this.stackList = new ArrayList<ArrayList<UICard>>();        //set 2d struckture of cards of differens spots on the board
         this.fancyOrNah = fancyOrNah;                               
 
@@ -131,8 +136,13 @@ public class UserInterface{
         j.setBounds(0, 0, 1823, 811);
         UIPanel.add(j, new Integer(0)); //set background as first layer
 
-        //adding panel to frame and setting visible
+        //setup button
+        myButt.addActionListener(this);
+        myButt.setBounds(900,100,200,100);
+
+        //adding panel and button to frame and setting visible
         UIFrame.add(UIPanel);
+        UIPanel.add(myButt,new Integer(4000));
         UIFrame.setVisible(true);
         
         System.out.println("setting cards...");
@@ -459,5 +469,10 @@ public class UserInterface{
         }
     }
 
+    
+    public void actionPerformed(ActionEvent ae) {
+        inputMade = true;
+        System.out.println("input made!");
+    }
     
 }
