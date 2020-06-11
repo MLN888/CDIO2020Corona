@@ -22,7 +22,7 @@ public class Table {
     public static int[] unseen = {0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0};       // Track how many unseen cards remain in each column
     public static String justMoved = "XX";                                  // Track last move to avoid moving same card two times in a row
     public static int columnToColumn = 0;                               // Track number of column moves to avoid looping
-    public static final int MAX_COLUMN_TO_COLUMN = 1;
+    public static final int MAX_COLUMN_TO_COLUMN = 2;
     // Maximum allowed column-to-column moves before game is forced to try another type of move
 
     // Constructor. It is private, so the Table class can only be instantiated from inside this class.

@@ -15,6 +15,7 @@ public class OpenCVCardFile {
   public void skrivTilOpenCV() {
     createOpenCVstring(); // Genererer String med kortene
     createOpenCVfile(); // Skriver den genererede string til fil
+    this.cardsToOpenCV = "";
     return;
   }
 
@@ -58,7 +59,7 @@ public class OpenCVCardFile {
       }
 
       // Skaber file writer og bruger til at definere bw
-      FileWriter fw = new FileWriter(file);
+      FileWriter fw = new FileWriter(file,false); // false indicates that we want to overwrite, not append
       bw = new BufferedWriter(fw);
       // pw = new PrintWriter(bw); Bruges til append
 
