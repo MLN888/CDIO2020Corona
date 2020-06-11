@@ -66,8 +66,8 @@ public class OpenCVCardFile {
       // Skriver til fil
       bw.write(string);
       // pw.println(string); Append string til fil
-      if (Table.debugText)
-        System.out.println("Filen til OpenCV er blevet skrevet " + string);
+      
+      if(Table.debugText) System.out.println("File to OpenCV written: "+this.cardsToOpenCV);
 
     } catch (IOException e) {
       e.printStackTrace();

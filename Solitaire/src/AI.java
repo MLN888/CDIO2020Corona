@@ -170,6 +170,7 @@ public class AI {
             Table.cardsRemovedFromDrawPile++;       // A card is now permanently removed from draw pile
             int sizeDrawPile = Table.position.get(selectedMove.getFromPosition()).size();              // Get size of column or drawpile, from which the card is moved
             Table.position.get(selectedMove.getFromPosition()).remove(sizeDrawPile - 1);         // Remove card from Table
+            Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());       // Add card to target column
             if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
                 Table.cardsLeftInDrawPile--;
             }
@@ -196,8 +197,8 @@ public class AI {
         }
 
     private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
-        openCVCardFile.skrivTilOpenCV();
-        if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
+        openCVCardFile.skrivTilOpenCV();    // Method that writes Table state AFTER selected move is made
+        
         System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
         Scanner myScanner = new Scanner(System.in);
         String input = myScanner.nextLine();
