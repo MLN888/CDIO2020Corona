@@ -6,20 +6,12 @@ current move to be made.
 
 author:       Phillip Eg Bomholtz
 created:      08-06-2020
-Last updated: 10-06-2020
+Last updated: 11-06-2020
 
 version: 0.3
 
-
-
 ----------------------------------------*/
 
-
-
-
-
-
-import javax.lang.model.util.ElementScanner6;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -117,6 +109,7 @@ public class UserInterface{
     private int std_stack_card_offset = 10;
     private int std_stack_delta = 167;
 
+    boolean fancyOrNah = false;
 
     boolean readErr = false;  //if the init read has produced an error
 
@@ -127,6 +120,7 @@ public class UserInterface{
         this.UIFrame = new JFrame();
         this.UIPanel = new JLayeredPane();
         this.stackList = new ArrayList<ArrayList<UICard>>();
+        this.fancyOrNah = fancyOrNah;
 
         UIFrame.setSize(1823, 811); // dimensions equal to absolute background size
         UIFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // frame should exit on closing the window
@@ -143,7 +137,7 @@ public class UserInterface{
         System.out.println("setting cards...");
         setCards();     //generate the cards
         System.out.println("displaying cards...");
-        displayCards(fancyOrNah,initListRead()); //display initial set cards
+        displayCards(initListRead()); //display initial set cards
 
         System.out.println("****Done****");
     }
@@ -176,7 +170,7 @@ public class UserInterface{
     }
 
 
-    private void displayCards(boolean fancyOrNah, ArrayList<ArrayList<String>> a)
+    private void displayCards(ArrayList<ArrayList<String>> a)
     {
         for(int i = 0; i < 24; i++)
         {
@@ -219,17 +213,17 @@ public class UserInterface{
         }
         else if (destIndex == 9)
         {
-            endX = 47 + 120;
+            endX = 47 + 116;
             endY = 20;
         }
         else if (destIndex == 10)
         {
-            endX = 47 + 120 * 2;
+            endX = 47 + 116 * 2;
             endY = 20;
         }
         else if (destIndex == 11)
         {
-            endX = 47 + 120 * 3;
+            endX = 47 + 116 * 3;
             endY = 20;
         }
         else 
@@ -279,7 +273,7 @@ public class UserInterface{
 
     public void failCheck()
     {
-        for(int i = 1; i <= 7; i++)
+        for(int i = 1; i < stackList.size(); i++)
         {
             System.out.println("Stack nr.: "+i);
             for(int u = 0; u < stackList.get(i).size(); u++)
@@ -316,17 +310,17 @@ public class UserInterface{
         }
         else if (destIndex == 9)
         {
-            endX = 47 + 115;
+            endX = 47 + 116;
             endY = 10;
         }
         else if (destIndex == 10)
         {
-            endX = 47 + 115 * 2;
+            endX = 47 + 116 * 2;
             endY = 10;
         }
         else if (destIndex == 11)
         {
-            endX = 47 + 115 * 3;
+            endX = 47 + 116 * 3;
             endY = 10;
         }
         else 
@@ -334,15 +328,24 @@ public class UserInterface{
             System.out.println("yo dawg what you doin? you can't do that!");
         }
 
-         int reach = startReach;
+         int reach = startReach;  //set start point for moving
          while(reach != stackList.get(startIndex).size())
          {
-            stackList.get(startIndex).get(reach).move(endX, endY + std_stack_card_offset * (reach - startReach + 1));
+            stackList.get(startIndex).get(reach).move(endX, endY + std_stack_card_offset * (reach - startReach + 1));   //move x,y component to display card at new place
+
+            //make sure it is displayed in the correct layer. gets the displaydepth of last card on destination and adds one to that
+            stackList.get(startIndex).get(reach).displayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;    
+            UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(stackList.get(startIndex).get(reach).displayDepth * 100));
+
+            //add to the now stack
             stackList.get(destIndex).add(stackList.get(startIndex).get(reach));
             reach++;
          }
 
+         //set reach to the last card in the start stack
          reach = stackList.get(startIndex).size()-1;
+
+         //remove untill all cards that where moved are gone
          while(reach >= startReach)
          {
             stackList.get(startIndex).remove(reach);
