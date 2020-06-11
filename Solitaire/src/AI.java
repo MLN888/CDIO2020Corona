@@ -5,6 +5,7 @@ public class AI {
 
     private boolean fundetValg = false;                         // Flag used in selecting move
     OpenCVCardFile openCVCardFile = new OpenCVCardFile();       // Feature to enable communication with OpenCV
+    UserInterface UI = new UserInterface(true);
 
     /*  The AI receives the ArrayList with legal move objects via the "thinkHard" method
      *   The AI selects the best move.

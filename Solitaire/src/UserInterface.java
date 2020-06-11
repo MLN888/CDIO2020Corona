@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -96,6 +97,7 @@ public class UserInterface implements ActionListener{
     JFrame UIFrame;                              //frame for the UI to be placed in
     JLayeredPane UIPanel;                        //the layerd panel of the UI that allows cards to be placed over one another
     JButton myButt;
+    JLabel reshuf;
 
     /* 
     *  an important data structure to understand!
@@ -391,6 +393,17 @@ public class UserInterface implements ActionListener{
         }
 
         stackList.set(0,temp);
+        UIPanel.remove(reshuf);
+    }
+
+    public void reshuffleSug()
+    {
+        reshuf = new JLabel("reshuffle deck");
+        reshuf.setBounds(1600,75,110,100);
+        reshuf.setForeground(Color.BLACK);
+        reshuf.setBackground(Color.WHITE);
+        reshuf.setOpaque(true);
+        UIPanel.add(reshuf,new Integer(5000));
     }
 
     private ArrayList<ArrayList<String>> initListRead()
@@ -472,7 +485,7 @@ public class UserInterface implements ActionListener{
     
     public void actionPerformed(ActionEvent ae) {
         inputMade = true;
-        System.out.println("input made!");
+        System.out.println("You pushing me?");
     }
     
 }
