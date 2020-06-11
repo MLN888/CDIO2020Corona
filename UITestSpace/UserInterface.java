@@ -8,7 +8,7 @@ author:       Phillip Eg Bomholtz
 created:      08-06-2020
 Last updated: 11-06-2020
 
-version: 0.3
+version: 0.4
 
 ----------------------------------------*/
 
@@ -100,7 +100,8 @@ public class UserInterface{
     *  on the board. 0 is used for the card deck normally on the 
     *  top right. 1-7 are used for the card stacks on the play 
     *  area with the locked cards (initially that is). 8-11
-    *  are used for the top left solution stacks.
+    *  are used for the top left build stacks.
+    *  12 is deck card currently pulled.
     */
     private ArrayList<ArrayList<UICard>> stackList;
 
@@ -160,7 +161,7 @@ public class UserInterface{
             stackList.add(stackTemp);
         }
 
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 5; i++)
         {
             ArrayList<UICard> solveTemp = new ArrayList<UICard>();
             stackList.add(solveTemp);
@@ -226,6 +227,11 @@ public class UserInterface{
             endX = 47 + 116 * 3;
             endY = 20;
         }
+        else if (destIndex == 12)
+        {
+            endX = 900;
+            endY = 20;
+        }
         else 
         {
             System.out.println("yo dawg what you doin? you can't do that!");
@@ -252,7 +258,7 @@ public class UserInterface{
             {
                 if(reach == startReach)startGap = 0;else startGap = 30;
                 stackList.get(startIndex).get(reach).move(startX+(stepX*i),startY+(stepY*i)+std_stack_card_offset * (reach - startReach)+startGap);
-                UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(1000+reach));
+                UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
                 reach++;
             }
             sleep(60);
@@ -278,7 +284,7 @@ public class UserInterface{
             System.out.println("Stack nr.: "+i);
             for(int u = 0; u < stackList.get(i).size(); u++)
             {
-               System.out.println("(x,y): ("+ stackList.get(i).get(u).posX + "," + stackList.get(i).get(u).posY + ") at displaydepth: "+stackList.get(i).get(u).displayDepth);
+               System.out.println("card: "+ stackList.get(i).get(u).Suit +" "+ stackList.get(i).get(u).Rank + " ("+ stackList.get(i).get(u).posX + "," + stackList.get(i).get(u).posY + ") at displaydepth: "+stackList.get(i).get(u).displayDepth);
             }
 
         }
@@ -306,22 +312,27 @@ public class UserInterface{
         else if (destIndex == 8)
         {
             endX = 47;
-            endY = 10;
+            endY = 20;
         }
         else if (destIndex == 9)
         {
             endX = 47 + 116;
-            endY = 10;
+            endY = 20;
         }
         else if (destIndex == 10)
         {
             endX = 47 + 116 * 2;
-            endY = 10;
+            endY = 20;
         }
         else if (destIndex == 11)
         {
             endX = 47 + 116 * 3;
-            endY = 10;
+            endY = 20;
+        }
+        else if (destIndex == 12)
+        {
+            endX = 900;
+            endY = 20;
         }
         else 
         {
@@ -331,11 +342,15 @@ public class UserInterface{
          int reach = startReach;  //set start point for moving
          while(reach != stackList.get(startIndex).size())
          {
-            stackList.get(startIndex).get(reach).move(endX, endY + std_stack_card_offset * (reach - startReach + 1));   //move x,y component to display card at new place
+            stackList.get(startIndex).get(reach).move(endX, endY + std_stack_card_offset * (reach - startReach));   //move x,y component to display card at new place
 
-            //make sure it is displayed in the correct layer. gets the displaydepth of last card on destination and adds one to that
-            stackList.get(startIndex).get(reach).displayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;    
-            UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(stackList.get(startIndex).get(reach).displayDepth * 100));
+            //make sure it is displayed in the correct layer. gets the displaydepth of last card on destination and adds one to that if it exists. will set one if not
+            if(stackList.get(destIndex).size() > 0)
+            stackList.get(startIndex).get(reach).displayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
+            else
+            stackList.get(startIndex).get(reach).displayDepth = 1;
+
+            UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(stackList.get(startIndex).get(reach).displayDepth * 100)); //update display
 
             //add to the now stack
             stackList.get(destIndex).add(stackList.get(startIndex).get(reach));
@@ -351,6 +366,21 @@ public class UserInterface{
             stackList.get(startIndex).remove(reach);
             reach--;
          }
+    }
+
+    public int getStackSizeAtIndex(int i){ return stackList.get(i).size();}
+
+    public void resetDeck()
+    {
+        ArrayList<UICard> temp = new ArrayList<UICard>();
+        for(int i = stackList.get(12).size() - 1; i >= 0 ; i--)
+        {
+            stackList.get(12).get(i).getLabel().setIcon(new ImageIcon(ImgPath+"\\card_back.png"));
+            stackList.get(12).get(i).move(1050, 20);
+            temp.add(stackList.get(12).get(i));
+        }
+
+        stackList.set(0,temp);
     }
 
     private ArrayList<ArrayList<String>> initListRead()
