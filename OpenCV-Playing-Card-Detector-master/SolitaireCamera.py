@@ -76,7 +76,8 @@ def compareDecks(camera, ref):
 def fileReader():
     
     tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-    f = open("Solitaire\src\\fileToOpenCV.txt", "r")
+    #f = open("Solitaire\src\\fileToOpenCV.txt", "r")
+    f = open("fileToOpenCV.txt", "r")
     csv_reader = csv.reader(f, delimiter=',')
 
     for row in csv_reader:
