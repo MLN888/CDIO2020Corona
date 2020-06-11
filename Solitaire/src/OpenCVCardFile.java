@@ -21,10 +21,10 @@ public class OpenCVCardFile {
 
   private void createOpenCVstring() {
 
-    int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
+  /*  int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
     String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
     cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
-    cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
+    cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma */
 
     for (int i = 0; i < 7; i++) {                                     // Iterate the 7 columns
       int topCardOfColumnIndex = Table.position.get(i).size();        // Get size of current column

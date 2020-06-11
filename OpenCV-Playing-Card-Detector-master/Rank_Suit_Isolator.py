@@ -36,7 +36,7 @@ if PiOrUSB == 1:
 
 if PiOrUSB == 2:
     # Initialize USB camera
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
 
 # Use counter variable to switch from isolating Rank to isolating Suit
 i = 1

@@ -26,6 +26,8 @@ class bcolors:
     UNDERLINE = '\033[4m'
     DEFAULT ="\033[0;00m" 
 
+useRef = False
+
 ###################################
 
 def compareDecks(camera, ref):
@@ -35,7 +37,7 @@ def compareDecks(camera, ref):
     for i in range(0,7):
         if camera[j] == ref[i] and camera[j] != 'UU' and ref[i] != 'UU':
             print(bcolors.OKGREEN + "MATCH FOUND at " + str(i) + ".")
-            outputPiles == ref[i]
+            outputPiles[i] = ref[i]
 
 
         if (camera[j][0] == 'U' or camera[j][1] == 'U') and ref[i] == 'UU':
@@ -53,7 +55,7 @@ def compareDecks(camera, ref):
         
         if (camera[j][0] != 'U' and camera[j][1] != 'U') and ref[i] == 'UU':
             print(bcolors.OKBLUE + "UNKNOWN CARD at " + str(i) + ". Grabbing card from camera")
-            outputPiles[i] = camera[i]
+            outputPiles[i] = camera[j]
 
         if camera[j] != ref[i] and ref[i] != 'UU' and ref[i] != 'XX':
             print(bcolors.WARNING + "MISMATCH FOUND at " + str(i) + ". Grabbing card from last known card")
@@ -74,7 +76,7 @@ def compareDecks(camera, ref):
 def fileReader():
     
     tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-    f = open("myfile.txt", "r")
+    f = open("Solitaire\src\\fileToOpenCV.txt", "r")
     csv_reader = csv.reader(f, delimiter=',')
 
     for row in csv_reader:
@@ -87,7 +89,7 @@ def fileReader():
     
 
 def fileWriter(string):
-    f = open("pythonOutput.txt", "w")
+    f = open("Solitaire\src\pythonOutput.txt", "w")
     f.write(string)
     f.close
     
@@ -143,6 +145,7 @@ def GrabImage():
 
         k = 0
         m = 0
+        
         # For each contour detected:
         for i in range(len(cnts_sort)):
             if (cnt_is_card[i] == 1):
@@ -156,12 +159,11 @@ def GrabImage():
                 cards[k].best_rank_match,cards[k].best_suit_match,cards[k].rank_diff,cards[k].suit_diff = Cards.match_card(cards[k],train_ranks,train_suits)
                 #print("Card:" + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                 # Draw center point and match result on the image.
-
                 if (cards[k].center[0] < 550 and cards[k].center[1] < 550):
                     drawPile = cards[k]
                     print("Draw: " + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                     
-                if (cards[k].center[1] > 550):
+                if (cards[k].center[1] > 800):
                     piles.append(cards[k])
                     #print("Card:" + piles[m].best_rank_match + " " + piles[m].best_suit_match)
                     m = m + 1
@@ -171,10 +173,11 @@ def GrabImage():
         
         print('#########################################')
 
-    
-        #stringBuilder = (translateRankToString(drawPile) + translateSuitToString(drawPile) + ",UU,UU,UU,UU,")
-        
+        cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
         stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+        outputString = (translateRankToString(drawPile) + translateSuitToString(drawPile) + ",UU,UU,UU,UU")
+        
+        
         #stringBuilder[0] = (translateRankToString(drawPile) + translateSuitToString(drawPile))
 
         pilesNum = len(piles)
@@ -185,18 +188,35 @@ def GrabImage():
             #stringBuilder = stringBuilder + (',' + translateRankToString(piles[h]) + translateSuitToString(piles[h]))
             #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
-            stringBuilder[h] = translateRankToString(piles[h]) + translateSuitToString(piles[h])
+            cameraArray[h] = translateRankToString(piles[h]) + translateSuitToString(piles[h])
 
 
-        #print(stringBuilder)
-        #fileWriter(stringBuilder)
+        
         refArray = fileReader()
 
-        compareDecks(stringBuilder, refArray)
+        
 
-        print(refArray[0])
-        print("lol " + refArray[0][0])
+        if useRef == True:
 
+            tempArray = compareDecks(cameraArray, refArray)
+
+            #for h in range(0,7):
+            stringBuilder = tempArray
+
+            for h in range(0,7):
+                outputString = outputString + (',' + stringBuilder[h])
+
+        else:
+            for h in range(0,7):
+                stringBuilder[h] = cameraArray[h]
+
+            for h in range(0,7):
+                outputString = outputString + (',' + stringBuilder[h])
+
+        print(stringBuilder)
+        fileWriter(outputString)
+
+ 
         
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
@@ -240,8 +260,20 @@ while True:
     if key == ord(" "):
         print("Grabbing new frame")
         GrabImage()
+
     if key == ord("q"):
         cam_quit = 1 
         cv2.destroyAllWindows()
         quit()
+
+    if key == ord("t"):
+        
+        if useRef == False:
+            print("Ref enabled")
+            useRef = True
+        
+        else:
+            useRef = False
+            print("Ref disabled")
+    
 
