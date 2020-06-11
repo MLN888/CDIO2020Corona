@@ -42,7 +42,7 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-                promptUser();
+               // promptUser();
                 UI.resetDeck();
                 return;
             }
@@ -53,7 +53,8 @@ public class AI {
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
             }
-            promptUser();
+            promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
+            UI.stackEndFlip(12, 'H', '5');
             return;
         }
 
@@ -84,7 +85,7 @@ public class AI {
 
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());          // Add card to foundation
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            promptUser();
+            //promptUser();
             return;
         }
 
@@ -104,7 +105,7 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-                promptUser();
+                //promptUser();
                 return;
             }
 
@@ -130,7 +131,7 @@ public class AI {
                 }
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
-            promptUser();
+            //promptUser();
             return;
         }
 
@@ -162,7 +163,7 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
             if (Table.debugText) System.out.println("Max column-to-column counter: " + Table.columnToColumn);
-            promptUser();
+            //promptUser();
             return;
         }
 
@@ -180,7 +181,7 @@ public class AI {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
             }
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            promptUser();
+            //promptUser();
             return;
         }
 
@@ -191,22 +192,29 @@ public class AI {
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
             }
-            promptUser();
+           // promptUser();
             return;
         }
 
 
         }
 
-    private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
+    private void promptUser(int startIndex, int startReach, int destIndex) {             // After AI has selected a move, the game pauses until the player has made the move.
         openCVCardFile.skrivTilOpenCV();
         if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
-        System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
+        /*System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
         Scanner myScanner = new Scanner(System.in);
         String input = myScanner.nextLine();
         if (input.equals("o")) {
             Table.gameOn = false;
+        }*/
+
+
+        while(!UI.inputMade){
+            UI.moveSug(startIndex, startReach, destIndex, 10);
         }
+        UI.makeMove(startIndex, startReach, destIndex);
+        UI.inputMade = false;
     }
 
     private boolean checkIfWon() {
