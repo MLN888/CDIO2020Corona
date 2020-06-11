@@ -36,7 +36,7 @@ def compareDecks(camera, ref):
     j = 0
     for i in range(0,7):
         if camera[j] == ref[i] and camera[j] != 'UU' and ref[i] != 'UU':
-            print(bcolors.OKGREEN + "MATCH FOUND at " + str(i) + ".")
+            print(bcolors.OKGREEN + "MATCH FOUND at " + str(i) + ". " + ref[i])
             outputPiles[i] = ref[i]
 
 
@@ -54,11 +54,11 @@ def compareDecks(camera, ref):
             outputPiles[i] = camera[j]
         
         if (camera[j][0] != 'U' and camera[j][1] != 'U') and ref[i] == 'UU':
-            print(bcolors.OKBLUE + "UNKNOWN CARD at " + str(i) + ". Grabbing card from camera")
+            print(bcolors.OKBLUE + "UNKNOWN CARD at " + str(i) + ". Grabbing card from camera: " + camera[j])
             outputPiles[i] = camera[j]
 
         if camera[j] != ref[i] and ref[i] != 'UU' and ref[i] != 'XX':
-            print(bcolors.WARNING + "MISMATCH FOUND at " + str(i) + ". Grabbing card from last known card")
+            print(bcolors.WARNING + "MISMATCH FOUND at " + str(i) + ". Grabbing card from last known card. " + bcolors.FAIL + camera[j] + " " + bcolors.OKBLUE + ref[i])
             outputPiles[i] = ref[i]
         
         if ref[i] == 'XX':
@@ -72,6 +72,26 @@ def compareDecks(camera, ref):
         
     print(bcolors.DEFAULT)
     return outputPiles
+
+def checkDrawPile(drawPile):
+
+    if translateRankToString(drawPile) == 'U' and translateSuitToString(drawPile) == 'U':
+         print(bcolors.FAIL + "UNKNOWN CARD AT DRAWPILE. Pleas reseat card and rescan")
+
+    elif translateRankToString(drawPile) == 'U' and translateSuitToString(drawPile) != 'U':
+        print(bcolors.FAIL + "UNKNOWN SUIT AT DRAWPILE. Pleas reseat card and rescan")
+
+    elif translateRankToString(drawPile) != 'U' and translateSuitToString(drawPile) == 'U':
+        print(bcolors.FAIL + "UNKNOWN RANK AT DRAWPILE. Pleas reseat card and rescan")
+    
+    else:
+        print(bcolors.OKGREEN + "Drawpile identified: " + translateRankToString(drawPile) + translateSuitToString(drawPile))
+
+    print(bcolors.DEFAULT)
+    return  translateRankToString(drawPile) + translateSuitToString(drawPile)
+    
+        
+
 
 def fileReader():
     
@@ -139,13 +159,12 @@ def GrabImage():
         # Initialize a new "cards" list to assign the card objects.
         # k indexes the newly made array of cards.
         cards = []
-        
-        
         BuildPiles = []
         piles = []
 
         k = 0
         m = 0
+        noDrawPile = True
         
         # For each contour detected:
         for i in range(len(cnts_sort)):
@@ -161,8 +180,9 @@ def GrabImage():
                 #print("Card:" + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                 # Draw center point and match result on the image.
                 if (cards[k].center[0] < 550 and cards[k].center[1] < 550):
+                    noDrawPile = False
                     drawPile = cards[k]
-                    print("Draw: " + cards[k].best_rank_match + " " + cards[k].best_suit_match)
+                    #print("Draw: " + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                     
                 if (cards[k].center[1] > 800):
                     piles.append(cards[k])
@@ -172,12 +192,21 @@ def GrabImage():
                 image = Cards.draw_results(image, cards[k])
                 k = k + 1
         
-        print('#########################################')
+        print(bcolors.HEADER + '#########################################' + bcolors.DEFAULT)
 
         cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-        outputString = (translateRankToString(drawPile) + translateSuitToString(drawPile) + ",UU,UU,UU,UU")
+        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM']
+
+
+        if noDrawPile == False:
+            outputString = checkDrawPile(drawPile)
+
+        else:
+            print(bcolors.FAIL + "UNKNOWN TO IDENTIFY DRAWPILE CARD. PLEASE RESEAT OF FLIP OVER A NEW CARD.")
+            print(bcolors.DEFAULT)
+            outputString = "UU"
         
+        outputString = outputString + ",UU,UU,UU,UU"
         
         #stringBuilder[0] = (translateRankToString(drawPile) + translateSuitToString(drawPile))
 
@@ -190,18 +219,13 @@ def GrabImage():
             #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
             cameraArray[h] = translateRankToString(piles[h]) + translateSuitToString(piles[h])
-
-
         
         refArray = fileReader()
-
-        
 
         if useRef == True:
 
             tempArray = compareDecks(cameraArray, refArray)
 
-            #for h in range(0,7):
             stringBuilder = tempArray
 
             for h in range(0,7):
@@ -213,12 +237,17 @@ def GrabImage():
 
             for h in range(0,7):
                 outputString = outputString + (',' + stringBuilder[h])
-
-        print(stringBuilder)
+        if noDrawPile == False:
+            print("Drawpile: " + translateRankToString(drawPile) + translateSuitToString(drawPile))
+        else:
+            print("Drawpile: UU" )
+        
+        print("Pillars: " + str(stringBuilder))
         fileWriter(outputString)
 
- 
-        
+        print(bcolors.HEADER + '#########################################')
+        print(bcolors.DEFAULT)
+
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
         if (len(cards) != 0):
@@ -267,7 +296,7 @@ while True:
         cv2.destroyAllWindows()
         quit()
 
-    if key == ord("t"):
+    if key == ord("r"):
         
         if useRef == False:
             print("Ref enabled")
