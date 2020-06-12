@@ -1,0 +1,1 @@
+javac Solitaire\\src\\*.java && java -classpath Solitaire\src Main

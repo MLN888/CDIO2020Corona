@@ -1,0 +1,1 @@
+python OpenCV-Playing-Card-Detector-master/SolitaireCamera.py
