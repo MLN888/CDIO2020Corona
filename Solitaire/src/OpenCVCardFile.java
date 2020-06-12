@@ -21,16 +21,27 @@ public class OpenCVCardFile {
 
   private void createOpenCVstring() {
 
-    int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
-    String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
-    cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
-    cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
+    /*
+    if(Table.debugText){
+      for (int i = 0; i < Table.unseen.length; i++) {
+          System.out.println("unseen: "+i+" "+Table.unseen[i]);
+      }
+
+      for (int i = 0; i < Table.unseen.length; i++) {
+          System.out.println("unseenForOpenCV: "+i+" "+Table.unseen[i]);
+      }
+  }*/
+
+    //int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
+    //String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
+    //cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
+    //cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
 
     for (int i = 0; i < 7; i++) {                                     // Iterate the 7 columns
       int topCardOfColumnIndex = Table.position.get(i).size();        // Get size of current column
       String topCardofColumni = Table.position.get(i).get(topCardOfColumnIndex - 1);    // Grab top card in column i 
 
-      if (Table.unseen[i] > 0 && topCardofColumni.equals("XX")) {     // If top card is "XX" and there is unseen cards...
+      if (Table.unseenForOpenCV[i] > 0 && topCardofColumni.equals("XX")) {     // If top card is "XX" and there is unseen cards...
         cardsToOpenCV = cardsToOpenCV.concat("UU");                   // ... add "UU" instead
       } else {
         cardsToOpenCV = cardsToOpenCV.concat(topCardofColumni);       // Else: Just add whatever was the top card to the String

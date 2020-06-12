@@ -16,7 +16,11 @@ public class AI {
     public void thinkHard(ArrayList<Move> legalMoves) {
         System.out.println("\nTænker dybt...\n");
 
-
+        
+           for(int i=0; i<Table.unseen.length;i++){
+                Table.unseenForOpenCV[i] = Table.unseen[i];
+           }
+        
         if (legalMoves.isEmpty()) {                     // Check if there are no moves left. IF not, a number of things may happen:
 
             if (checkIfWon()) {                         // Check if win-condition is true (All unseen cards exposed)
@@ -197,6 +201,7 @@ public class AI {
         }
 
     private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
+
         openCVCardFile.skrivTilOpenCV();    // Method that writes Table state AFTER selected move is made
         
         System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
@@ -219,7 +224,7 @@ public class AI {
     private Move pickBestMove(ArrayList<Move> legalMoves) {
 
 
-        System.out.println(legalMoves.size());
+        if(Table.debugText) System.out.println("Size of legalMoves before selecting anything: "+legalMoves.size());
         Move currentChosen = legalMoves.get(0);
         for (int i = 0; i < legalMoves.size(); i++) {           // Vi itererer igennem alle lovlige moves
             if(Table.debugText) System.out.println("Checking legalmove:" + legalMoves.get(i)+ "  Unseens:" + Table.unseen[legalMoves.get(i).getFromPosition()]);

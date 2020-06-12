@@ -19,7 +19,8 @@ public class Table {
     public static int cardsLeftInDrawPile = 23;     // When game starts, draw pile has 23 cards
     public static int cardsRemovedFromDrawPile = 0; // Track how many cards we permanently remove from draw pile
     public static int shuffles = 3;                 // Track how many shuffles we may still do
-    public static int[] unseen = {0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0};       // Track how many unseen cards remain in each column
+    public static int[] unseen = {0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0};          // Track how many unseen cards remain in each column
+    public static int[] unseenForOpenCV = {0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0}; // Special unseen cards array for OpenCV-file.
     public static String justMoved = "XX";                                  // Track last move to avoid moving same card two times in a row
     public static int columnToColumn = 0;                               // Track number of column moves to avoid looping
     public static final int MAX_COLUMN_TO_COLUMN = 2;
