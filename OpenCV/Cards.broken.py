@@ -106,6 +106,8 @@ def load_suits(filepath):
 def preprocess_image(image):
     """Returns a grayed, blurred, and adaptively thresholded camera image."""
 
+    #image = cv2.imread('C:\\Users\\MLN\\Desktop\\CDIO\\CDIO2020Corona\\OpenCV-Playing-Card-Detector-master\\test.jpg', cv2.IMREAD_COLOR) 
+    #print(image)
     gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(5,5),0)
 
@@ -132,7 +134,7 @@ def find_cards(thresh_image):
     from largest to smallest."""
 
     # Find contours and sort their indices by contour size
-    cnts,hier = cv2.findContours(thresh_image,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    cnts, hier = cv2.findContours(thresh_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     index_sort = sorted(range(len(cnts)), key=lambda i : cv2.contourArea(cnts[i]),reverse=True)
 
     # If there are no contours, do nothing
@@ -257,6 +259,7 @@ def match_card(qCard, train_ranks, train_suits):
         # and store the result with the least difference
         for Trank in train_ranks:
 
+                #cv2.imshow()
                 diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
                 rank_diff = int(np.sum(diff_img)/255)
                 
@@ -294,6 +297,7 @@ def draw_results(image, qCard):
 
     x = qCard.center[0]
     y = qCard.center[1]
+    
     cv2.circle(image,(x,y),5,(255,0,0),-1)
 
     rank_name = qCard.best_rank_match
@@ -303,15 +307,26 @@ def draw_results(image, qCard):
     cv2.putText(image,(rank_name+' of'),(x-60,y-10),font,1,(0,0,0),3,cv2.LINE_AA)
     cv2.putText(image,(rank_name+' of'),(x-60,y-10),font,1,(50,200,200),2,cv2.LINE_AA)
 
+    # x value
+    cv2.putText(image,('x: '+ str(x)),(x-50,y+80),font,1,(0,0,0),3,cv2.LINE_AA)
+    cv2.putText(image,('x: '+ str(x)),(x-50,y+80),font,1,(50,200,200),2,cv2.LINE_AA)
+
+    cv2.putText(image,('y: ' + str(y)),(x-50,y+110),font,1,(0,0,0),3,cv2.LINE_AA)
+    cv2.putText(image,('y: ' + str(y)),(x-50,y+110),font,1,(50,200,200),2,cv2.LINE_AA)
+
     cv2.putText(image,suit_name,(x-60,y+25),font,1,(0,0,0),3,cv2.LINE_AA)
     cv2.putText(image,suit_name,(x-60,y+25),font,1,(50,200,200),2,cv2.LINE_AA)
+
     
     # Can draw difference value for troubleshooting purposes
     # (commented out during normal operation)
-    #r_diff = str(qCard.rank_diff)
-    #s_diff = str(qCard.suit_diff)
+    r_diff = str(qCard.rank_diff)
+    s_diff = str(qCard.suit_diff)
     #cv2.putText(image,r_diff,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
     #cv2.putText(image,s_diff,(x+20,y+50),font,0.5,(0,0,255),1,cv2.LINE_AA)
+
+    image = cv2.line(image, (0,800), (1920,800), (0, 0, 153), 3) 
+    image = cv2.line(image, (550,350), (550,0), (153, 0, 0), 3) 
 
     return image
 

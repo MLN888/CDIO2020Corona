@@ -96,8 +96,8 @@ def checkDrawPile(drawPile):
 def fileReader():
     
     tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-    f = open("Solitaire\\src\\fileToOpenCV.txt", "r")
-    #f = open("fileToOpenCV.txt", "r")
+    #f = open("Solitaire\\src\\fileToOpenCV.txt", "r")
+    f = open("fileToOpenCV.txt", "r")
     csv_reader = csv.reader(f, delimiter=',')
 
     for row in csv_reader:
@@ -110,7 +110,8 @@ def fileReader():
     
 
 def fileWriter(string):
-    f = open("Solitaire\src\pythonOutput.txt", "w")
+    #f = open("Solitaire\src\pythonOutput.txt", "w")
+    f = open("pythonOutput.txt", "r")
     f.write(string)
     f.close
     
@@ -243,7 +244,7 @@ def GrabImage():
             print("Drawpile: UU" )
         
         print("Pillars: " + str(stringBuilder))
-        fileWriter(outputString)
+        #fileWriter(outputString)
 
         print(bcolors.HEADER + '#########################################')
         print(bcolors.DEFAULT)
@@ -259,7 +260,7 @@ def GrabImage():
 
     dim = (1280, 720)
     image2 = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-    cv2.imshow("Card Detector",image2)
+    cv2.imshow("Solitaire Camera",image2)
 
 
 ## Camera settings
@@ -276,13 +277,15 @@ train_ranks = Cards.load_ranks( path + '/Card_Imgs/')
 train_suits = Cards.load_suits( path + '/Card_Imgs/')
 
 
-cap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)
+
+cap = cv2.VideoCapture(cv2.CAP_DSHOW + 2)
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
 
 
 GrabImage()
+
 
 while True:
 
