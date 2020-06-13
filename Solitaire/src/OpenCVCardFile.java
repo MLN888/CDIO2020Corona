@@ -1,6 +1,6 @@
 import java.io.File;
 import java.io.FileWriter;
-import java.io.PrintWriter;
+// import java.io.PrintWriter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -32,10 +32,15 @@ public class OpenCVCardFile {
       }
   }*/
 
-    //int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
-    //String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
-    //cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
-    //cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
+    int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
+    String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
+    if(Table.newDrawPileCard){                      // If a new card has been turned over in the drawpile...
+      cardsToOpenCV = cardsToOpenCV.concat("UU");   // ... OpenCV wants a "UU" in the file 
+      Table.newDrawPileCard = false;                // Resetting boolean, ready for next time a new card arrives
+    } else {                                        // else we just put the actual card there.
+    cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
+    }
+    cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
 
     for (int i = 0; i < 7; i++) {                                     // Iterate the 7 columns
       int topCardOfColumnIndex = Table.position.get(i).size();        // Get size of current column

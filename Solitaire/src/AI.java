@@ -17,7 +17,7 @@ public class AI {
         System.out.println("\nTænker dybt...\n");
 
         
-           for(int i=0; i<Table.unseen.length;i++){
+           for(int i=0; i<Table.unseen.length;i++){             // Copies unseen cards into unseenForOpenCV
                 Table.unseenForOpenCV[i] = Table.unseen[i];
            }
         
@@ -40,6 +40,7 @@ public class AI {
                 Table.shuffles--;                       // Draw pile is shuffled. Deduct one from allowed shuffles
                 Table.position.get(11).clear();         // Empty draw pile
                 Table.position.get(11).add("XX");       // Add an XX to indicate empty
+                Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
                 Table.cardsLeftInDrawPile = 24 - Table.cardsRemovedFromDrawPile;       // Reinitialize drawpile to original amount (24) minus cards removed
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
@@ -50,6 +51,7 @@ public class AI {
 
             // If none of the above statements were true, then the player must simply draw a new card from the drawpile:
             System.out.println("Du skal vende et nyt kort fra trækbunken!");
+            Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
@@ -69,6 +71,7 @@ public class AI {
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
                     Table.cardsLeftInDrawPile--;
+                    Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
                 }
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
@@ -101,6 +104,7 @@ public class AI {
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player..
                     Table.cardsLeftInDrawPile--;                // .. so unturned cards in draw pile is reduced by one
+                    Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
                 }
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
@@ -177,6 +181,7 @@ public class AI {
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());       // Add card to target column
             if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
                 Table.cardsLeftInDrawPile--;
+                Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             }
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
@@ -190,6 +195,7 @@ public class AI {
             System.out.println("Du skal vende et nyt kort fra trækbunken!");
             if(Table.debugText) System.out.println("Type 5 move!");
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
+            Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
             }
@@ -198,7 +204,7 @@ public class AI {
         }
 
 
-        }
+    }
 
     private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
 
