@@ -22,15 +22,15 @@ CORNER_WIDTH = 32
 CORNER_HEIGHT = 84
 
 # Dimensions of rank train images
-RANK_WIDTH = 70
-RANK_HEIGHT = 105
+RANK_WIDTH = 70 #70
+RANK_HEIGHT = 105 #125
 
 # Dimensions of suit train images
-SUIT_WIDTH = 70
-SUIT_HEIGHT = 100
+SUIT_WIDTH = 70 #70
+SUIT_HEIGHT = 93 #100
 
-RANK_DIFF_MAX = 2000
-SUIT_DIFF_MAX = 700
+RANK_DIFF_MAX = 2200 #2000
+SUIT_DIFF_MAX = 1000 #700
 
 CARD_MAX_AREA = 120000
 CARD_MIN_AREA = 25000
@@ -308,10 +308,13 @@ def draw_results(image, qCard):
     
     # Can draw difference value for troubleshooting purposes
     # (commented out during normal operation)
-    #r_diff = str(qCard.rank_diff)
-    #s_diff = str(qCard.suit_diff)
-    #cv2.putText(image,r_diff,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
-    #cv2.putText(image,s_diff,(x+20,y+50),font,0.5,(0,0,255),1,cv2.LINE_AA)
+    r_diff = str(qCard.rank_diff)
+    s_diff = str(qCard.suit_diff)
+    cv2.putText(image,r_diff,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
+    cv2.putText(image,s_diff,(x+20,y+50),font,0.5,(0,0,255),1,cv2.LINE_AA)
+
+    image = cv2.line(image, (0,800), (1920,800), (0, 0, 153), 3) 
+    image = cv2.line(image, (550,350), (550,0), (153, 0, 0), 3) 
 
     return image
 

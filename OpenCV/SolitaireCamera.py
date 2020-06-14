@@ -34,10 +34,11 @@ def compareDecks(camera, ref):
 
     outputPiles = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
     j = 0
-    for i in range(0,7):
+    k = 0
+    for i in range(1,8):
         if camera[j] == ref[i] and camera[j] != 'UU' and ref[i] != 'UU':
             print(bcolors.OKGREEN + "MATCH FOUND at " + str(i) + ". " + ref[i])
-            outputPiles[i] = ref[i]
+            outputPiles[k] = ref[i]
 
 
         if (camera[j][0] == 'U' or camera[j][1] == 'U') and ref[i] == 'UU':
@@ -51,57 +52,69 @@ def compareDecks(camera, ref):
             elif camera[j][1] == 'U':
                 print(bcolors.FAIL + "UNKNOWN SUIT at pile " + str(i) + ". Pleas reseat card and rescan")
  
-            outputPiles[i] = camera[j]
+            outputPiles[k] = camera[j]
         
         if (camera[j][0] != 'U' and camera[j][1] != 'U') and ref[i] == 'UU':
             print(bcolors.OKBLUE + "UNKNOWN CARD at " + str(i) + ". Grabbing card from camera: " + camera[j])
-            outputPiles[i] = camera[j]
+            outputPiles[k] = camera[j]
 
         if camera[j] != ref[i] and ref[i] != 'UU' and ref[i] != 'XX':
             print(bcolors.WARNING + "MISMATCH FOUND at " + str(i) + ". Grabbing card from last known card. " + bcolors.FAIL + camera[j] + " " + bcolors.OKBLUE + ref[i])
-            outputPiles[i] = ref[i]
+            outputPiles[k] = ref[i]
         
         if ref[i] == 'XX':
             
             print(bcolors.OKBLUE + "EMPTY SPACE FOUND at " + str(i) + ", moving to next pile")
-            outputPiles[i] = 'XX'
+            outputPiles[k] = 'XX'
             j = j - 1
         
         j = j + 1
+        k = k + 1
 
         
     print(bcolors.DEFAULT)
     return outputPiles
 
-def checkDrawPile(drawPile):
+def checkDrawPile(drawPile, refCard):
 
-    if translateRankToString(drawPile) == 'U' and translateSuitToString(drawPile) == 'U':
-         print(bcolors.FAIL + "UNKNOWN CARD AT DRAWPILE. Pleas reseat card and rescan")
-
-    elif translateRankToString(drawPile) == 'U' and translateSuitToString(drawPile) != 'U':
-        print(bcolors.FAIL + "UNKNOWN SUIT AT DRAWPILE. Pleas reseat card and rescan")
-
-    elif translateRankToString(drawPile) != 'U' and translateSuitToString(drawPile) == 'U':
-        print(bcolors.FAIL + "UNKNOWN RANK AT DRAWPILE. Pleas reseat card and rescan")
+    if (drawPile == refCard and refCard != 'UU' and refCard != 'XX'):
+        print(bcolors.OKGREEN + "MATCH FOUND at Drawpile. " + drawPile)
+        return drawPile
     
-    else:
-        print(bcolors.OKGREEN + "Drawpile identified: " + translateRankToString(drawPile) + translateSuitToString(drawPile))
+    if (drawPile != refCard and refCard != 'UU' and refCard != 'XX'):
+        print(bcolors.WARNING + "MISMATCH FOUND at Drawpile. Grabbing card form last know card. " + bcolors.FAIL + drawPile + " " + bcolors.OKBLUE + refCard)
+        return refCard
+
+    if (refCard == 'UU' or refCard == 'XX'):
+        
+        if drawPile[0] == 'U' and drawPile[1] == 'U':
+             print(bcolors.FAIL + "UNKNOWN CARD AT DRAWPILE. Pleas reseat card and rescan")
+
+        elif drawPile[0] == 'U' and drawPile[1] != 'U':
+            print(bcolors.FAIL + "UNKNOWN SUIT AT DRAWPILE. Pleas reseat card and rescan")
+
+        elif drawPile[0] != 'U' and drawPile[1] == 'U':
+            print(bcolors.FAIL + "UNKNOWN RANK AT DRAWPILE. Pleas reseat card and rescan")
+
+        elif drawPile[0] != 'U' and drawPile[1] != 'U':
+            print(bcolors.OKGREEN + "Drawpile identified, grabbing card from camera: " + drawPile[0] + drawPile[1])
+            return drawPile
 
     print(bcolors.DEFAULT)
-    return  translateRankToString(drawPile) + translateSuitToString(drawPile)
+    return  drawPile[0] + drawPile[1]
     
         
 
 
 def fileReader():
     
-    tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+    tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
     #f = open("Solitaire\\src\\fileToOpenCV.txt", "r")
     f = open("fileToOpenCV.txt", "r")
     csv_reader = csv.reader(f, delimiter=',')
 
     for row in csv_reader:
-        for i in range(0,7):
+        for i in range(0,8):
             tokens[i]=row[i]
 
     f.close
@@ -111,7 +124,7 @@ def fileReader():
 
 def fileWriter(string):
     #f = open("Solitaire\src\pythonOutput.txt", "w")
-    f = open("pythonOutput.txt", "r")
+    f = open("pythonOutput.txt", "w")
     f.write(string)
     f.close
     
@@ -119,7 +132,7 @@ def fileWriter(string):
 def translateRankToString(e):
 
     ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']
-    letter = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '1', 'J', 'Q', 'K']
+    letter = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'J', 'Q', 'K']
     index = 0
 
     for rank in ranks:
@@ -149,6 +162,28 @@ def GrabImage():
 
     ret, image = cap.read() #Used to clear buffer to grab fresh image
     ret, image = cap.read()
+
+    #cv2.GaussianBlur(image,(5,5),0)
+    #cv2.Blur(image, (5,5))
+
+    #Create the identity filter, but with the 1 shifted to the right!
+    kernel = np.zeros( (9,9), np.float32)
+    kernel[4,4] = 2.0   #Identity, times two! 
+
+    #Create a box filter:
+    boxFilter = np.ones( (9,9), np.float32) / 81.0
+
+    #Subtract the two:
+    kernel = kernel - boxFilter
+
+
+    #Note that we are subject to overflow and underflow here...but I believe that
+    # filter2D clips top and bottom ranges on the output, plus you'd need a
+    # very bright or very dark pixel surrounded by the opposite type.
+
+    image = cv2.filter2D(image, -1, kernel)
+
+
 
     # Pre-process camera image (gray, blur, and threshold it)
     pre_proc = Cards.preprocess_image(image)
@@ -198,16 +233,6 @@ def GrabImage():
         cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
         stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM']
 
-
-        if noDrawPile == False:
-            outputString = checkDrawPile(drawPile)
-
-        else:
-            print(bcolors.FAIL + "UNKNOWN TO IDENTIFY DRAWPILE CARD. PLEASE RESEAT OF FLIP OVER A NEW CARD.")
-            print(bcolors.DEFAULT)
-            outputString = "UU"
-        
-        outputString = outputString + ",UU,UU,UU,UU"
         
         #stringBuilder[0] = (translateRankToString(drawPile) + translateSuitToString(drawPile))
 
@@ -220,10 +245,20 @@ def GrabImage():
             #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
             cameraArray[h] = translateRankToString(piles[h]) + translateSuitToString(piles[h])
-        
-        refArray = fileReader()
 
         if useRef == True:
+
+            refArray = fileReader()
+
+            if noDrawPile == False:
+                outputString = checkDrawPile(translateRankToString(drawPile) + translateSuitToString(drawPile),refArray[0])
+                outputString = outputString + ",UU,UU,UU,UU"
+
+            else:
+                print(bcolors.FAIL + "UNKNOWN TO IDENTIFY DRAWPILE CARD. PLEASE RESEAT OF FLIP OVER A NEW CARD.")
+                print(bcolors.DEFAULT)
+                outputString = "UU"     ###############################
+                outputString = outputString + ",UU,UU,UU,UU"
 
             tempArray = compareDecks(cameraArray, refArray)
 
@@ -233,6 +268,17 @@ def GrabImage():
                 outputString = outputString + (',' + stringBuilder[h])
 
         else:
+
+            if noDrawPile == False:
+                outputString = translateRankToString(drawPile) + translateSuitToString(drawPile)
+                outputString = outputString + ",UU,UU,UU,UU"
+
+            else:
+                print(bcolors.FAIL + "UNKNOWN TO IDENTIFY DRAWPILE CARD. PLEASE RESEAT OF FLIP OVER A NEW CARD.")
+                print(bcolors.DEFAULT)
+                outputString = "UU"     ###############################
+                outputString = outputString + ",UU,UU,UU,UU"
+
             for h in range(0,7):
                 stringBuilder[h] = cameraArray[h]
 
@@ -244,7 +290,7 @@ def GrabImage():
             print("Drawpile: UU" )
         
         print("Pillars: " + str(stringBuilder))
-        #fileWriter(outputString)
+        fileWriter(outputString)
 
         print(bcolors.HEADER + '#########################################')
         print(bcolors.DEFAULT)
