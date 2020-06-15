@@ -243,47 +243,54 @@ public class AI {
             currentChosen = checkForEs(legalMoves, i, currentChosen);           //Metode der finder et es eller en 2'er der kan placeres i byggebunken
             if (fundetValg) {
                 fundetValg = false;
+                if(Table.debugText) System.out.println("Priority move: Ace or two moved to foundation pile");
                 return currentChosen;
             }
 
             currentChosen = checkForColumnKings(legalMoves, i, currentChosen);        //Metode der finder konger fra søjler med unseen kort.
             if (fundetValg) {
                 fundetValg = false;
+                if(Table.debugText) System.out.println("Priority move: Moving king to expose unseen card");
                 return currentChosen;
             }
 
             currentChosen = checkForFriKortTraek(legalMoves, i, currentChosen); //Funktion der finder træk der vender usete kort
             if(fundetValg){
                 fundetValg = false;
+                if(Table.debugText) System.out.println("Priority move: Moving card(s) to expose unseen card");
                 return currentChosen;
             }
 
             currentChosen = checkForTraekKings(legalMoves, i, currentChosen);   //Funktion der tager konge fra trækbunke og ligger på en fri plads
             if (fundetValg) {
                 fundetValg = false;
+                if(Table.debugText) System.out.println("Priority move: Moving king to empty column");
                 return currentChosen;
             }
         }
 
         // Hvis Vi kan stadig kan blande bunken & trække kort, og der kun er type 1 træk til rådighed, vil vi hellere trække nyt kort fra trækbunken
         if(Table.shuffles != 0 && Table.cardsLeftInDrawPile != 0 && legalMoves.get(legalMoves.size() - 1).getType() == 1){
+            if(Table.debugText) System.out.println("Priority move: Only type 1 moves available. Drawing card instead.");
             currentChosen.setType(5);   // Type 5 = træk nyt kort
             return currentChosen;
-
         }
+
         int counter = 0;
         for (int i = 0; i < legalMoves.size(); i++) {   // Vi itererer lovlige træk
             if(legalMoves.get(i).getType() == 1){       // Har vi fat i en type 1?
                 counter = counter + 1;                  // Så tæller vi counteren 1 op
             }
             if(counter == legalMoves.size()){           // Hvis alle træk har været type 1
+                if(Table.debugText) System.out.println("Priority: No shuffels, no cards in drawpile, so we accept type 1");
                 return legalMoves.get(0);               // Så vælger vi gerne type 1
             }
         }
         
         for (int i = 0; i < legalMoves.size(); i++) {   // Vi itererer lovlige træk
-            if(legalMoves.get(i).getType() != 1  || legalMoves.get(i).getType() != 3 ){       // Det første træk som IKKE er type 1...
+            if(legalMoves.get(i).getType() != 1  || legalMoves.get(i).getType() != 3 ){       // Det første træk som IKKE er type 1 eller 3...
                 currentChosen = legalMoves.get(i);      // ... vælger vi at bruge.
+                if(Table.debugText) System.out.println("Picking first move that is NOT type 1 or type 3");
                 return currentChosen;
             }
         }
