@@ -196,7 +196,9 @@ public class AI {
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
             }
-           // promptUser();
+            promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
+            UI.needFlip = true;
+            UI.flipIndex = 11;
             return;
         }
 
