@@ -13,6 +13,8 @@ version: 0.4
 ----------------------------------------*/
 
 import javax.swing.*;
+import javax.swing.text.Position;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -115,11 +117,12 @@ public class UserInterface implements ActionListener{
     private int std_stack_card_offset = 10;
     private int std_stack_delta = 167;
 
-    boolean fancyOrNah = false; //exclude or include some animations
+    private boolean fancyOrNah = false; //exclude or include some animations
+    private boolean readErr = false;  //if the init read has produced an error
+    public boolean inputMade = false;
+    public boolean needFlip = false;
 
-    boolean readErr = false;  //if the init read has produced an error
-
-    boolean inputMade = false;
+    public int  flipIndex;
 
     public UserInterface(boolean fancyOrNah) {
         System.out.println("****Setting up user interface****");
@@ -207,6 +210,7 @@ public class UserInterface implements ActionListener{
 
     public void moveSug(int startIndex,int startReach,int destIndex,int steps)
     {
+        System.out.println("here: "+ startIndex +" "+ startReach +" "+ destIndex);
         //start x and y from input parameter
         int startX = stackList.get(startIndex).get(startReach).posX;
         int startY = stackList.get(startIndex).get(startReach).posY;
@@ -303,8 +307,9 @@ public class UserInterface implements ActionListener{
         }
     }
 
-    public void stackEndFlip(int index, char s, char r)
+    private void stackEndFlip(int i, char s, char r)
     {
+        int index = indexConverter(i);
         String suit = suitInterpreter(s);
         String rank = String.valueOf(r);
         stackList.get(index).get(stackList.get(index).size()-1).doAFlip(suit, rank, ImgPath);
@@ -470,6 +475,12 @@ public class UserInterface implements ActionListener{
         }
     }
 
+    private int indexConverter(int i)
+    {
+        if(0 <= i && i <= 7)return i + 1;
+        else return 12;
+    }
+
 
     private void sleep(int s)
     {
@@ -484,9 +495,22 @@ public class UserInterface implements ActionListener{
     }
 
     
-    public void actionPerformed(ActionEvent ae) {
+    public void actionPerformed(ActionEvent ae) 
+    {
         inputMade = true;
         System.out.println("You pushing me?");
     }
-    
+
+
+    public void checkNewData()
+    {
+        if(needFlip)
+        {
+            int i = indexConverter(flipIndex);
+            char r = Table.position.get(flipIndex).get(Table.position.get(flipIndex).size() - 1).charAt(0);
+            char s = Table.position.get(flipIndex).get(Table.position.get(flipIndex).size() - 1).charAt(1);
+            stackEndFlip(i, s, r);
+            needFlip = false;
+        }
+    }
 }

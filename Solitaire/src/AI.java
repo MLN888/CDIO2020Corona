@@ -5,8 +5,11 @@ public class AI {
 
     private boolean fundetValg = false;                         // Flag used in selecting move
     OpenCVCardFile openCVCardFile = new OpenCVCardFile();       // Feature to enable communication with OpenCV
-    UserInterface UI = new UserInterface(true);
+    UserInterface UI;
 
+    public AI(UserInterface ui) {
+        this.UI = ui;
+    }
     /*  The AI receives the ArrayList with legal move objects via the "thinkHard" method
      *   The AI selects the best move.
      *   The AI prints to console what the best move is
@@ -42,7 +45,7 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-               // promptUser();
+                promptUser(12,0,0);
                 UI.resetDeck();
                 return;
             }
@@ -54,7 +57,8 @@ public class AI {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
             }
             promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
-            UI.stackEndFlip(12, 'H', '5');
+            UI.needFlip = true;
+            UI.flipIndex = 11;
             return;
         }
 
@@ -85,7 +89,7 @@ public class AI {
 
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());          // Add card to foundation
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            //promptUser();
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut(), selectedMove.getToPosition() + 1);
             return;
         }
 
@@ -105,7 +109,7 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-                //promptUser();
+                promptUser(12, selectedMove.getCut() - 2, selectedMove.getToPosition() + 1);
                 return;
             }
 
@@ -131,7 +135,7 @@ public class AI {
                 }
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
-            //promptUser();
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + Table.unseen[selectedMove.getFromPosition()], selectedMove.getToPosition() + 1);
             return;
         }
 
@@ -163,7 +167,7 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
             if (Table.debugText) System.out.println("Max column-to-column counter: " + Table.columnToColumn);
-            //promptUser();
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + Table.unseen[selectedMove.getFromPosition()], selectedMove.getToPosition() + 1);
             return;
         }
 
@@ -180,8 +184,8 @@ public class AI {
             if (Table.debugText) {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
             }
-            Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            //promptUser();
+            Table.justMoved = selectedMove.getCard();    // Remember last moved card
+            promptUser(12, selectedMove.getCut() - 2, selectedMove.getToPosition() + 1);
             return;
         }
 
@@ -202,19 +206,13 @@ public class AI {
     private void promptUser(int startIndex, int startReach, int destIndex) {             // After AI has selected a move, the game pauses until the player has made the move.
         openCVCardFile.skrivTilOpenCV();
         if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
-        /*System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
-        Scanner myScanner = new Scanner(System.in);
-        String input = myScanner.nextLine();
-        if (input.equals("o")) {
-            Table.gameOn = false;
-        }*/
-
-
         while(!UI.inputMade){
             UI.moveSug(startIndex, startReach, destIndex, 10);
         }
         UI.makeMove(startIndex, startReach, destIndex);
         UI.inputMade = false;
+
+        
     }
 
     private boolean checkIfWon() {
