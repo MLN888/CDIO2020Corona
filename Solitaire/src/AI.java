@@ -283,6 +283,12 @@ public class AI {
             }
         }
 
+        if (legalMoves.get(0).getType()==3){            // Attempt to fix problem where AI moves a card from column to column repeatedly
+            legalMoves.get(0).setType(5);
+            if(Table.debugText) System.out.println("Type 3 afvist for at undgå dumme søjle-til-søjle. Træk kort i stedet");
+            return legalMoves.get(0);
+        }
+
         if (Table.debugText){
         System.out.println("Ingen specielle træk er foretrukket. Vi vælger default legalMoves.get(0)");
         System.out.println(legalMoves.get(0).toString());
