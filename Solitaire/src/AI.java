@@ -16,6 +16,11 @@ public class AI {
     public void thinkHard(ArrayList<Move> legalMoves) {
         System.out.println("\nTænker dybt...\n");
 
+        if (checkIfWon()) {                         // Check if win-condition is true (All unseen cards exposed)
+            System.out.println("Der er ikke flere uvendte kort. Spillet er vundet, men du kan fortsætte med byggebunkerne.");
+            System.out.println("------------------------------------------------------------------------------------------");
+        }
+
         
            for(int i=0; i<Table.unseen.length;i++){             // Copies unseen cards into unseenForOpenCV
                 Table.unseenForOpenCV[i] = Table.unseen[i];
@@ -274,10 +279,10 @@ public class AI {
             if(counter == legalMoves.size()){           // Hvis alle træk har været type 1
                 return legalMoves.get(0);               // Så vælger vi gerne type 1
             }
-
         }
+        
         for (int i = 0; i < legalMoves.size(); i++) {   // Vi itererer lovlige træk
-            if(legalMoves.get(i).getType() != 1){       // Det første træk som IKKE er type 1...
+            if(legalMoves.get(i).getType() != 1  || legalMoves.get(i).getType() != 3 ){       // Det første træk som IKKE er type 1...
                 currentChosen = legalMoves.get(i);      // ... vælger vi at bruge.
                 return currentChosen;
             }
@@ -294,7 +299,8 @@ public class AI {
         System.out.println(legalMoves.get(0).toString());
         }
 
-        return legalMoves.get(0);   }// AI uncritically selects first move from legalMoves
+        return legalMoves.get(0);   
+    }// AI uncritically selects first move from legalMoves
 
 
 
