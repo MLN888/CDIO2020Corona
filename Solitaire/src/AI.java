@@ -170,7 +170,7 @@ public class AI {
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
             if (Table.debugText) System.out.println("Max column-to-column counter: " + Table.columnToColumn);
             promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
-            if(Table.position.get(selectedMove.getFromPosition()).size() == unseen)
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen)
             {
                 UI.needFlip = true;
                 UI.flipIndex = selectedMove.getFromPosition();

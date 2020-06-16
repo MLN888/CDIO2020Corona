@@ -478,7 +478,7 @@ public class UserInterface implements ActionListener{
             case 'D':
                 return "Diamond";
             case 'C':
-                return "Clover"; 
+                return "Clubs"; 
             case 'S':
                 return "Spade";
             default:
@@ -515,13 +515,16 @@ public class UserInterface implements ActionListener{
 
     public void checkNewData()
     {
+        if(Table.debugText)System.out.println("******* UPDATING UI *******");
         if(needFlip)
         {
-            int i = indexConverter(flipIndex);
             char r = Table.position.get(flipIndex).get(Table.position.get(flipIndex).size() - 1).charAt(0);
             char s = Table.position.get(flipIndex).get(Table.position.get(flipIndex).size() - 1).charAt(1);
-            stackEndFlip(i, s, r);
+
+            if(Table.debugText)System.out.println("index: "+flipIndex+" rank: "+r+" suit: "+s);
+            stackEndFlip(flipIndex, s, r);
             needFlip = false;
         }
+        if(Table.debugText)System.out.println("******* UI UPDATE COMPLETE *******");
     }
 }
