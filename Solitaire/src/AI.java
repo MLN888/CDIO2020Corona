@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class AI {
 
     private boolean fundetValg = false;                         // Flag used in selecting move
@@ -23,13 +24,13 @@ public class AI {
 
         
            for(int i=0; i<Table.unseen.length;i++){             // Copies unseen cards into unseenForOpenCV
-                Table.unseenForOpenCV[i] = Table.unseen[i];
+                Table.unseenForOpenCV[i] = Table.unseen[i];     // OpenCV needs unseen card information BEFORE AI flips unseen cards
            }
         
         if (legalMoves.isEmpty()) {                     // Check if there are no moves left. IF not, a number of things may happen:
 
             if (checkIfWon()) {                         // Check if win-condition is true (All unseen cards exposed)
-                System.out.println("Du har vundet! KABALEN GÅR OP!");
+                System.out.println("Du har vundet! KABALEN ER GÅET OP!");
                 Table.gameOn = false;
                 return;
             }
@@ -39,28 +40,12 @@ public class AI {
                 Table.gameOn = false;
                 return;
             }
-
-            if (Table.cardsLeftInDrawPile == 0) {        // If draw pile is empty, but player may still shuffle
-                System.out.println("Ikke flere træk! Bland trækbunken og vend et nyt kort");
-                Table.shuffles--;                       // Draw pile is shuffled. Deduct one from allowed shuffles
-                Table.position.get(11).clear();         // Empty draw pile
-                Table.position.get(11).add("XX");       // Add an XX to indicate empty
-                Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
-                Table.cardsLeftInDrawPile = 24 - Table.cardsRemovedFromDrawPile;       // Reinitialize drawpile to original amount (24) minus cards removed
-                if (Table.debugText) {
-                    System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
-                }
-                promptUser();
-                return;
-            }
-
+            
             // If none of the above statements were true, then the player must simply draw a new card from the drawpile:
             System.out.println("Du skal vende et nyt kort fra trækbunken!");
+            checkNeedToShuffle();
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
-            if (Table.debugText) {
-                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
-            }
             promptUser();
             return;
         }
@@ -69,24 +54,23 @@ public class AI {
 
 
         if (selectedMove.getType() == 1) {              // If move is type 1: Move top card from column or drawpile to a foundation
-            Table.columnToColumn = 0;      // Reset counter
+            Table.columnToColumn = 0;      // Reset counter that limits amount of column-to-column moves in a row
             System.out.println("Du kan flytte et kort til en byggebunke!");
             if (selectedMove.getFromPosition() == 11) {         // If card comes from draw pile
                 System.out.println("Flyt " + selectedMove.getPlainText() + " fra trækbunken til en byggebunke.");
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
+                
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
+                    
                     Table.cardsLeftInDrawPile--;
                     Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
-                }
-                if (Table.debugText) {
-                    System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
             } else {
                 System.out.println("Flyt " + selectedMove.getPlainText() + " fra søjle " + (selectedMove.getFromPosition() + 1) + " til en byggebunke.");
             }
             int sizeColumn = Table.position.get(selectedMove.getFromPosition()).size();             // Get size of column that the card is moved from
             Table.position.get(selectedMove.getFromPosition()).remove(sizeColumn - 1);       // Remove card from Table
-
+            checkNeedToShuffle();
             if (Table.position.get(selectedMove.getFromPosition()).size() == 1 && Table.unseen[selectedMove.getFromPosition()] > 0) { // If column now empty
                 Table.unseen[selectedMove.getFromPosition()]--; // Remove an unseen card from column, if any unseen cards remain.
             }
@@ -107,13 +91,13 @@ public class AI {
                 Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());           // Add king to the empty spot
                 Table.justMoved = selectedMove.getCard();                                               // Remember last moved card
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
+                
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player..
+                    checkNeedToShuffle();
                     Table.cardsLeftInDrawPile--;                // .. so unturned cards in draw pile is reduced by one
                     Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
                 }
-                if (Table.debugText) {
-                    System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
-                }
+                
                 promptUser();
                 return;
             }
@@ -184,26 +168,24 @@ public class AI {
             int sizeDrawPile = Table.position.get(selectedMove.getFromPosition()).size();              // Get size of column or drawpile, from which the card is moved
             Table.position.get(selectedMove.getFromPosition()).remove(sizeDrawPile - 1);         // Remove card from Table
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());       // Add card to target column
+            
             if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
+                checkNeedToShuffle();
                 Table.cardsLeftInDrawPile--;
                 Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             }
-            if (Table.debugText) {
-                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
-            }
+           
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
             promptUser();
             return;
         }
 
-        if (selectedMove.getType() == 5) {
+        if (selectedMove.getType() == 5) {      // Type 5: When AI force game engine to draw a new card even if other moves exist
             System.out.println("Du skal vende et nyt kort fra trækbunken!");
             if(Table.debugText) System.out.println("Type 5 move!");
+            checkNeedToShuffle();
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
-            if (Table.debugText) {
-                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
-            }
             promptUser();
             return;
         }
@@ -232,6 +214,20 @@ public class AI {
         return true;                        // But if all unseen cards have been exposed, the game is solved.
     }
 
+    private void checkNeedToShuffle() {     // We check if draw pile has no unturned cards left
+        if (Table.cardsLeftInDrawPile <= 0) {        // If draw pile is empty.
+            System.out.println("Ikke flere kort i trækbunken! Bland trækbunken og vend et nyt kort.");
+            Table.shuffles--;                       // Draw pile is shuffled. Deduct one from allowed shuffles
+            Table.position.get(11).clear();         // Empty draw pile
+            Table.position.get(11).add("XX");       // Add an XX to indicate empty
+            Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
+            Table.cardsLeftInDrawPile = 24 - Table.cardsRemovedFromDrawPile;       // Reinitialize drawpile to original amount (24) minus cards removed
+        }
+        if (Table.debugText) {
+            System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
+        }
+    }
+
     private Move pickBestMove(ArrayList<Move> legalMoves) {
 
 
@@ -254,17 +250,24 @@ public class AI {
                 return currentChosen;
             }
 
-            currentChosen = checkForFriKortTraek(legalMoves, i, currentChosen); //Funktion der finder træk der vender usete kort
+            currentChosen = checkForFriKortTraek(legalMoves, i, currentChosen); //Metode der finder træk der vender usete kort
             if(fundetValg){
                 fundetValg = false;
                 if(Table.debugText) System.out.println("Priority move: Moving card(s) to expose unseen card");
                 return currentChosen;
             }
 
-            currentChosen = checkForTraekKings(legalMoves, i, currentChosen);   //Funktion der tager konge fra trækbunke og ligger på en fri plads
+            currentChosen = checkForTraekKings(legalMoves, i, currentChosen);   //Metode der tager konge fra trækbunke og ligger på en fri plads
             if (fundetValg) {
                 fundetValg = false;
                 if(Table.debugText) System.out.println("Priority move: Moving king to empty column");
+                return currentChosen;
+            }
+
+            currentChosen = checkForExposeEmptyColumn(legalMoves, i, currentChosen);   //Metode der tager undersøger om vi skal lave en tom plads
+            if (fundetValg) {
+                fundetValg = false;
+                if(Table.debugText) System.out.println("Priority move: Exposing empty spot to make room for king");
                 return currentChosen;
             }
         }
@@ -282,20 +285,20 @@ public class AI {
                 counter = counter + 1;                  // Så tæller vi counteren 1 op
             }
             if(counter == legalMoves.size()){           // Hvis alle træk har været type 1
-                if(Table.debugText) System.out.println("Priority: No shuffels, no cards in drawpile, so we accept type 1");
+                if(Table.debugText) System.out.println("Priority: No shuffles, no cards in drawpile, so we accept type 1");
                 return legalMoves.get(0);               // Så vælger vi gerne type 1
             }
         }
         
         for (int i = 0; i < legalMoves.size(); i++) {   // Vi itererer lovlige træk
-            if(legalMoves.get(i).getType() != 1  || legalMoves.get(i).getType() != 3 ){       // Det første træk som IKKE er type 1 eller 3...
+            if(legalMoves.get(i).getType() != 1  && legalMoves.get(i).getType() != 3 ){       // Det første træk som IKKE er type 1 eller 3...
                 currentChosen = legalMoves.get(i);      // ... vælger vi at bruge.
                 if(Table.debugText) System.out.println("Picking first move that is NOT type 1 or type 3");
                 return currentChosen;
             }
         }
 
-        if (legalMoves.get(0).getType()==3){            // Attempt to fix problem where AI moves a card from column to column repeatedly
+        if (legalMoves.get(0).getType()==3){            // Fix problem where AI moves a card from column to column repeatedly
             legalMoves.get(0).setType(5);
             if(Table.debugText) System.out.println("Type 3 afvist for at undgå dumme søjle-til-søjle. Træk kort i stedet");
             return legalMoves.get(0);
@@ -311,7 +314,7 @@ public class AI {
 
 
 
-    //Funktion der finder et es eller en 2'er der kan ligges i en byggebunke
+    //Metode der finder et es eller en 2'er der kan ligges i en byggebunke
     private Move checkForEs(ArrayList<Move> legalMoves, int i, Move currentChosen) {
         if (legalMoves.get(i).getType() == 1 && (legalMoves.get(i).getCard().startsWith("A") || legalMoves.get(i).getCard().startsWith("2"))) {
             currentChosen = legalMoves.get(i);
@@ -321,7 +324,7 @@ public class AI {
         return legalMoves.get(0);
     }
 
-    // Funktion der finder konger fra søjler med unseen kort.
+    // Metode der finder konger fra søjler med unseen kort.
     private Move checkForColumnKings(ArrayList<Move> legalMoves, int i, Move currentChosen){
         if (legalMoves.get(i).getType() == 2) {
             if (Table.unseen[legalMoves.get(i).getFromPosition()] > 0 && legalMoves.get(i).getCut() == 1) {
@@ -333,7 +336,7 @@ public class AI {
         return legalMoves.get(0);
     }
 
-    //Funktion der traeker konge fra traekbunke og ligger på en fri plads
+    //Metode der traeker konge fra traekbunke og ligger på en fri plads
     private Move checkForTraekKings(ArrayList<Move> legalMoves, int i, Move currentChosen) {
         if (legalMoves.get(i).getFromPosition() == 11 && legalMoves.get(i).getCard().startsWith("K")) {
             fundetValg = true;
@@ -349,5 +352,34 @@ public class AI {
             return currentChosen;
         }
         return legalMoves.get(0);
+    }
+
+    private Move checkForExposeEmptyColumn(ArrayList<Move> legalMoves, int i, Move currentChosen){
+        //If we have type 3 move && we are looking to move cut 1 && no unseen cards && kings available elsewhere:
+        if(legalMoves.get(i).getCut()==1 && legalMoves.get(i).getType()==3 && Table.unseen[legalMoves.get(i).getFromPosition()]<1 && kingsAvailable()){
+            currentChosen = legalMoves.get(i);
+            fundetValg = true;
+            return currentChosen;
+        }
+        return legalMoves.get(0);
+    }
+
+    // Method that checks if a King is available somewhere
+    private boolean kingsAvailable(){
+        for (int i = 0; i < 7; i++) {
+            System.out.println("Starts with K: "+ Table.position.get(i).get(1).startsWith("K"));
+            System.out.println("unseen in column "+i+": "+ Table.unseen[i]+" (" + (Table.unseen[i]>0) + ")");
+            if(Table.position.get(i).get(1).startsWith("K") && Table.unseen[i]>0){ //
+                return true;
+            }
+        }
+
+        int sizeOfDrawpile = Table.position.get(11).size();
+        System.out.println("King in top of drawpile: "+Table.position.get(11).get(sizeOfDrawpile-1).startsWith("K"));
+        if (Table.position.get(11).get(sizeOfDrawpile-1).startsWith("K")){
+            return true;
+        }
+
+        return false;
     }
 }

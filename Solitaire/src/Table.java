@@ -24,7 +24,7 @@ public class Table {
     public static boolean newDrawPileCard = false;  // Flag to decide if file to OpenCV gets a "UU" in draw pile card
     public static String justMoved = "XX";                                  // Track last move to avoid moving same card two times in a row
     public static int columnToColumn = 0;                               // Track number of column moves to avoid looping
-    public static final int MAX_COLUMN_TO_COLUMN = 2;
+    public static final int MAX_COLUMN_TO_COLUMN = 20;
     // Maximum allowed column-to-column moves before game is forced to try another type of move
 
     // Constructor. It is private, so the Table class can only be instantiated from inside this class.
