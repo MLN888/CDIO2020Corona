@@ -45,7 +45,8 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-                promptUser(12,0,0);
+                while(!UI.inputMade) UI.sleep(20);
+                UI.inputMade = false;
                 UI.resetDeck();
                 return;
             }
@@ -135,7 +136,7 @@ public class AI {
                 }
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
-            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + Table.unseen[selectedMove.getFromPosition()], selectedMove.getToPosition() + 1);
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + Table.unseen[selectedMove.getFromPosition()] - 1, selectedMove.getToPosition() + 1);
             return;
         }
 
@@ -144,6 +145,7 @@ public class AI {
             System.out.println("Du kan flytte kort fra søjle til søjle!");
             System.out.println("Flyt " + selectedMove.getPlainText() + " fra søjle " + (selectedMove.getFromPosition() + 1) + " til søjle " + (selectedMove.getToPosition() + 1) + ".");
             int sizeColumnFrom = Table.position.get(selectedMove.getFromPosition()).size();         // Get size of column that the card(s) is moved from
+            int unseen = Table.unseen[selectedMove.getFromPosition()];
 
             // Add the card group to target column
             for (int i = selectedMove.getCut(); i < sizeColumnFrom; i++) {                          // Iterate subgroup of cards to be moved
@@ -167,7 +169,12 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
             if (Table.debugText) System.out.println("Max column-to-column counter: " + Table.columnToColumn);
-            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + Table.unseen[selectedMove.getFromPosition()], selectedMove.getToPosition() + 1);
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            if(Table.position.get(selectedMove.getFromPosition()).size() == unseen)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = selectedMove.getFromPosition();
+            }
             return;
         }
 

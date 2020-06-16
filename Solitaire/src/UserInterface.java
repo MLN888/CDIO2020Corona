@@ -161,7 +161,7 @@ public class UserInterface implements ActionListener{
 
     private void setCards() {
         ArrayList<UICard> deckTemp = new ArrayList<UICard>();
-        for(int i = 0; i < 24; i++)
+        for(int i = 0; i < 23; i++)
         {
             deckTemp.add(new UICard(1050, 20,i+1 , ImgPath));
         }
@@ -192,7 +192,7 @@ public class UserInterface implements ActionListener{
     private void displayCards(ArrayList<ArrayList<String>> a)
     {
         System.out.println(a);
-        for(int i = 0; i < 24; i++)
+        for(int i = 0; i < 23; i++)
         {
             UIPanel.add(stackList.get(0).get(i).getLabel(),new Integer(stackList.get(0).get(i).displayDepth*100));
         }
@@ -217,7 +217,6 @@ public class UserInterface implements ActionListener{
 
     public void moveSug(int startIndex,int startReach,int destIndex,int steps)
     {
-        System.out.println("here: SI: "+ startIndex +" SR: "+startReach+" DI: "+destIndex);
         //start x and y from input parameter
         int startX = stackList.get(startIndex).get(startReach).posX;
         int startY = stackList.get(startIndex).get(startReach).posY;
@@ -451,7 +450,9 @@ public class UserInterface implements ActionListener{
                 String holder = "";
                 holder = st.nextToken();                                //read next card token
                 builder.add(suitInterpreter(holder.charAt(1)));         //get suit
-                builder.add(String.valueOf(holder.charAt(0)));          //get rank
+                String S = String.valueOf(holder.charAt(0));
+                if(S.equals("0"))S = "10";
+                builder.add(S);          //get rank
                 cards.add(builder);
 
                 if(i == 0)for(int a = 0; a < 4; a++)st.nextToken();     //if this is the first token read. skip next 4
@@ -492,7 +493,7 @@ public class UserInterface implements ActionListener{
     }
 
 
-    private void sleep(int s)
+    public void sleep(int s)
     {
         try
         {
