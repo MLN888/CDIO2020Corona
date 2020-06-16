@@ -177,18 +177,21 @@ public class UserInterface implements ActionListener{
             stackList.add(stackTemp);
         }
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 4; i++)
         {
             ArrayList<UICard> solveTemp = new ArrayList<UICard>();
             stackList.add(solveTemp);
         }
-
+        ArrayList<UICard> drawTemp = new ArrayList<UICard>();
+        drawTemp.add(new UICard(900,20,1,ImgPath));
+        stackList.add(drawTemp);
 
     }
 
 
     private void displayCards(ArrayList<ArrayList<String>> a)
     {
+        System.out.println(a);
         for(int i = 0; i < 24; i++)
         {
             UIPanel.add(stackList.get(0).get(i).getLabel(),new Integer(stackList.get(0).get(i).displayDepth*100));
@@ -203,14 +206,18 @@ public class UserInterface implements ActionListener{
                 if(fancyOrNah)sleep(50);
             }
             if(fancyOrNah)sleep(100);
-            stackList.get(i).get(u-1).doAFlip(a.get(i-1).get(0),a.get(i-1).get(1),ImgPath);
-
+            stackList.get(i).get(u-1).doAFlip(a.get(i).get(0),a.get(i).get(1),ImgPath);
+        
         }
+        UIPanel.add(stackList.get(12).get(0).getLabel(), new Integer(stackList.get(12).get(0).displayDepth*100));
+        if(fancyOrNah)sleep(100);
+        stackList.get(12).get(0).doAFlip(a.get(0).get(0),a.get(0).get(1),ImgPath);
+
     }
 
     public void moveSug(int startIndex,int startReach,int destIndex,int steps)
     {
-        System.out.println("here: "+ startIndex +" "+ startReach +" "+ destIndex);
+        System.out.println("here: SI: "+ startIndex +" SR: "+startReach+" DI: "+destIndex);
         //start x and y from input parameter
         int startX = stackList.get(startIndex).get(startReach).posX;
         int startY = stackList.get(startIndex).get(startReach).posY;
@@ -432,19 +439,22 @@ public class UserInterface implements ActionListener{
             System.out.println("UI read fail! prociding with caution");
         }
 
+        
         //if everything whent fine
         if(!input.equals(""))
         {
-            StringTokenizer st = new StringTokenizer(input,",");
-            for(int i = 0; i < 5; i++)st.nextToken();
-            for(int i = 0; i < 7; i++)
+            StringTokenizer st = new StringTokenizer(input,",");  //StringTokenizer init, split at ","
+            for(int i = 0; i <= 7; i++)
             {
                 if(!st.hasMoreTokens()) System.out.println("err: to few tokens to fill all table positions");
-                String holder = st.nextToken();
                 ArrayList<String> builder = new ArrayList<String>();
-                builder.add(suitInterpreter(holder.charAt(1)));
-                builder.add(String.valueOf(holder.charAt(0)));
+                String holder = "";
+                holder = st.nextToken();                                //read next card token
+                builder.add(suitInterpreter(holder.charAt(1)));         //get suit
+                builder.add(String.valueOf(holder.charAt(0)));          //get rank
                 cards.add(builder);
+
+                if(i == 0)for(int a = 0; a < 4; a++)st.nextToken();     //if this is the first token read. skip next 4
             }
             if(st.hasMoreTokens()) System.out.println("err: tokens not exausted. too many tokens");
             System.out.println("UI reading succes!");

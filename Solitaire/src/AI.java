@@ -109,7 +109,7 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-                promptUser(12, selectedMove.getCut() - 2, selectedMove.getToPosition() + 1);
+                promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
                 return;
             }
 
@@ -185,7 +185,7 @@ public class AI {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
             }
             Table.justMoved = selectedMove.getCard();    // Remember last moved card
-            promptUser(12, selectedMove.getCut() - 2, selectedMove.getToPosition() + 1);
+            promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
             return;
         }
 
