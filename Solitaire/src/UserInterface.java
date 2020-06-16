@@ -402,6 +402,7 @@ public class UserInterface implements ActionListener{
             stackList.get(12).get(i).getLabel().setIcon(new ImageIcon(ImgPath+"\\card_back.png"));
             stackList.get(12).get(i).move(1050, 20);
             temp.add(stackList.get(12).get(i));
+            stackList.get(12).remove(i);
         }
 
         stackList.set(0,temp);
