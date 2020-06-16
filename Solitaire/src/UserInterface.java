@@ -114,7 +114,7 @@ public class UserInterface implements ActionListener{
 
     //standerd spacing parameters for generel use.
     //are private because i'm scared of Jan.
-    private int std_stack_card_offset = 10;
+    private int std_stack_card_offset = 20;
     private int std_stack_delta = 167;
 
     private boolean fancyOrNah = false; //exclude or include some animations
@@ -274,28 +274,23 @@ public class UserInterface implements ActionListener{
         int vectorX = endX-startX;
         int vectorY = endY-startY;
 
-        int Steps = 20;
+       // int Steps = 20;
+
+
+        int vectorLen = (int)Math.sqrt(vectorX*vectorX + vectorY*vectorY);
+        int Steps = vectorLen / 15;
 
         //devide into steps
         int stepX = vectorX / Steps;
         int stepY = vectorY / Steps;
 
-       /* if(vectorX > vectorY)
-        {
-            stepX = vectorX / vectorY;
-            stepY = vectorY;
-        }
-        else
-        {
-            stepX = vectorX;
-            stepY = vectorY / vectorX;
-        }*/
 
+        System.out.println(stepY);
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
-        for(int i = 1; i <= Steps; i++)
+        for(int i = 1; i <= Steps + vectorLen / 200; i++)
         {
             int reach = startReach;
             int startGap = 0;
