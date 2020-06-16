@@ -450,9 +450,7 @@ public class UserInterface implements ActionListener{
                 String holder = "";
                 holder = st.nextToken();                                //read next card token
                 builder.add(suitInterpreter(holder.charAt(1)));         //get suit
-                String S = String.valueOf(holder.charAt(0));
-                if(S.equals("0"))S = "10";
-                builder.add(S);          //get rank
+                builder.add(String.valueOf(holder.charAt(0)));          //get rank
                 cards.add(builder);
 
                 if(i == 0)for(int a = 0; a < 4; a++)st.nextToken();     //if this is the first token read. skip next 4
