@@ -29,7 +29,7 @@ RANK_HEIGHT = 105 #125
 SUIT_WIDTH = 70 #70
 SUIT_HEIGHT = 93 #100
 
-RANK_DIFF_MAX = 2200 #2000
+RANK_DIFF_MAX = 2000 #2000
 SUIT_DIFF_MAX = 1000 #700
 
 CARD_MAX_AREA = 120000
@@ -315,6 +315,7 @@ def draw_results(image, qCard):
 
     image = cv2.line(image, (0,800), (1920,800), (0, 0, 153), 3) 
     image = cv2.line(image, (550,350), (550,0), (153, 0, 0), 3) 
+    image = cv2.line(image, (0,350), (550,350), (153, 0, 0), 3) 
 
     return image
 

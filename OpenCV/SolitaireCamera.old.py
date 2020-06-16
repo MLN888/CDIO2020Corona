@@ -14,8 +14,6 @@ import os
 import Cards
 import csv
 import wx
-import tkinter as tk
-from tkinter import simpledialog
 
 class bcolors:
     HEADER = '\033[95m'
@@ -33,53 +31,50 @@ unknowns = True
 
 ###################################
 
-def checkUnknownsWithoutRef(piles):
-
-    for h in range(0, len(piles)):
-
-        if piles[h][0] == 'U' or piles[h][1] == 'U' or piles[h] == 'UU' :
-            piles[h] = userCardInput("pile " + str(h))
-
-            #if h == 0:
-                #print(bcolors.WARNING + "UNKNOWN CARD AT DRAWPILE. Prompting user for input: " + bcolors.OKBLUE + piles[h])
-            #else:
-                #print(bcolors.WARNING + "UNKNOWN CARD AT PILE " + str(h) + ". Prompting user for input: " + bcolors.OKBLUE + piles[h])
-    
-    return piles
-
-def userCardInputOLD(location):
+def correctUnknownDrawPile():
 
     app = wx.App()
     frame = wx.Frame(None, -1, 'win.py')
     frame.SetSize(0,0,200,50)
+
     # Create text input
-    dlg = wx.TextEntryDialog(frame, 'Type value of card at ' + location + ':', 'Unable to detect card at pillar ' + location)
+    dlg = wx.TextEntryDialog(frame, 'Type value of card at drawpile:', 'Unable to detect card at drawpile')
     #dlg.SetValue("Default")
     if dlg.ShowModal() == wx.ID_OK:
         #print('You entered: %s\n' % dlg.GetValue())
-        return(dlg.GetValue())
+        drawPile = dlg.GetValue()
+        #dlg.Destroy()
+    
     #dlg.Destroy()
+    return drawPile
+
+def correctUnknowns(cardArray):
+
+    l = len(cardArray)
+
+    for i in range(0,l):
+        if cardArray[i][0] == 'U' or cardArray[i][1] == 'U' or cardArray[i] == 'UU': 
+            
+            app = wx.App()
+            frame = wx.Frame(None, -1, 'win.py')
+            frame.SetSize(0,0,200,50)
+
+            # Create text input
+            dlg = wx.TextEntryDialog(frame, 'Type value of card at pillar ' + str(i+1) + ':', 'Unable to detect card at pillar ' + str(i+1))
+            #dlg.SetValue("Default")
+            if dlg.ShowModal() == wx.ID_OK:
+                #print('You entered: %s\n' % dlg.GetValue())
+                cardArray[i] = dlg.GetValue()
+            dlg.Destroy()
     
     
-    return 'UU'
-
-def userCardInput(location):
-    ROOT = tk.Tk()
-
-    ROOT.withdraw()
-    # the input dialog
-    USER_INP = simpledialog.askstring(title=('Unable to detect card at pillar ' + location),
-                                  prompt=('Type value of card at ' + location + ':'))
-    return USER_INP
+    return cardArray
 
 def compareDecks(camera, ref):
 
-    j = 1
-    k = 1
-    outputPiles = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-
-    outputPiles[0] = checkDrawPile(camera[0], ref[0])
-
+    outputPiles = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+    j = 0
+    k = 0
     for i in range(1,8):
         if camera[j] == ref[i] and camera[j] != 'UU' and ref[i] != 'UU':
             print(bcolors.OKGREEN + "MATCH FOUND at " + str(i) + ". " + ref[i])
@@ -88,21 +83,16 @@ def compareDecks(camera, ref):
 
         if (camera[j][0] == 'U' or camera[j][1] == 'U') and ref[i] == 'UU':
 
-            if unknowns == False:
-                outputPiles[k] = userCardInput("pile " + str(i))
-                print(bcolors.WARNING + "UNKNOWN CARD AT PILE " + str(i) + ". Prompting user for input: " + bcolors.OKBLUE + outputPiles[k])
-            
-            else:
-                if camera[j] == 'UU':
-                    print(bcolors.FAIL + "UNKNOWN CARD FOUND at " + str(i) + ". Please reseat card and rescan")
+            if camera[j] == 'UU':
+                print(bcolors.FAIL + "UNKNOWN CARD FOUND at " + str(i) + ". Pleas reseat card and rescan")
 
-                elif camera[j][0] == 'U':
-                    print(bcolors.FAIL + "UNKNOWN RANK at pile " + str(i) + ". Please reseat card and rescan")
+            elif camera[j][0] == 'U':
+                print(bcolors.FAIL + "UNKNOWN RANK at pile " + str(i) + ". Pleas reseat card and rescan")
 
-                elif camera[j][1] == 'U':
-                    print(bcolors.FAIL + "UNKNOWN SUIT at pile " + str(i) + ". Please reseat card and rescan")
+            elif camera[j][1] == 'U':
+                print(bcolors.FAIL + "UNKNOWN SUIT at pile " + str(i) + ". Pleas reseat card and rescan")
  
-                outputPiles[k] = camera[j]
+            outputPiles[k] = camera[j]
         
         if (camera[j][0] != 'U' and camera[j][1] != 'U') and ref[i] == 'UU':
             print(bcolors.OKBLUE + "UNKNOWN CARD at " + str(i) + ". Grabbing card from camera: " + camera[j])
@@ -136,34 +126,24 @@ def checkDrawPile(drawPile, refCard):
         return refCard
 
     if (refCard == 'UU' or refCard == 'XX'):
-
-        if drawPile[0] == 'U' or drawPile[1] == 'U' and unknowns == False:
-            userInput = userCardInput('drawpile')
-            print(bcolors.WARNING + "UNKNOWN CARD AT DRAWPILE. Prompting user for input: " + bcolors.OKBLUE + userInput)
-            return userInput
-        else:
         
-            if drawPile[0] == 'U' and drawPile[1] == 'U':
-                 print(bcolors.FAIL + "UNKNOWN CARD AT DRAWPILE. Pleas reseat card and rescan")
+        if drawPile[0] == 'U' and drawPile[1] == 'U':
+             print(bcolors.FAIL + "UNKNOWN CARD AT DRAWPILE. Pleas reseat card and rescan")
 
-            elif drawPile[0] == 'U' and drawPile[1] != 'U':
-                print(bcolors.FAIL + "UNKNOWN SUIT AT DRAWPILE. Pleas reseat card and rescan")
+        elif drawPile[0] == 'U' and drawPile[1] != 'U':
+            print(bcolors.FAIL + "UNKNOWN SUIT AT DRAWPILE. Pleas reseat card and rescan")
 
-            elif drawPile[0] != 'U' and drawPile[1] == 'U':
-                print(bcolors.FAIL + "UNKNOWN RANK AT DRAWPILE. Pleas reseat card and rescan")
+        elif drawPile[0] != 'U' and drawPile[1] == 'U':
+            print(bcolors.FAIL + "UNKNOWN RANK AT DRAWPILE. Pleas reseat card and rescan")
 
-            elif drawPile[0] != 'U' and drawPile[1] != 'U':
-                print(bcolors.OKGREEN + "Drawpile identified, grabbing card from camera: " + drawPile[0] + drawPile[1])
-                return drawPile
+        elif drawPile[0] != 'U' and drawPile[1] != 'U':
+            print(bcolors.OKGREEN + "Drawpile identified, grabbing card from camera: " + drawPile[0] + drawPile[1])
+            return drawPile
 
-    #print(bcolors.DEFAULT)
+    print(bcolors.DEFAULT)
     return  drawPile[0] + drawPile[1]
+    
         
-def displayImage(image, x, y):
-    dim = (x, y)
-    image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-    cv2.imshow("Solitaire Camera",image)
-
 def fileReader():
     
     tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
@@ -178,12 +158,15 @@ def fileReader():
     f.close
     return tokens
 
+    
+
 def fileWriter(string):
     #f = open("Solitaire\src\pythonOutput.txt", "w")
     f = open("pythonOutput.txt", "w")
     f.write(string)
     f.close
     
+
 def translateRankToString(e):
 
     ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']
@@ -195,6 +178,7 @@ def translateRankToString(e):
             return letter[index]
         index += 1
     return 'U'
+
 
 def translateSuitToString(e):
 
@@ -211,26 +195,16 @@ def translateSuitToString(e):
 def getPos(e):
   return e.center[0]
 
+
 def GrabImage():
 
     ret, image = cap.read() #Used to clear buffer to grab fresh image
     ret, image = cap.read()
 
-    #image = cv2.imread('test.jpg')
+    #cv2.imwrite("test2.jpg", image)
 
-    return image
-
-def arrayToOutputString(array):
-
-    outputString = array[0] + ",UU,UU,UU,UU"
-
-    for h in range(1, len(array)):
-        outputString = outputString + (',' + array[h])
-    
-    return outputString
-
-
-def processImage(image):
+    #cv2.GaussianBlur(image,(5,5),0)
+    #cv2.Blur(image, (5,5))
 
     #Create the identity filter, but with the 1 shifted to the right!
     kernel = np.zeros( (9,9), np.float32)
@@ -242,11 +216,14 @@ def processImage(image):
     #Subtract the two:
     kernel = kernel - boxFilter
 
+
     #Note that we are subject to overflow and underflow here...but I believe that
     # filter2D clips top and bottom ranges on the output, plus you'd need a
     # very bright or very dark pixel surrounded by the opposite type.
 
     image = cv2.filter2D(image, -1, kernel)
+
+
 
     # Pre-process camera image (gray, blur, and threshold it)
     pre_proc = Cards.preprocess_image(image)
@@ -258,6 +235,7 @@ def processImage(image):
         # Initialize a new "cards" list to assign the card objects.
         # k indexes the newly made array of cards.
         cards = []
+        BuildPiles = []
         piles = []
 
         k = 0
@@ -277,7 +255,7 @@ def processImage(image):
                 cards[k].best_rank_match,cards[k].best_suit_match,cards[k].rank_diff,cards[k].suit_diff = Cards.match_card(cards[k],train_ranks,train_suits)
                 #print("Card:" + cards[k].best_rank_match + " " + cards[k].best_suit_match)
                 # Draw center point and match result on the image.
-                if (cards[k].center[0] < 550 and cards[k].center[1] < 350):
+                if (cards[k].center[0] < 550 and cards[k].center[1] < 550):
                     noDrawPile = False
                     drawPile = cards[k]
                     #print("Draw: " + cards[k].best_rank_match + " " + cards[k].best_suit_match)
@@ -290,48 +268,84 @@ def processImage(image):
                 image = Cards.draw_results(image, cards[k])
                 k = k + 1
         
-
-        displayImage(image,1280,720)
+        dim = (1280, 720)
+        image2 = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+        cv2.imshow("Solitaire Camera",image2)
 
         print(bcolors.HEADER + '#########################################' + bcolors.DEFAULT)
 
-        cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM']
+        cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM']
 
+        
+        #stringBuilder[0] = (translateRankToString(drawPile) + translateSuitToString(drawPile))
 
         pilesNum = len(piles)
         piles.sort(key=getPos)
 
         for h in range(pilesNum):
+            #print("Pos: " + str(h) + " " + piles[h].best_rank_match + " " + piles[h].best_suit_match)
+            #stringBuilder = stringBuilder + (',' + translateRankToString(piles[h]) + translateSuitToString(piles[h]))
+            #print(translateRankToString(piles[h]) + translateSuitToString(piles[h]))
 
             cameraArray[h] = translateRankToString(piles[h]) + translateSuitToString(piles[h])
 
-        if noDrawPile == False:
-            cameraArray.insert(0, translateRankToString(drawPile) + translateSuitToString(drawPile))
-        else:
-            cameraArray.insert(0, 'UU')
-        
-        
         if useRef == True:  #### Ref enabled
-            print("ref")
 
             refArray = fileReader()
 
-            stringBuilder = compareDecks(cameraArray,refArray)
+            if noDrawPile == False:
+                
+                if unknowns == True or translateRankToString(drawPile) != 'U' and translateSuitToString(drawPile) != 'U':
+                    outputString = checkDrawPile(translateRankToString(drawPile) + translateSuitToString(drawPile),refArray[0])
+                
+                else:
+                    outputString = correctUnknownDrawPile()                
+                #outputString = outputString + ",UU,UU,UU,UU"
 
-
-
-        else:
-            print("no ref")
-
-            if unknowns == True:
-                stringBuilder = cameraArray
             else:
-                stringBuilder = checkUnknownsWithoutRef(cameraArray)
+
+                if refArray[0] != 'UU':
+                    print(bcolors.WARNING + "UNKNOWN TO IDENTIFY DRAWPILE CARD. Grabbing card from last known: " + bcolors.OKBLUE + refArray[0])
+                    outputString = refArray[0]     ###############################
+
+                else:
+                    print(bcolors.FAIL + "UNKNOWN TO IDENTIFY DRAWPILE CARD. PLEASE RESEAT OF FLIP OVER A NEW CARD.")
+                    
+                    if unknowns == True:
+                        outputString = 'UU'
+                    else:
+                        outputString = correctUnknowns('UU')
+
+            print(bcolors.DEFAULT)    
+            outputString = outputString + ",UU,UU,UU,UU"
+
+            tempArray = compareDecks(cameraArray, refArray)
 
 
+            stringBuilder = correctUnknowns(tempArray)
+
+            for h in range(0,7):
+                outputString = outputString + (',' + stringBuilder[h])
+
+        else:   ### Ref disabled
+
+            if noDrawPile == False:
+                outputString = translateRankToString(drawPile) + translateSuitToString(drawPile)
+                outputString = outputString + ",UU,UU,UU,UU"
+
+            else:
+                print(bcolors.FAIL + "UNKNOWN TO IDENTIFY DRAWPILE CARD. PLEASE RESEAT OF FLIP OVER A NEW CARD.")
+                print(bcolors.DEFAULT)
+                outputString = "UU"     ###############################
+                outputString = outputString + ",UU,UU,UU,UU"
+
+            for h in range(0,7):
+                stringBuilder[h] = cameraArray[h]
+
+            for h in range(0,7):
+                outputString = outputString + (',' + stringBuilder[h])
         
-        outputString = arrayToOutputString(stringBuilder)
         
         print("File to Java: " + str(outputString))
         fileWriter(outputString)
@@ -369,7 +383,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
 
 
-processImage(GrabImage())
+GrabImage()
 
 
 while True:
@@ -377,9 +391,9 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == ord(" "):
         print("Grabbing new frame")
-        processImage(GrabImage())
+        GrabImage()
 
-    if key == ord(chr(27).encode()):
+    if key == ord("æ"):
         cam_quit = 1 
         cv2.destroyAllWindows()
         quit()
