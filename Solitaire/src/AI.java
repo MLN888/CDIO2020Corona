@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class AI {
 
@@ -95,6 +94,7 @@ public class AI {
         }
 
         if (selectedMove.getType() == 2) {              // If selected move is type 2: Move king from draw pile or column to empty spot
+            int unseen = Table.unseen[selectedMove.getFromPosition()];
             Table.columnToColumn = 0;      // Reset counter
             System.out.println("Du kan flytte en konge til en ledig søjle!");
             if (selectedMove.getFromPosition() == 11) {         // If king comes from draw pile
@@ -136,7 +136,12 @@ public class AI {
                 }
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
-            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + Table.unseen[selectedMove.getFromPosition()] - 1, selectedMove.getToPosition() + 1);
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = selectedMove.getFromPosition();
+            }
             return;
         }
 
@@ -170,7 +175,7 @@ public class AI {
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
             if (Table.debugText) System.out.println("Max column-to-column counter: " + Table.columnToColumn);
             promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
-            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen)
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen && unseen != 0)
             {
                 UI.needFlip = true;
                 UI.flipIndex = selectedMove.getFromPosition();

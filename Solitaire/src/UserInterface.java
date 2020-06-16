@@ -8,12 +8,11 @@ author:       Phillip Eg Bomholtz
 created:      08-06-2020
 Last updated: 11-06-2020
 
-version: 0.4
+version: 1.0
 
 ----------------------------------------*/
 
 import javax.swing.*;
-import javax.swing.text.Position;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -225,10 +224,19 @@ public class UserInterface implements ActionListener{
         int endX = 0;
         int endY = 0;
         
-        if(destIndex < 7 && destIndex > 0)
+        if(destIndex <= 7 && destIndex > 0)
         {
-            endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-            endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            if(stackList.get(destIndex).size() != 0)
+            {
+                endX = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+                endY = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            }
+            else
+            {
+                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endY = 200;
+            }
+            
         }
         else if (destIndex == 8)
         {
@@ -328,10 +336,18 @@ public class UserInterface implements ActionListener{
         int endX = 0;
         int endY = 0;
         
-        if(destIndex < 7 && destIndex > 0)
+        if(destIndex <= 7 && destIndex > 0)
         {
-            endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-            endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            if(stackList.get(destIndex).size() != 0)
+            {
+                endX = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+                endY = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            }
+            else
+            {
+                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endY = 200;
+            } 
         }
         else if (destIndex == 8)
         {
@@ -390,6 +406,7 @@ public class UserInterface implements ActionListener{
             stackList.get(startIndex).remove(reach);
             reach--;
          }
+         failCheck();
     }
 
     public int getStackSizeAtIndex(int i){ return stackList.get(i).size();}
