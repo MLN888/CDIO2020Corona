@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.Math;
 
 
 public class UserInterface implements ActionListener{
@@ -214,7 +215,7 @@ public class UserInterface implements ActionListener{
 
     }
 
-    public void moveSug(int startIndex,int startReach,int destIndex,int steps)
+    public void moveSug(int startIndex,int startReach,int destIndex)
     {
         //start x and y from input parameter
         int startX = stackList.get(startIndex).get(startReach).posX;
@@ -273,15 +274,28 @@ public class UserInterface implements ActionListener{
         int vectorX = endX-startX;
         int vectorY = endY-startY;
 
+        int Steps = 20;
+
         //devide into steps
-        int stepX = vectorX / steps;
-        int stepY = vectorY / steps;
+        int stepX = vectorX / Steps;
+        int stepY = vectorY / Steps;
+
+       /* if(vectorX > vectorY)
+        {
+            stepX = vectorX / vectorY;
+            stepY = vectorY;
+        }
+        else
+        {
+            stepX = vectorX;
+            stepY = vectorY / vectorX;
+        }*/
 
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
-        for(int i = 1; i <= steps; i++)
+        for(int i = 1; i <= Steps; i++)
         {
             int reach = startReach;
             int startGap = 0;
@@ -292,7 +306,7 @@ public class UserInterface implements ActionListener{
                 UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
                 reach++;
             }
-            sleep(60);
+            sleep(30);
         }
 
         

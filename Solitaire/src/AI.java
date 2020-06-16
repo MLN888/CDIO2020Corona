@@ -227,7 +227,7 @@ public class AI {
         openCVCardFile.skrivTilOpenCV();
         if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
         while(!UI.inputMade){
-            UI.moveSug(startIndex, startReach, destIndex, 10);
+            UI.moveSug(startIndex, startReach, destIndex);
         }
         UI.makeMove(startIndex, startReach, destIndex);
         UI.inputMade = false;
