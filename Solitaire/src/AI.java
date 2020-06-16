@@ -66,6 +66,7 @@ public class AI {
 
 
         if (selectedMove.getType() == 1) {              // If move is type 1: Move top card from column or drawpile to a foundation
+            int unseen = Table.unseen[selectedMove.getFromPosition()];
             Table.columnToColumn = 0;      // Reset counter
             System.out.println("Du kan flytte et kort til en byggebunke!");
             if (selectedMove.getFromPosition() == 11) {         // If card comes from draw pile
@@ -89,7 +90,12 @@ public class AI {
 
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());          // Add card to foundation
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut(), selectedMove.getToPosition() + 1);
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen && unseen != 0)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = selectedMove.getFromPosition();
+            }
             return;
         }
 
