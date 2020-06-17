@@ -191,7 +191,6 @@ public class UserInterface implements ActionListener{
 
     private void displayCards(ArrayList<ArrayList<String>> a)
     {
-        System.out.println(a);
         for(int i = 0; i < 23; i++)
         {
             UIPanel.add(stackList.get(0).get(i).getLabel(),new Integer(stackList.get(0).get(i).displayDepth*100));
@@ -285,7 +284,6 @@ public class UserInterface implements ActionListener{
         int stepY = vectorY / Steps;
 
 
-        System.out.println(stepY);
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
