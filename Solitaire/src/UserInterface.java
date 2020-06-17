@@ -38,7 +38,6 @@ public class UserInterface implements ActionListener{
         public int displayDepth;  //the layer this card should be drawn on
         public String Rank;       //i.e. the number or J,Q and so on
         public String Suit;       //i.e. heart, spade and so on
-        public boolean flipped;
         private JLabel myLabel;   //the drawable component
     
         public UICard(int x, int y,int depth, String assetPath)
@@ -48,8 +47,6 @@ public class UserInterface implements ActionListener{
             this.posY = y;
 
             this.displayDepth = depth; //set depth
-
-            this.flipped = false;
 
             //init identity
             this.Rank = "UNDEFINED";
@@ -183,7 +180,7 @@ public class UserInterface implements ActionListener{
             stackList.add(solveTemp);
         }
         ArrayList<UICard> drawTemp = new ArrayList<UICard>();
-        drawTemp.add(new UICard(900,20,1,ImgPath));
+        drawTemp.add(new UICard(885,20,1,ImgPath));
         stackList.add(drawTemp);
 
     }
@@ -260,7 +257,7 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 12)
         {
-            endX = 900;
+            endX = 885;
             endY = 20;
         }
         else 
@@ -378,7 +375,7 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 12)
         {
-            endX = 900;
+            endX = 885;
             endY = 20;
         }
         else 
