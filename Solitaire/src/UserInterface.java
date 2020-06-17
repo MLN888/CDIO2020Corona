@@ -450,7 +450,7 @@ public class UserInterface implements ActionListener{
         System.out.println("UI device attempting fileread of tableFile");
 
         ArrayList<ArrayList<String>> cards = new ArrayList<ArrayList<String>>();
-        String Path = new File("Solitaire\\src\\tableFile").getAbsolutePath();
+        String Path = new File("pythonOutput.txt").getAbsolutePath();
 
         String input ="";
         try
