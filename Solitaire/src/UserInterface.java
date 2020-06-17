@@ -270,22 +270,36 @@ public class UserInterface implements ActionListener{
         int vectorX = endX-startX;
         int vectorY = endY-startY;
 
-       // int Steps = 20;
+        int Steps = vectorY;
+        int stepX = vectorX / vectorY;
+        int stepY = 1;
+        if(vectorY < 0) stepY = -1;
 
+        int remainder = vectorX % vectorY;
 
+        int xLen = vectorX;
+        int yLen = vectorY;
+
+        if(xLen < 0)xLen = xLen * -1;
+        if(yLen < 0)yLen = yLen * -1;
+
+        if(xLen < yLen)
+        {
+            stepX = 1;
+            if(vectorX < 0) stepX = -1;
+            stepY = vectorY / vectorX;
+            remainder = vectorY % vectorX;
+            Steps = vectorX;
+       }
+
+        if(Steps < 0) Steps = Steps * -1;
         int vectorLen = (int)Math.sqrt(vectorX*vectorX + vectorY*vectorY);
-        int Steps = vectorLen / 15;
-
-        //devide into steps
-        int stepX = vectorX / Steps;
-        int stepY = vectorY / Steps;
-
 
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
-        for(int i = 1; i <= Steps + vectorLen / 200; i++)
+        for(int i = 1; i <= Steps; i++)
         {
             int reach = startReach;
             int startGap = 0;
@@ -296,7 +310,7 @@ public class UserInterface implements ActionListener{
                 UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
                 reach++;
             }
-            sleep(30);
+            sleep(2000/Steps);
         }
 
         
