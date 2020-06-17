@@ -8,17 +8,22 @@ author:       Phillip Eg Bomholtz
 created:      08-06-2020
 Last updated: 11-06-2020
 
-version: 0.4
+version: 1.0
 
 ----------------------------------------*/
 
 import javax.swing.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.Math;
 
 
-public class UserInterface{
+public class UserInterface implements ActionListener{
 
 
     /*
@@ -93,6 +98,8 @@ public class UserInterface{
     public String ImgPath;                       //path to image assets
     JFrame UIFrame;                              //frame for the UI to be placed in
     JLayeredPane UIPanel;                        //the layerd panel of the UI that allows cards to be placed over one another
+    JButton myButt;
+    JLabel reshuf;
 
     /* 
     *  an important data structure to understand!
@@ -107,21 +114,25 @@ public class UserInterface{
 
     //standerd spacing parameters for generel use.
     //are private because i'm scared of Jan.
-    private int std_stack_card_offset = 10;
+    private int std_stack_card_offset = 20;
     private int std_stack_delta = 167;
 
-    boolean fancyOrNah = false;
+    private boolean fancyOrNah = false; //exclude or include some animations
+    private boolean readErr = false;  //if the init read has produced an error
+    public boolean inputMade = false;
+    public boolean needFlip = false;
 
-    boolean readErr = false;  //if the init read has produced an error
-
+    public int  flipIndex;
 
     public UserInterface(boolean fancyOrNah) {
         System.out.println("****Setting up user interface****");
-        this.ImgPath = new File("assets").getAbsolutePath();
-        this.UIFrame = new JFrame();
-        this.UIPanel = new JLayeredPane();
-        this.stackList = new ArrayList<ArrayList<UICard>>();
-        this.fancyOrNah = fancyOrNah;
+        this.ImgPath = new File("Solitaire\\src\\assets").getAbsolutePath();        //set a path to the assets folder
+        System.out.println(ImgPath);
+        this.UIFrame = new JFrame("Ya like jazz?");                 //setup the widown frame
+        this.UIPanel = new JLayeredPane();                          //setup the layerd panel for the frame
+        this.myButt = new JButton("I have done this!");
+        this.stackList = new ArrayList<ArrayList<UICard>>();        //set 2d struckture of cards of differens spots on the board
+        this.fancyOrNah = fancyOrNah;                               
 
         UIFrame.setSize(1823, 811); // dimensions equal to absolute background size
         UIFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // frame should exit on closing the window
@@ -129,10 +140,15 @@ public class UserInterface{
         // setting background
         JLabel j = new JLabel(new ImageIcon(ImgPath + "\\background.png"));
         j.setBounds(0, 0, 1823, 811);
-        UIPanel.add(j, new Integer(0)); 
+        UIPanel.add(j, new Integer(0)); //set background as first layer
 
-        //adding panel to frame and setting visible
+        //setup button
+        myButt.addActionListener(this);
+        myButt.setBounds(900,100,200,100);
+
+        //adding panel and button to frame and setting visible
         UIFrame.add(UIPanel);
+        UIPanel.add(myButt,new Integer(4000));
         UIFrame.setVisible(true);
         
         System.out.println("setting cards...");
@@ -145,7 +161,7 @@ public class UserInterface{
 
     private void setCards() {
         ArrayList<UICard> deckTemp = new ArrayList<UICard>();
-        for(int i = 0; i < 24; i++)
+        for(int i = 0; i < 23; i++)
         {
             deckTemp.add(new UICard(1050, 20,i+1 , ImgPath));
         }
@@ -161,19 +177,22 @@ public class UserInterface{
             stackList.add(stackTemp);
         }
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 4; i++)
         {
             ArrayList<UICard> solveTemp = new ArrayList<UICard>();
             stackList.add(solveTemp);
         }
-
+        ArrayList<UICard> drawTemp = new ArrayList<UICard>();
+        drawTemp.add(new UICard(900,20,1,ImgPath));
+        stackList.add(drawTemp);
 
     }
 
 
     private void displayCards(ArrayList<ArrayList<String>> a)
     {
-        for(int i = 0; i < 24; i++)
+        System.out.println(a);
+        for(int i = 0; i < 23; i++)
         {
             UIPanel.add(stackList.get(0).get(i).getLabel(),new Integer(stackList.get(0).get(i).displayDepth*100));
         }
@@ -187,12 +206,16 @@ public class UserInterface{
                 if(fancyOrNah)sleep(50);
             }
             if(fancyOrNah)sleep(100);
-            stackList.get(i).get(u-1).doAFlip(a.get(i-1).get(0),a.get(i-1).get(1),ImgPath);
-
+            stackList.get(i).get(u-1).doAFlip(a.get(i).get(0),a.get(i).get(1),ImgPath);
+        
         }
+        UIPanel.add(stackList.get(12).get(0).getLabel(), new Integer(stackList.get(12).get(0).displayDepth*100));
+        if(fancyOrNah)sleep(100);
+        stackList.get(12).get(0).doAFlip(a.get(0).get(0),a.get(0).get(1),ImgPath);
+
     }
 
-    public void moveSug(int startIndex,int startReach,int destIndex,int steps)
+    public void moveSug(int startIndex,int startReach,int destIndex)
     {
         //start x and y from input parameter
         int startX = stackList.get(startIndex).get(startReach).posX;
@@ -202,10 +225,19 @@ public class UserInterface{
         int endX = 0;
         int endY = 0;
         
-        if(destIndex < 7 && destIndex > 0)
+        if(destIndex <= 7 && destIndex > 0)
         {
-            endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-            endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            if(stackList.get(destIndex).size() != 0)
+            {
+                endX = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+                endY = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            }
+            else
+            {
+                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endY = 200;
+            }
+            
         }
         else if (destIndex == 8)
         {
@@ -242,15 +274,23 @@ public class UserInterface{
         int vectorX = endX-startX;
         int vectorY = endY-startY;
 
-        //devide into steps
-        int stepX = vectorX / steps;
-        int stepY = vectorY / steps;
+       // int Steps = 20;
 
+
+        int vectorLen = (int)Math.sqrt(vectorX*vectorX + vectorY*vectorY);
+        int Steps = vectorLen / 15;
+
+        //devide into steps
+        int stepX = vectorX / Steps;
+        int stepY = vectorY / Steps;
+
+
+        System.out.println(stepY);
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
-        for(int i = 1; i <= steps; i++)
+        for(int i = 1; i <= Steps + vectorLen / 200; i++)
         {
             int reach = startReach;
             int startGap = 0;
@@ -261,7 +301,7 @@ public class UserInterface{
                 UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
                 reach++;
             }
-            sleep(60);
+            sleep(30);
         }
 
         
@@ -290,8 +330,9 @@ public class UserInterface{
         }
     }
 
-    public void stackEndFlip(int index, char s, char r)
+    private void stackEndFlip(int i, char s, char r)
     {
+        int index = indexConverter(i);
         String suit = suitInterpreter(s);
         String rank = String.valueOf(r);
         stackList.get(index).get(stackList.get(index).size()-1).doAFlip(suit, rank, ImgPath);
@@ -304,10 +345,18 @@ public class UserInterface{
         int endX = 0;
         int endY = 0;
         
-        if(destIndex < 7 && destIndex > 0)
+        if(destIndex <= 7 && destIndex > 0)
         {
-            endX =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
-            endY =stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            if(stackList.get(destIndex).size() != 0)
+            {
+                endX = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posX;
+                endY = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).posY + std_stack_card_offset;    
+            }
+            else
+            {
+                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endY = 200;
+            } 
         }
         else if (destIndex == 8)
         {
@@ -366,6 +415,7 @@ public class UserInterface{
             stackList.get(startIndex).remove(reach);
             reach--;
          }
+         failCheck();
     }
 
     public int getStackSizeAtIndex(int i){ return stackList.get(i).size();}
@@ -378,9 +428,21 @@ public class UserInterface{
             stackList.get(12).get(i).getLabel().setIcon(new ImageIcon(ImgPath+"\\card_back.png"));
             stackList.get(12).get(i).move(1050, 20);
             temp.add(stackList.get(12).get(i));
+            stackList.get(12).remove(i);
         }
 
         stackList.set(0,temp);
+        UIPanel.remove(reshuf);
+    }
+
+    public void reshuffleSug()
+    {
+        reshuf = new JLabel("reshuffle deck");
+        reshuf.setBounds(1600,75,110,100);
+        reshuf.setForeground(Color.BLACK);
+        reshuf.setBackground(Color.WHITE);
+        reshuf.setOpaque(true);
+        UIPanel.add(reshuf,new Integer(5000));
     }
 
     private ArrayList<ArrayList<String>> initListRead()
@@ -388,7 +450,7 @@ public class UserInterface{
         System.out.println("UI device attempting fileread of tableFile");
 
         ArrayList<ArrayList<String>> cards = new ArrayList<ArrayList<String>>();
-        String Path = new File("tableFile.txt").getAbsolutePath();
+        String Path = new File("Solitaire\\src\\tableFile").getAbsolutePath();
 
         String input ="";
         try
@@ -403,19 +465,22 @@ public class UserInterface{
             System.out.println("UI read fail! prociding with caution");
         }
 
+        
         //if everything whent fine
         if(!input.equals(""))
         {
-            StringTokenizer st = new StringTokenizer(input,",");
-            for(int i = 0; i < 5; i++)st.nextToken();
-            for(int i = 0; i < 7; i++)
+            StringTokenizer st = new StringTokenizer(input,",");  //StringTokenizer init, split at ","
+            for(int i = 0; i <= 7; i++)
             {
                 if(!st.hasMoreTokens()) System.out.println("err: to few tokens to fill all table positions");
-                String holder = st.nextToken();
                 ArrayList<String> builder = new ArrayList<String>();
-                builder.add(suitInterpreter(holder.charAt(1)));
-                builder.add(String.valueOf(holder.charAt(0)));
+                String holder = "";
+                holder = st.nextToken();                                //read next card token
+                builder.add(suitInterpreter(holder.charAt(1)));         //get suit
+                builder.add(String.valueOf(holder.charAt(0)));          //get rank
                 cards.add(builder);
+
+                if(i == 0)for(int a = 0; a < 4; a++)st.nextToken();     //if this is the first token read. skip next 4
             }
             if(st.hasMoreTokens()) System.out.println("err: tokens not exausted. too many tokens");
             System.out.println("UI reading succes!");
@@ -438,7 +503,7 @@ public class UserInterface{
             case 'D':
                 return "Diamond";
             case 'C':
-                return "Clover"; 
+                return "Clubs"; 
             case 'S':
                 return "Spade";
             default:
@@ -446,8 +511,14 @@ public class UserInterface{
         }
     }
 
+    private int indexConverter(int i)
+    {
+        if(0 <= i && i <= 7)return i + 1;
+        else return 12;
+    }
 
-    private void sleep(int s)
+
+    public void sleep(int s)
     {
         try
         {
@@ -460,4 +531,25 @@ public class UserInterface{
     }
 
     
+    public void actionPerformed(ActionEvent ae) 
+    {
+        inputMade = true;
+        System.out.println("You pushing me?");
+    }
+
+
+    public void checkNewData()
+    {
+        if(Table.debugText)System.out.println("******* UPDATING UI *******");
+        if(needFlip)
+        {
+            char r = Table.position.get(flipIndex).get(Table.position.get(flipIndex).size() - 1).charAt(0);
+            char s = Table.position.get(flipIndex).get(Table.position.get(flipIndex).size() - 1).charAt(1);
+
+            if(Table.debugText)System.out.println("index: "+flipIndex+" rank: "+r+" suit: "+s);
+            stackEndFlip(flipIndex, s, r);
+            needFlip = false;
+        }
+        if(Table.debugText)System.out.println("******* UI UPDATE COMPLETE *******");
+    }
 }
