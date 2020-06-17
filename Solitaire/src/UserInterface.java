@@ -6,9 +6,9 @@ current move to be made.
 
 author:       Phillip Eg Bomholtz
 created:      08-06-2020
-Last updated: 11-06-2020
+Last updated: 17-06-2020
 
-version: 1.0
+version: 1.1
 
 ----------------------------------------*/
 
