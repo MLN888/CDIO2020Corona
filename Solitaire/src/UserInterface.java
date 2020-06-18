@@ -371,7 +371,8 @@ public class UserInterface implements ActionListener{
 
     public void makeMove(int startIndex,int startReach,int destIndex)
     {
-        
+        //failCheck();
+        System.out.println(startIndex+" "+startReach+" "+destIndex);
          //end x and y from longest reach on dest
         int endX = 0;
         int endY = 0;
@@ -391,7 +392,7 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 8)
         {
-            endX = 600;
+            endX = 590;
             endY = 20;
         }
         else if (destIndex == 9)
