@@ -13,7 +13,6 @@ import time
 import os
 import Cards
 import csv
-import wx
 import tkinter as tk
 from tkinter import simpledialog
 
@@ -46,22 +45,6 @@ def checkUnknownsWithoutRef(piles):
                 #print(bcolors.WARNING + "UNKNOWN CARD AT PILE " + str(h) + ". Prompting user for input: " + bcolors.OKBLUE + piles[h])
     
     return piles
-
-def userCardInputOLD(location):
-
-    app = wx.App()
-    frame = wx.Frame(None, -1, 'win.py')
-    frame.SetSize(0,0,200,50)
-    # Create text input
-    dlg = wx.TextEntryDialog(frame, 'Type value of card at ' + location + ':', 'Unable to detect card at pillar ' + location)
-    #dlg.SetValue("Default")
-    if dlg.ShowModal() == wx.ID_OK:
-        #print('You entered: %s\n' % dlg.GetValue())
-        return(dlg.GetValue())
-    #dlg.Destroy()
-    
-    
-    return 'UU'
 
 def userCardInput(location):
     ROOT = tk.Tk()
@@ -229,7 +212,6 @@ def arrayToOutputString(array):
     
     return outputString
 
-
 def processImage(image):
 
     #Create the identity filter, but with the 1 shifted to the right!
@@ -295,8 +277,8 @@ def processImage(image):
 
         print(bcolors.HEADER + '#########################################' + bcolors.DEFAULT)
 
-        cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM']
+        cameraArray = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
+        stringBuilder = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM']
 
 
         pilesNum = len(piles)
