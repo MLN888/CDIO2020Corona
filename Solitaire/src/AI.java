@@ -68,7 +68,8 @@ public class AI {
             if (selectedMove.getFromPosition() == 11) {         // If card comes from draw pile
                 System.out.println("Flyt " + selectedMove.getPlainText() + " fra trækbunken til en byggebunke.");
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
-                
+                UI.needFlip = true;
+                UI.flipIndex = 11;
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
                     
                     Table.cardsLeftInDrawPile--;
@@ -116,6 +117,8 @@ public class AI {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
                 promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
+                UI.needFlip = true;
+                UI.flipIndex = 11;
                 return;
             }
 
@@ -209,6 +212,8 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();    // Remember last moved card
             promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
+            UI.needFlip = true;
+            UI.flipIndex = 11;
             return;
         }
 
