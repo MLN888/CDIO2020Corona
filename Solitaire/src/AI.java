@@ -388,7 +388,7 @@ public class AI {
         return legalMoves.get(0);
     }
 
-    //Metode der traeker konge fra traekbunke og ligger på en fri plads
+    //Metode der tjekker konge fra traekbunke og ligger på en fri plads
     private Move checkForTraekKings(ArrayList<Move> legalMoves, int i, Move currentChosen) {
         if (legalMoves.get(i).getFromPosition() == 11 && legalMoves.get(i).getCard().startsWith("K")) {
             fundetValg = true;
@@ -397,6 +397,7 @@ public class AI {
         return legalMoves.get(0);
     }
 
+    // Metode der tjekker for om vi kan frigive en tom søjle OG der er en konge til rådighed et sted
     private Move checkForFriKortTraek(ArrayList<Move> legalMoves, int i, Move currentChosen){
         if(Table.unseen[legalMoves.get(i).getFromPosition()] > 0 && legalMoves.get(i).getCut() == 1){
             currentChosen = legalMoves.get(i);
@@ -406,6 +407,7 @@ public class AI {
         return legalMoves.get(0);
     }
 
+    // Hjælpemetode der tjekker om der er en konge til rådighed et sted
     private Move checkForExposeEmptyColumn(ArrayList<Move> legalMoves, int i, Move currentChosen){
         //If we have type 3 move && we are looking to move cut 1 && no unseen cards && kings available elsewhere:
         if(legalMoves.get(i).getCut()==1 && legalMoves.get(i).getType()==3 && Table.unseen[legalMoves.get(i).getFromPosition()]<1 && kingsAvailable()){
@@ -419,12 +421,12 @@ public class AI {
     // Method that checks if a King is available somewhere
     private boolean kingsAvailable(){
         for (int i = 0; i < 7; i++) {
-            System.out.println("Starts with K: "+ Table.position.get(i).get(1).startsWith("K"));
-            System.out.println("unseen in column "+i+": "+ Table.unseen[i]+" (" + (Table.unseen[i]>0) + ")");
-            if(Table.position.get(i).get(1).startsWith("K") && Table.unseen[i]>0){ //
+            if(Table.position.get(i).size()>1){
+                if(Table.position.get(i).get(1).startsWith("K") && Table.unseen[i]>0){ //
                 return true;
             }
         }
+    }
 
         int sizeOfDrawpile = Table.position.get(11).size();
         System.out.println("King in top of drawpile: "+Table.position.get(11).get(sizeOfDrawpile-1).startsWith("K"));
