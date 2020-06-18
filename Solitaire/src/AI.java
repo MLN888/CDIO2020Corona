@@ -1,12 +1,15 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 
 public class AI {
 
     private boolean fundetValg = false;                         // Flag used in selecting move
     OpenCVCardFile openCVCardFile = new OpenCVCardFile();       // Feature to enable communication with OpenCV
+    UserInterface UI;
 
+    public AI(UserInterface ui) {
+        this.UI = ui;
+    }
     /*  The AI receives the ArrayList with legal move objects via the "thinkHard" method
      *   The AI selects the best move.
      *   The AI prints to console what the best move is
@@ -46,7 +49,12 @@ public class AI {
             checkNeedToShuffle();
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
-            promptUser();
+            if (Table.debugText) {
+                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
+            }
+            promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
+            UI.needFlip = true;
+            UI.flipIndex = 11;
             return;
         }
 
@@ -54,12 +62,14 @@ public class AI {
 
 
         if (selectedMove.getType() == 1) {              // If move is type 1: Move top card from column or drawpile to a foundation
-            Table.columnToColumn = 0;      // Reset counter that limits amount of column-to-column moves in a row
+            int unseen = Table.unseen[selectedMove.getFromPosition()];
+            Table.columnToColumn = 0;      // Reset counter
             System.out.println("Du kan flytte et kort til en byggebunke!");
             if (selectedMove.getFromPosition() == 11) {         // If card comes from draw pile
                 System.out.println("Flyt " + selectedMove.getPlainText() + " fra trækbunken til en byggebunke.");
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
-                
+                UI.needFlip = true;
+                UI.flipIndex = 11;
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
                     
                     Table.cardsLeftInDrawPile--;
@@ -77,11 +87,17 @@ public class AI {
 
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());          // Add card to foundation
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            promptUser();
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen && unseen != 0)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = selectedMove.getFromPosition();
+            }
             return;
         }
 
         if (selectedMove.getType() == 2) {              // If selected move is type 2: Move king from draw pile or column to empty spot
+            int unseen = Table.unseen[selectedMove.getFromPosition()];
             Table.columnToColumn = 0;      // Reset counter
             System.out.println("Du kan flytte en konge til en ledig søjle!");
             if (selectedMove.getFromPosition() == 11) {         // If king comes from draw pile
@@ -97,8 +113,12 @@ public class AI {
                     Table.cardsLeftInDrawPile--;                // .. so unturned cards in draw pile is reduced by one
                     Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
                 }
-                
-                promptUser();
+                if (Table.debugText) {
+                    System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
+                }
+                promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
+                UI.needFlip = true;
+                UI.flipIndex = 11;
                 return;
             }
 
@@ -124,7 +144,12 @@ public class AI {
                 }
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
-            promptUser();
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = selectedMove.getFromPosition();
+            }
             return;
         }
 
@@ -133,6 +158,7 @@ public class AI {
             System.out.println("Du kan flytte kort fra søjle til søjle!");
             System.out.println("Flyt " + selectedMove.getPlainText() + " fra søjle " + (selectedMove.getFromPosition() + 1) + " til søjle " + (selectedMove.getToPosition() + 1) + ".");
             int sizeColumnFrom = Table.position.get(selectedMove.getFromPosition()).size();         // Get size of column that the card(s) is moved from
+            int unseen = Table.unseen[selectedMove.getFromPosition()];
 
             // Add the card group to target column
             for (int i = selectedMove.getCut(); i < sizeColumnFrom; i++) {                          // Iterate subgroup of cards to be moved
@@ -156,7 +182,12 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();          // Remember last moved card
             if (Table.debugText) System.out.println("Max column-to-column counter: " + Table.columnToColumn);
-            promptUser();
+            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen && unseen != 0)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = selectedMove.getFromPosition();
+            }
             return;
         }
 
@@ -176,7 +207,13 @@ public class AI {
             }
            
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            promptUser();
+            if (Table.debugText) {
+                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
+            }
+            Table.justMoved = selectedMove.getCard();    // Remember last moved card
+            promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
+            UI.needFlip = true;
+            UI.flipIndex = 11;
             return;
         }
 
@@ -186,23 +223,28 @@ public class AI {
             checkNeedToShuffle();
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
-            promptUser();
+            if (Table.debugText) {
+                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
+            }
+            promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
+            UI.needFlip = true;
+            UI.flipIndex = 11;
             return;
         }
 
 
     }
 
-    private void promptUser() {             // After AI has selected a move, the game pauses until the player has made the move.
-
-        openCVCardFile.skrivTilOpenCV();    // Method that writes Table state AFTER selected move is made
-        
-        System.out.println("\nTast 'f' og tryk enter, når du har foretaget trækket.\nTast 'o' for at opgive spillet.");
-        Scanner myScanner = new Scanner(System.in);
-        String input = myScanner.nextLine();
-        if (input.equals("o")) {
-            Table.gameOn = false;
+    private void promptUser(int startIndex, int startReach, int destIndex) {             // After AI has selected a move, the game pauses until the player has made the move.
+        openCVCardFile.skrivTilOpenCV();
+        if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
+        while(!UI.inputMade){
+            UI.moveSug(startIndex, startReach, destIndex);
         }
+        UI.makeMove(startIndex, startReach, destIndex);
+        UI.inputMade = false;
+
+        
     }
 
     private boolean checkIfWon() {
@@ -222,6 +264,10 @@ public class AI {
             Table.position.get(11).add("XX");       // Add an XX to indicate empty
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile = 24 - Table.cardsRemovedFromDrawPile;       // Reinitialize drawpile to original amount (24) minus cards removed
+            UI.reshuffleSug();
+            while(!UI.inputMade) UI.sleep(20);
+            UI.inputMade = false;
+            UI.resetDeck();
         }
         if (Table.debugText) {
             System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
