@@ -49,9 +49,6 @@ public class AI {
             checkNeedToShuffle();
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
-            if (Table.debugText) {
-                System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
-            }
             promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
             UI.needFlip = true;
             UI.flipIndex = 11;
@@ -68,10 +65,13 @@ public class AI {
             if (selectedMove.getFromPosition() == 11) {         // If card comes from draw pile
                 System.out.println("Flyt " + selectedMove.getPlainText() + " fra trækbunken til en byggebunke.");
                 Table.cardsRemovedFromDrawPile++;               // A card is now permanently removed from draw pile
-                UI.needFlip = true;
-                UI.flipIndex = 11;
+                if(Table.position.get(11).size() == 1)          //if drawpile is empty
+                {
+                    UI.needFlip = true;
+                    UI.flipIndex = 11;
+                }
                 if (Table.position.get(11).size() == 1) {       // If no visible cards in draw pile, one is turned over by player
-                    
+                    checkNeedToShuffle();
                     Table.cardsLeftInDrawPile--;
                     Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
                 }
@@ -117,8 +117,11 @@ public class AI {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
                 promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
-                UI.needFlip = true;
-                UI.flipIndex = 11;
+                if(Table.position.get(11).size() == 1)
+                {
+                    UI.needFlip = true;
+                    UI.flipIndex = 11;
+                }
                 return;
             }
 
@@ -212,8 +215,11 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();    // Remember last moved card
             promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
-            UI.needFlip = true;
-            UI.flipIndex = 11;
+            if(Table.position.get(11).size() == 1)
+            {
+                UI.needFlip = true;
+                UI.flipIndex = 11;
+            }
             return;
         }
 

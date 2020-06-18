@@ -131,17 +131,17 @@ public class UserInterface implements ActionListener{
         this.stackList = new ArrayList<ArrayList<UICard>>();        //set 2d struckture of cards of differens spots on the board
         this.fancyOrNah = fancyOrNah;                               
 
-        UIFrame.setSize(1823, 811); // dimensions equal to absolute background size
+        UIFrame.setSize(1920, 1080); // dimensions equal to absolute background size
         UIFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // frame should exit on closing the window
 
         // setting background
-        JLabel j = new JLabel(new ImageIcon(ImgPath + "\\background.png"));
-        j.setBounds(0, 0, 1823, 811);
+        JLabel j = new JLabel(new ImageIcon(ImgPath + "\\background2.png"));
+        j.setBounds(0, 0, 1920, 1080);
         UIPanel.add(j, new Integer(0)); //set background as first layer
 
         //setup button
         myButt.addActionListener(this);
-        myButt.setBounds(900,100,200,100);
+        myButt.setBounds(1700,100,200,100);
 
         //adding panel and button to frame and setting visible
         UIFrame.add(UIPanel);
@@ -160,7 +160,7 @@ public class UserInterface implements ActionListener{
         ArrayList<UICard> deckTemp = new ArrayList<UICard>();
         for(int i = 0; i < 23; i++)
         {
-            deckTemp.add(new UICard(1050, 20,i+1 , ImgPath));
+            deckTemp.add(new UICard(50, 20,i+1 , ImgPath));
         }
         stackList.add(deckTemp);
 
@@ -180,7 +180,7 @@ public class UserInterface implements ActionListener{
             stackList.add(solveTemp);
         }
         ArrayList<UICard> drawTemp = new ArrayList<UICard>();
-        drawTemp.add(new UICard(885,20,1,ImgPath));
+        drawTemp.add(new UICard(215,20,1,ImgPath));
         stackList.add(drawTemp);
 
     }
@@ -237,27 +237,27 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 8)
         {
-            endX = 47;
+            endX = 760;
             endY = 20;
         }
         else if (destIndex == 9)
         {
-            endX = 47 + 116;
+            endX = 760 + 116;
             endY = 20;
         }
         else if (destIndex == 10)
         {
-            endX = 47 + 116 * 2;
+            endX = 760 + 116 * 2;
             endY = 20;
         }
         else if (destIndex == 11)
         {
-            endX = 47 + 116 * 3;
+            endX = 760 + 116 * 3;
             endY = 20;
         }
         else if (destIndex == 12)
         {
-            endX = 885;
+            endX = 165;
             endY = 20;
         }
         else 
@@ -310,10 +310,11 @@ public class UserInterface implements ActionListener{
            }
         }
 
-        if(vectorX < 0 && stepX > 0)stepX = stepX * -1;
-        if(vectorY < 0 && stepY > 0)stepY = stepY * -1;
+        if(vectorX < 0 && stepX > 0 || vectorX > 0 && stepX < 0)stepX = stepX * -1;
+        if(vectorY < 0 && stepY > 0 || vectorY > 0 && stepY < 0)stepY = stepY * -1;
         if(Steps < 0) Steps = Steps * -1;
 
+        System.out.println(vectorX+" "+stepX+" "+vectorY+" "+stepY+" "+Steps);
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
@@ -370,7 +371,8 @@ public class UserInterface implements ActionListener{
 
     public void makeMove(int startIndex,int startReach,int destIndex)
     {
-        
+        //failCheck();
+        System.out.println(startIndex+" "+startReach+" "+destIndex);
          //end x and y from longest reach on dest
         int endX = 0;
         int endY = 0;
@@ -390,27 +392,27 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 8)
         {
-            endX = 47;
+            endX = 590;
             endY = 20;
         }
         else if (destIndex == 9)
         {
-            endX = 47 + 116;
+            endX = 760 + 116;
             endY = 20;
         }
         else if (destIndex == 10)
         {
-            endX = 47 + 116 * 2;
+            endX = 760 + 116 * 2;
             endY = 20;
         }
         else if (destIndex == 11)
         {
-            endX = 47 + 116 * 3;
+            endX = 760 + 116 * 3;
             endY = 20;
         }
         else if (destIndex == 12)
         {
-            endX = 885;
+            endX = 165;
             endY = 20;
         }
         else 
