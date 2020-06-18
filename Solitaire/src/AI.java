@@ -415,13 +415,12 @@ public class AI {
     // Method that checks if a King is available somewhere
     private boolean kingsAvailable(){
         for (int i = 0; i < 7; i++) {
-            if(Table.debugText){
-            System.out.println("Column "+i+": King at cut 1:"+ Table.position.get(i).get(1).startsWith("K") + " unseens:"+ Table.unseen[i]);
-            }
-            if(Table.position.get(i).get(1).startsWith("K") && Table.unseen[i]>0){ //
+            if(Table.position.get(i).size()>1){
+                if(Table.position.get(i).get(1).startsWith("K") && Table.unseen[i]>0){ //
                 return true;
             }
         }
+    }
 
         int sizeOfDrawpile = Table.position.get(11).size();
         System.out.println("King in top of drawpile: "+Table.position.get(11).get(sizeOfDrawpile-1).startsWith("K"));
