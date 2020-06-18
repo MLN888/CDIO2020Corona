@@ -271,9 +271,9 @@ public class UserInterface implements ActionListener{
         int vectorY = endY-startY;
 
         int Steps = vectorY;
-        int stepX = vectorX / vectorY;
+        int stepX = vectorX / vectorY + 1;
         int stepY = 1;
-        if(vectorY < 0) stepY = -1;
+        if(vectorY < 0) stepY = -1;else if(vectorY == 0) stepY = 0;
 
         int remainder = vectorX % vectorY;
 
@@ -286,8 +286,8 @@ public class UserInterface implements ActionListener{
         if(xLen < yLen)
         {
             stepX = 1;
-            if(vectorX < 0) stepX = -1;
-            stepY = vectorY / vectorX;
+            if(vectorX < 0) stepX = -1;else if(vectorX == 0) stepX = 0;
+            stepY = vectorY / vectorX + 1;
             remainder = vectorY % vectorX;
             Steps = vectorX;
        }
