@@ -269,31 +269,50 @@ public class UserInterface implements ActionListener{
         //make vector from start to end
         int vectorX = endX-startX;
         int vectorY = endY-startY;
-
-        int Steps = vectorY;
-        int stepX = vectorX / vectorY + 1;
-        int stepY = 1;
-        if(vectorY < 0) stepY = -1;else if(vectorY == 0) stepY = 0;
-
-        int remainder = vectorX % vectorY;
-
-        int xLen = vectorX;
-        int yLen = vectorY;
-
-        if(xLen < 0)xLen = xLen * -1;
-        if(yLen < 0)yLen = yLen * -1;
-
-        if(xLen < yLen)
+        int Steps;
+        int stepX;
+        int stepY;
+        int remainder;
+        if(vectorX == 0)
         {
-            stepX = 1;
-            if(vectorX < 0) stepX = -1;else if(vectorX == 0) stepX = 0;
-            stepY = vectorY / vectorX + 1;
-            remainder = vectorY % vectorX;
+            Steps = vectorY;
+            stepY = 1;
+            stepX = 0;
+        }
+        else if (vectorY == 0)
+        {
             Steps = vectorX;
-       }
+            stepY = 0;
+            stepX = 1;
+        }
+        else
+        {
+            Steps = vectorY;
+            stepX = vectorX / vectorY;
+            stepY = 1;
+            if(vectorY < 0) stepY = -1;
+    
+            remainder = vectorX % vectorY;
+    
+            int xLen = vectorX;
+            int yLen = vectorY;
+    
+            if(xLen < 0)xLen = xLen * -1;
+            if(yLen < 0)yLen = yLen * -1;
+    
+            if(xLen < yLen)
+            {
+                stepX = 1;
+                if(vectorX < 0) stepX = -1;
+                stepY = vectorY / vectorX;
+                remainder = vectorY % vectorX;
+                Steps = vectorX;
+           }
+        }
 
+        if(vectorX < 0 && stepX > 0)stepX = stepX * -1;
+        if(vectorY < 0 && stepY > 0)stepY = stepY * -1;
         if(Steps < 0) Steps = Steps * -1;
-        int vectorLen = (int)Math.sqrt(vectorX*vectorX + vectorY*vectorY);
 
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
@@ -310,7 +329,9 @@ public class UserInterface implements ActionListener{
                 UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
                 reach++;
             }
-            sleep(2000/Steps);
+            int delay;
+            if(Steps < 30)delay = 500; else delay = 2000;
+            sleep(delay/Steps);
         }
 
         
@@ -424,7 +445,9 @@ public class UserInterface implements ActionListener{
             stackList.get(startIndex).remove(reach);
             reach--;
          }
-         failCheck();
+
+         if(startIndex == 12) makeMove(0, getStackSizeAtIndex(0) - 1, 12);
+
     }
 
     public int getStackSizeAtIndex(int i){ return stackList.get(i).size();}
