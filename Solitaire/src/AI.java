@@ -207,6 +207,8 @@ public class AI {
                 checkNeedToShuffle();
                 Table.cardsLeftInDrawPile--;
                 Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
+                UI.needFlip = true;
+                UI.flipIndex = 11;
             }
            
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
@@ -215,11 +217,6 @@ public class AI {
             }
             Table.justMoved = selectedMove.getCard();    // Remember last moved card
             promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
-            if(Table.position.get(11).size() == 1)
-            {
-                UI.needFlip = true;
-                UI.flipIndex = 11;
-            }
             return;
         }
 
