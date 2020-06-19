@@ -116,7 +116,7 @@ public class AI {
                 if (Table.debugText) {
                     System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
                 }
-                promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
+                promptUser(12, UI.getStackSizeAtIndex(12) - 1, selectedMove.getToPosition() + 1);
                 if(Table.position.get(11).size() == 1)
                 {
                     UI.needFlip = true;
@@ -216,7 +216,7 @@ public class AI {
                 System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + "  Cards removed from draw pile: " + Table.cardsRemovedFromDrawPile);
             }
             Table.justMoved = selectedMove.getCard();    // Remember last moved card
-            promptUser(12, selectedMove.getCut() - 1, selectedMove.getToPosition() + 1);
+            promptUser(12, UI.getStackSizeAtIndex(12) - 1, selectedMove.getToPosition() + 1);
             return;
         }
 

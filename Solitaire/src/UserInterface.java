@@ -322,6 +322,8 @@ public class UserInterface implements ActionListener{
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
+        
+
         //move cards
         for(int i = 1; i <= Steps; i++)
         {
