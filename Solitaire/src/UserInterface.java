@@ -237,27 +237,27 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 8)
         {
-            endX = 760;
+            endX = 611;
             endY = 20;
         }
         else if (destIndex == 9)
         {
-            endX = 760 + 116;
+            endX = 611 + 116;
             endY = 20;
         }
         else if (destIndex == 10)
         {
-            endX = 760 + 116 * 2;
+            endX = 611 + 116 * 2;
             endY = 20;
         }
         else if (destIndex == 11)
         {
-            endX = 760 + 116 * 3;
+            endX = 611 + 116 * 3;
             endY = 20;
         }
         else if (destIndex == 12)
         {
-            endX = 165;
+            endX = 215;
             endY = 20;
         }
         else 
@@ -273,13 +273,14 @@ public class UserInterface implements ActionListener{
         int stepX;
         int stepY;
         int remainder;
-        if(vectorX == 0)
+
+        if(vectorX == 0)         //if straight line on y axis
         {
             Steps = vectorY;
             stepY = 1;
             stepX = 0;
         }
-        else if (vectorY == 0)
+        else if (vectorY == 0)  //if straight line on x axis
         {
             Steps = vectorX;
             stepY = 0;
@@ -310,24 +311,32 @@ public class UserInterface implements ActionListener{
            }
         }
 
+        //make sure that the steps are in the right direction
         if(vectorX < 0 && stepX > 0 || vectorX > 0 && stepX < 0)stepX = stepX * -1;
         if(vectorY < 0 && stepY > 0 || vectorY > 0 && stepY < 0)stepY = stepY * -1;
-        if(Steps < 0) Steps = Steps * -1;
 
-        System.out.println(vectorX+" "+stepX+" "+vectorY+" "+stepY+" "+Steps);
+        if(Steps < 0) Steps = Steps * -1; //steps are positive
+
+        //set new displaydepth
         int destDisplayDepth = 1;
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
+        //move cards
         for(int i = 1; i <= Steps; i++)
         {
-            int reach = startReach;
-            int startGap = 0;
+            int reach = startReach;  //keep check of what card in stack is moving. start with first card
+            int startGap;            //have a gap between first and second card
+            
+            //while not all cards are moved
             while(reach != stackList.get(startIndex).size())
             {
-                if(reach == startReach)startGap = 0;else startGap = 30;
+                if(reach == startReach)startGap = 0;else startGap = 30;  //set gap
+
+                //move card
                 stackList.get(startIndex).get(reach).move(startX+(stepX*i),startY+(stepY*i)+std_stack_card_offset * (reach - startReach)+startGap);
                 UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
+
                 reach++;
             }
             int delay;
@@ -335,7 +344,7 @@ public class UserInterface implements ActionListener{
             sleep(delay/Steps);
         }
 
-        
+        //reset all cards to origin
         int reach = startReach;
         while(reach != stackList.get(startIndex).size())
         {
@@ -392,27 +401,27 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 8)
         {
-            endX = 590;
+            endX = 611;
             endY = 20;
         }
         else if (destIndex == 9)
         {
-            endX = 760 + 116;
+            endX = 611 + 116;
             endY = 20;
         }
         else if (destIndex == 10)
         {
-            endX = 760 + 116 * 2;
+            endX = 611 + 116 * 2;
             endY = 20;
         }
         else if (destIndex == 11)
         {
-            endX = 760 + 116 * 3;
+            endX = 611 + 116 * 3;
             endY = 20;
         }
         else if (destIndex == 12)
         {
-            endX = 165;
+            endX = 215;
             endY = 20;
         }
         else 
@@ -448,7 +457,7 @@ public class UserInterface implements ActionListener{
             reach--;
          }
 
-         if(startIndex == 12) makeMove(0, getStackSizeAtIndex(0) - 1, 12);
+         if(Table.position.get(11).size() == 1) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
 
     }
 
