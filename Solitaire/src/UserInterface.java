@@ -273,6 +273,8 @@ public class UserInterface implements ActionListener{
         int stepX;
         int stepY;
         int remainder = 0;
+        int xLen = 0;
+        int yLen = 0;
 
         if(vectorX == 0)         //if straight line on y axis
         {
@@ -295,11 +297,12 @@ public class UserInterface implements ActionListener{
     
             remainder = vectorX % vectorY;
     
-            int xLen = vectorX;
-            int yLen = vectorY;
+            xLen = vectorX;
+            yLen = vectorY;
     
             if(xLen < 0)xLen = xLen * -1;
             if(yLen < 0)yLen = yLen * -1;
+
     
             if(xLen < yLen)
             {
@@ -322,17 +325,45 @@ public class UserInterface implements ActionListener{
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
-        
+        double splitter = (double)remainder / (double)Steps;
+        double splitStart = splitter;
+        System.out.println(splitter);
+        System.out.println("x: "+vectorX+ " step x: "+stepX+" y: "+vectorY+ " step x: "+stepY+" steps: "+Steps);
+
+        int extraY = 0;
+        int extraX = 0;
+        int remDirection = 1;
+        if(remainder < 0)
+        {
+            remDirection = -1;
+        }
 
         //move cards
         for(int i = 1; i <= Steps; i++)
         {
             int reach = startReach;  //keep check of what card in stack is moving. start with first card
             int startGap;            //have a gap between first and second card
-            int extraY = 0;
-            int extraX = 0;
-            if(vectorX < vectorY && i > Steps/2)extraY = remainder; else extraY = 0;
-            if(vectorX > vectorY && i > Steps/2)extraX = remainder; else extraX = 0;
+            if(xLen < yLen && (splitter > 1 || splitter < -1))
+            {
+                System.out.print("yo ");
+                extraY += remDirection; 
+                splitter = splitStart;
+            }
+            else if(xLen < yLen)
+            {
+                splitter+= splitter;
+            }
+
+            if(xLen > yLen && (splitter > 1 || splitter < -1))
+            {
+                System.out.println("dude");
+                extraX += remDirection; 
+                splitter = splitStart;
+            }
+            else if(xLen > yLen)
+            {
+                splitter+= splitter;
+            }
 
             //while not all cards are moved
             while(reach != stackList.get(startIndex).size())
@@ -463,7 +494,7 @@ public class UserInterface implements ActionListener{
             reach--;
          }
 
-         if(getStackSizeAtIndex(12) == 0) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
+         if(getStackSizeAtIndex(12) == 0 && getStackSizeAtIndex(0) != 0) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
 
     }
 
