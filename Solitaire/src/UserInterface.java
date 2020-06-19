@@ -327,8 +327,6 @@ public class UserInterface implements ActionListener{
 
         double splitter = (double)remainder / (double)Steps;
         double splitStart = splitter;
-        System.out.println(splitter);
-        System.out.println("x: "+vectorX+ " step x: "+stepX+" y: "+vectorY+ " step x: "+stepY+" steps: "+Steps);
 
         int extraY = 0;
         int extraX = 0;
