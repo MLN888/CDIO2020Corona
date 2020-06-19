@@ -461,7 +461,7 @@ public class UserInterface implements ActionListener{
             reach--;
          }
 
-         if(Table.position.get(11).size() == 1) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
+         if(getStackSizeAtIndex(12) == 0) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
 
     }
 
