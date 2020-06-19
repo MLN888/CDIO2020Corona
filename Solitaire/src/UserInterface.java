@@ -180,7 +180,7 @@ public class UserInterface implements ActionListener{
             stackList.add(solveTemp);
         }
         ArrayList<UICard> drawTemp = new ArrayList<UICard>();
-        drawTemp.add(new UICard(215,20,1,ImgPath));
+        drawTemp.add(new UICard(217,20,1,ImgPath));
         stackList.add(drawTemp);
 
     }
@@ -257,7 +257,7 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 12)
         {
-            endX = 215;
+            endX = 217;
             endY = 20;
         }
         else 
@@ -454,7 +454,7 @@ public class UserInterface implements ActionListener{
         }
         else if (destIndex == 12)
         {
-            endX = 215;
+            endX = 217;
             endY = 20;
         }
         else 
@@ -502,7 +502,7 @@ public class UserInterface implements ActionListener{
         for(int i = stackList.get(12).size() - 1; i >= 0 ; i--)
         {
             stackList.get(12).get(i).getLabel().setIcon(new ImageIcon(ImgPath+"\\card_back.png"));
-            stackList.get(12).get(i).move(1050, 20);
+            stackList.get(12).get(i).move(50, 20);
             temp.add(stackList.get(12).get(i));
             stackList.get(12).remove(i);
         }
