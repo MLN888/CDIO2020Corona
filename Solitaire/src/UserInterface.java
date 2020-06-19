@@ -265,8 +265,6 @@ public class UserInterface implements ActionListener{
             System.out.println("yo dawg what you doin? you can't do that!");
         }
 
-        System.out.println(endX+" "+endY);
-
 
         //make vector from start to end
         int vectorX = endX-startX;
