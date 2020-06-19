@@ -345,7 +345,6 @@ public class UserInterface implements ActionListener{
             int startGap;            //have a gap between first and second card
             if(xLen < yLen && (splitter > 1 || splitter < -1))
             {
-                System.out.print("yo ");
                 extraY += remDirection; 
                 splitter = splitStart;
             }
@@ -356,7 +355,6 @@ public class UserInterface implements ActionListener{
 
             if(xLen > yLen && (splitter > 1 || splitter < -1))
             {
-                System.out.println("dude");
                 extraX += remDirection; 
                 splitter = splitStart;
             }
