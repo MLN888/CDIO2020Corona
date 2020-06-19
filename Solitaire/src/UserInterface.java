@@ -230,7 +230,7 @@ public class UserInterface implements ActionListener{
             }
             else
             {
-                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endX = 50 + std_stack_delta * (destIndex - 1);
                 endY = 200;
             }
             
@@ -428,7 +428,7 @@ public class UserInterface implements ActionListener{
             }
             else
             {
-                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endX = 50 + std_stack_delta * (destIndex - 1);
                 endY = 200;
             } 
         }
@@ -509,6 +509,10 @@ public class UserInterface implements ActionListener{
 
         stackList.set(0,temp);
         UIPanel.remove(reshuf);
+
+        makeMove(0, getStackSizeAtIndex(0)-1, 12);
+        needFlip= true;
+        flipIndex = 12;
     }
 
     public void reshuffleSug()
