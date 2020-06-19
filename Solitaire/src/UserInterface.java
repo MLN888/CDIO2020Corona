@@ -272,7 +272,7 @@ public class UserInterface implements ActionListener{
         int Steps;
         int stepX;
         int stepY;
-        int remainder;
+        int remainder = 0;
 
         if(vectorX == 0)         //if straight line on y axis
         {
@@ -327,14 +327,18 @@ public class UserInterface implements ActionListener{
         {
             int reach = startReach;  //keep check of what card in stack is moving. start with first card
             int startGap;            //have a gap between first and second card
-            
+            int extraY = 0;
+            int extraX = 0;
+            if(vectorX < vectorY && i > Steps/2)extraY = remainder; else extraY = 0;
+            if(vectorX > vectorY && i > Steps/2)extraX = remainder; else extraX = 0;
+
             //while not all cards are moved
             while(reach != stackList.get(startIndex).size())
             {
                 if(reach == startReach)startGap = 0;else startGap = 30;  //set gap
 
                 //move card
-                stackList.get(startIndex).get(reach).move(startX+(stepX*i),startY+(stepY*i)+std_stack_card_offset * (reach - startReach)+startGap);
+                stackList.get(startIndex).get(reach).move(startX+(stepX*i)+extraX,startY+(stepY*i)+std_stack_card_offset * (reach - startReach)+startGap+extraY);
                 UIPanel.setLayer(stackList.get(startIndex).get(reach).getLabel(), new Integer(3000+reach));
 
                 reach++;
@@ -457,7 +461,7 @@ public class UserInterface implements ActionListener{
             reach--;
          }
 
-         if(Table.position.get(11).size() == 1) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
+         if(getStackSizeAtIndex(12) == 0) makeMove(0, getStackSizeAtIndex(0) - 1, 12);  //if drawpile empty. make one more card
 
     }
 
