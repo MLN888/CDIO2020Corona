@@ -511,6 +511,10 @@ public class UserInterface implements ActionListener{
 
         stackList.set(0,temp);
         UIPanel.remove(reshuf);
+
+        makeMove(0, getStackSizeAtIndex(0)-1, 12);
+        needFlip= true;
+        flipIndex = 12;
     }
 
     public void reshuffleSug()
