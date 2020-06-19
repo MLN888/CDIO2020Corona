@@ -87,7 +87,7 @@ public class AI {
 
             Table.position.get(selectedMove.getToPosition()).add(selectedMove.getCard());          // Add card to foundation
             Table.justMoved = selectedMove.getCard();                                              // Remember last moved card
-            promptUser(selectedMove.getFromPosition() + 1, selectedMove.getCut() + unseen - 1, selectedMove.getToPosition() + 1);
+            promptUser(selectedMove.getFromPosition() + 1, UI.getStackSizeAtIndex(selectedMove.getFromPosition() + 1) - 1, selectedMove.getToPosition() + 1);
             if(UI.getStackSizeAtIndex(selectedMove.getFromPosition()+1) == unseen && unseen != 0)
             {
                 UI.needFlip = true;

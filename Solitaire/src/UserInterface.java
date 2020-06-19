@@ -230,7 +230,7 @@ public class UserInterface implements ActionListener{
             }
             else
             {
-                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endX = 50 + std_stack_delta * (destIndex - 1);
                 endY = 200;
             }
             
@@ -264,6 +264,8 @@ public class UserInterface implements ActionListener{
         {
             System.out.println("yo dawg what you doin? you can't do that!");
         }
+
+        System.out.println(endX+" "+endY);
 
 
         //make vector from start to end
@@ -428,7 +430,7 @@ public class UserInterface implements ActionListener{
             }
             else
             {
-                endX = stackList.get(startIndex).get(startReach).posX + ((destIndex - startIndex) * std_stack_delta);
+                endX = 50 + std_stack_delta * (destIndex - 1);
                 endY = 200;
             } 
         }
