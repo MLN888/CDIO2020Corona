@@ -240,7 +240,6 @@ public class AI {
 
     private void promptUser(int startIndex, int startReach, int destIndex) {             // After AI has selected a move, the game pauses until the player has made the move.
         openCVCardFile.skrivTilOpenCV();
-        if(Table.debugText) System.out.println("File to OpenCV written: "+openCVCardFile.getCardsToOpenCV());
         while(!UI.inputMade){
             UI.moveSug(startIndex, startReach, destIndex);
         }
