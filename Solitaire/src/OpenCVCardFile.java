@@ -1,7 +1,5 @@
 import java.io.File;
 import java.io.FileWriter;
-// import java.io.PrintWriter;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 
@@ -21,19 +19,13 @@ public class OpenCVCardFile {
 
   private void createOpenCVstring() {
 
-    /*
-    if(Table.debugText){
-      for (int i = 0; i < Table.unseen.length; i++) {
-          System.out.println("unseen: "+i+" "+Table.unseen[i]);
-      }
-
-      for (int i = 0; i < Table.unseen.length; i++) {
-          System.out.println("unseenForOpenCV: "+i+" "+Table.unseen[i]);
-      }
-  }*/
-
     int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
     String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
+
+    if(Table.cardsLeftInDrawPile==0 && Table.position.get(11).size()==1){
+      cardsToOpenCV = cardsToOpenCV.concat("FF");
+    } else 
+
     if(Table.newDrawPileCard){                      // If a new card has been turned over in the drawpile...
       cardsToOpenCV = cardsToOpenCV.concat("UU");   // ... OpenCV wants a "UU" in the file 
       Table.newDrawPileCard = false;                // Resetting boolean, ready for next time a new card arrives
@@ -41,6 +33,7 @@ public class OpenCVCardFile {
     cardsToOpenCV = cardsToOpenCV.concat(topCardofDrawpile);    // Concatenate top card of drawpile to String
     }
     cardsToOpenCV = cardsToOpenCV.concat(",");                  // Add a comma
+
 
     for (int i = 0; i < 7; i++) {                                     // Iterate the 7 columns
       int topCardOfColumnIndex = Table.position.get(i).size();        // Get size of current column
