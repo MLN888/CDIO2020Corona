@@ -278,6 +278,11 @@ public class AI {
     }
 
     private void checkNeedToShuffle() {     // We check if draw pile has no unturned cards left
+
+        if (Table.cardsLeftInDrawPile == 0 && Table.position.get(11).size()==1){    // If no cards to shuffle, return.
+            return;
+        }
+
         if (Table.cardsLeftInDrawPile <= 0) {        // If draw pile is empty.
             System.out.println("Ikke flere kort i trækbunken! Bland trækbunken og vend et nyt kort.");
             Table.shuffles--;                       // Draw pile is shuffled. Deduct one from allowed shuffles
