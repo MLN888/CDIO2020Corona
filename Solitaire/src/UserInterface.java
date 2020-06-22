@@ -413,7 +413,6 @@ public class UserInterface implements ActionListener{
 
     public void makeMove(int startIndex,int startReach,int destIndex)
     {
-        //failCheck();
         System.out.println(startIndex+" "+startReach+" "+destIndex);
          //end x and y from longest reach on dest
         int endX = 0;
@@ -496,9 +495,10 @@ public class UserInterface implements ActionListener{
 
     public int getStackSizeAtIndex(int i){ return stackList.get(i).size();}
 
-    public void resetDeck()
+    public void resetDeck(boolean now)
     {
         ArrayList<UICard> temp = new ArrayList<UICard>();
+        if(stackList.get(12).size() == 0)return;
         for(int i = stackList.get(12).size() - 1; i >= 0 ; i--)
         {
             stackList.get(12).get(i).getLabel().setIcon(new ImageIcon(ImgPath+"\\card_back.png"));
@@ -508,17 +508,22 @@ public class UserInterface implements ActionListener{
         }
 
         stackList.set(0,temp);
-        UIPanel.remove(reshuf);
 
-        makeMove(0, getStackSizeAtIndex(0)-1, 12);
-        needFlip= true;
-        flipIndex = 12;
+        if(!now)
+        {
+            makeMove(0, getStackSizeAtIndex(0)-1, 12);
+            needFlip= true;
+            flipIndex = 11;
+        }
+        
     }
+
+    public void resetSugRemove(){UIPanel.remove(reshuf);}
 
     public void reshuffleSug()
     {
         reshuf = new JLabel("reshuffle deck");
-        reshuf.setBounds(1600,75,110,100);
+        reshuf.setBounds(500,75,110,100);
         reshuf.setForeground(Color.BLACK);
         reshuf.setBackground(Color.WHITE);
         reshuf.setOpaque(true);
