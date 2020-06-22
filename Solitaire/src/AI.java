@@ -6,6 +6,8 @@ public class AI {
     private boolean fundetValg = false;                         // Flag used in selecting move
     OpenCVCardFile openCVCardFile = new OpenCVCardFile();       // Feature to enable communication with OpenCV
     UserInterface UI;
+    private boolean needReset;
+    private boolean resetNow;
 
     public AI(UserInterface ui) {
         this.UI = ui;
@@ -47,6 +49,7 @@ public class AI {
             // If none of the above statements were true, then the player must simply draw a new card from the drawpile:
             System.out.println("Du skal vende et nyt kort fra trækbunken!");
             checkNeedToShuffle();
+            resetNow = true;
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
             promptUser(0,UI.getStackSizeAtIndex(0) - 1, 12);
@@ -80,7 +83,6 @@ public class AI {
             }
             int sizeColumn = Table.position.get(selectedMove.getFromPosition()).size();             // Get size of column that the card is moved from
             Table.position.get(selectedMove.getFromPosition()).remove(sizeColumn - 1);       // Remove card from Table
-            checkNeedToShuffle();
             if (Table.position.get(selectedMove.getFromPosition()).size() == 1 && Table.unseen[selectedMove.getFromPosition()] > 0) { // If column now empty
                 Table.unseen[selectedMove.getFromPosition()]--; // Remove an unseen card from column, if any unseen cards remain.
             }
@@ -224,6 +226,7 @@ public class AI {
             System.out.println("Du skal vende et nyt kort fra trækbunken!");
             if(Table.debugText) System.out.println("Type 5 move!");
             checkNeedToShuffle();
+            resetNow = true;
             Table.cardsLeftInDrawPile--;            // Deduct one from remaining cards in draw pile
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             if (Table.debugText) {
@@ -238,13 +241,29 @@ public class AI {
 
     }
 
-    private void promptUser(int startIndex, int startReach, int destIndex) {             // After AI has selected a move, the game pauses until the player has made the move.
+    private void promptUser(int si, int sr, int di) {             // After AI has selected a move, the game pauses until the player has made the move.
         openCVCardFile.skrivTilOpenCV();
+
+        int startIndex = si;
+        int startReach = sr;
+        int destIndex = di;
+        if(needReset)
+        {
+            UI.resetDeck(resetNow);
+            if(resetNow)startReach = UI.getStackSizeAtIndex(0) - 1;
+        }
         while(!UI.inputMade){
             UI.moveSug(startIndex, startReach, destIndex);
         }
         UI.makeMove(startIndex, startReach, destIndex);
         UI.inputMade = false;
+
+        if(needReset)
+        {
+            UI.resetSugRemove();
+            needReset = false;
+            resetNow = false;
+        }
 
         
     }
@@ -267,9 +286,7 @@ public class AI {
             Table.newDrawPileCard = true;           // We need to inform OpenCV, that a new card arrives in draw pile
             Table.cardsLeftInDrawPile = 24 - Table.cardsRemovedFromDrawPile;       // Reinitialize drawpile to original amount (24) minus cards removed
             UI.reshuffleSug();
-            while(!UI.inputMade) UI.sleep(20);
-            UI.inputMade = false;
-            UI.resetDeck();
+            needReset = true;
         }
         if (Table.debugText) {
             System.out.println("Cards left in draw pile: " + Table.cardsLeftInDrawPile + " Cards removed from draw pile:" + Table.cardsRemovedFromDrawPile);
