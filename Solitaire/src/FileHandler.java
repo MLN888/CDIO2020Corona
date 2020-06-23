@@ -21,15 +21,15 @@ public class FileHandler {
     }
  
     private void readFile() {
-        // Standard csv file reader
+        
         if (Table.debugText) System.out.println("\n******* NOW READING FILE *******");
         String line;
         try {
-            BufferedReader myBuffReader = new BufferedReader(new FileReader(fileName));
-            while ((line = myBuffReader.readLine()) != null) {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+            while ((line = bufferedReader.readLine()) != null) {    // (While loop actually not needed, because file only contains one line)
                 this.cards = line.split(splitter);         // File contents is stored in String Array 'cards'
             }
-            myBuffReader.close();
+            bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
