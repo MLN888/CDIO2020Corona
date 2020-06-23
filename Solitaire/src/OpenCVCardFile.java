@@ -22,7 +22,7 @@ public class OpenCVCardFile {
     int topCardOfDrawpileIndex = Table.position.get(11).size();       // Get size of draw pile
     String topCardofDrawpile = Table.position.get(11).get(topCardOfDrawpileIndex - 1);    // Grab top card of drawpile
 
-    if(Table.cardsLeftInDrawPile==0 && Table.position.get(11).size()==1){
+    if(Table.cardsRemovedFromDrawPile==24){
       cardsToOpenCV = cardsToOpenCV.concat("FF");
     } else 
 
