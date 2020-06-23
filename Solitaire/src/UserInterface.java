@@ -6,7 +6,7 @@ current move to be made.
 
 author:       Phillip Eg Bomholtz
 created:      08-06-2020
-Last updated: 17-06-2020
+Last updated: 23-06-2020
 
 version: 1.1
 
@@ -20,7 +20,6 @@ import java.util.StringTokenizer;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.Math;
 
 
 public class UserInterface implements ActionListener{
@@ -152,65 +151,84 @@ public class UserInterface implements ActionListener{
         setCards();     //generate the cards
         System.out.println("displaying cards...");
         displayCards(initListRead()); //display initial set cards
-
         System.out.println("****Done****");
     }
 
+        /*
+        *   put all cards in place
+        */
     private void setCards() {
-        ArrayList<UICard> deckTemp = new ArrayList<UICard>();
+        ArrayList<UICard> deckTemp = new ArrayList<UICard>();  //make temp list
+
+        //spawn 23 cards to the deck spot
         for(int i = 0; i < 23; i++)
         {
             deckTemp.add(new UICard(50, 20,i+1 , ImgPath));
         }
-        stackList.add(deckTemp);
+        stackList.add(deckTemp); //add list
 
+        //spawn 1 - 7 cards to the stacks
         for(int i = 1; i <= 7; i++)
         {
-            ArrayList<UICard> stackTemp = new ArrayList<UICard>();
+            ArrayList<UICard> stackTemp = new ArrayList<UICard>();  //temp lists to stacks
             for(int u = 0; u < i; u++)
             {
                 stackTemp.add(new UICard(std_stack_delta*(i-1)+50, 200+(std_stack_card_offset*u),u+1 , ImgPath));
             }
-            stackList.add(stackTemp);
+            stackList.add(stackTemp); //add list 
         }
 
+        //make sure there are lists in building foundations
         for(int i = 0; i < 4; i++)
         {
             ArrayList<UICard> solveTemp = new ArrayList<UICard>();
             stackList.add(solveTemp);
         }
+
+        //add first flipped card
         ArrayList<UICard> drawTemp = new ArrayList<UICard>();
         drawTemp.add(new UICard(217,20,1,ImgPath));
         stackList.add(drawTemp);
 
     }
 
-
+        /*
+        *   display all the cards on board
+        *   a: list of what cards to show
+        */
     private void displayCards(ArrayList<ArrayList<String>> a)
     {
+        //display cards in deck
         for(int i = 0; i < 23; i++)
         {
             UIPanel.add(stackList.get(0).get(i).getLabel(),new Integer(stackList.get(0).get(i).displayDepth*100));
         }
 
         int u;
+        //show cards in the stacks
         for(int i = 1; i <= 7; i++)
         {
             for(u = 0; u < i; u++)
             {
-                UIPanel.add(stackList.get(i).get(u).getLabel(), new Integer(stackList.get(i).get(u).displayDepth*100));
+                UIPanel.add(stackList.get(i).get(u).getLabel(), new Integer(stackList.get(i).get(u).displayDepth*100));  //add to layerd panel
                 if(fancyOrNah)sleep(50);
             }
             if(fancyOrNah)sleep(100);
-            stackList.get(i).get(u-1).doAFlip(a.get(i).get(0),a.get(i).get(1),ImgPath);
+            stackList.get(i).get(u-1).doAFlip(a.get(i).get(0),a.get(i).get(1),ImgPath);  //display last card in stacks
         
         }
-        UIPanel.add(stackList.get(12).get(0).getLabel(), new Integer(stackList.get(12).get(0).displayDepth*100));
+        UIPanel.add(stackList.get(12).get(0).getLabel(), new Integer(stackList.get(12).get(0).displayDepth*100));  //add to layerd panel
         if(fancyOrNah)sleep(100);
-        stackList.get(12).get(0).doAFlip(a.get(0).get(0),a.get(0).get(1),ImgPath);
+        stackList.get(12).get(0).doAFlip(a.get(0).get(0),a.get(0).get(1),ImgPath);//display first flipped card
 
     }
 
+        /*
+        *   animate suggested move
+        *   startIndex: Index in arraylist to start from
+        *   startReach: From what card in list to move from
+        *   destIndex:  Where to move to
+        */
     public void moveSug(int startIndex,int startReach,int destIndex)
     {
         //start x and y from input parameter
@@ -220,7 +238,7 @@ public class UserInterface implements ActionListener{
         //end x and y from longest reach on dest
         int endX = 0;
         int endY = 0;
-        
+        //move to one of the stacks
         if(destIndex <= 7 && destIndex > 0)
         {
             if(stackList.get(destIndex).size() != 0)
@@ -235,48 +253,51 @@ public class UserInterface implements ActionListener{
             }
             
         }
-        else if (destIndex == 8)
+        else if (destIndex == 8)  //move to 1. foundation stack
         {
             endX = 611;
             endY = 20;
         }
-        else if (destIndex == 9)
+        else if (destIndex == 9)  //move to 2. foundation stack
         {
             endX = 611 + 116;
             endY = 20;
         }
-        else if (destIndex == 10)
+        else if (destIndex == 10) //move to 3. foundation stack
         {
             endX = 611 + 116 * 2;
             endY = 20;
         }
-        else if (destIndex == 11)
+        else if (destIndex == 11) //move to 4. foundation stack
         {
             endX = 611 + 116 * 3;
             endY = 20;
         }
-        else if (destIndex == 12)
+        else if (destIndex == 12) //move to flipped card spot
         {
             endX = 217;
             endY = 20;
         }
         else 
         {
-            System.out.println("yo dawg what you doin? you can't do that!");
+            System.out.println("Cant move card there");
         }
 
 
         //make vector from start to end
         int vectorX = endX-startX;
         int vectorY = endY-startY;
+        //steps and direction
         int Steps;
         int stepX;
         int stepY;
+        //calc leftover
         int remainder = 0;
-        int xLen = 0;
-        int yLen = 0;
+        //vars for comparing length 
+        int xLen = vectorX; if(xLen < 0)xLen = xLen * -1;
+        int yLen = vectorY; if(yLen < 0)yLen = yLen * -1;
 
-        if(vectorX == 0)         //if straight line on y axis
+        if(vectorX == 0)       //if straight line on y axis
         {
             Steps = vectorY;
             stepY = 1;
@@ -290,20 +311,13 @@ public class UserInterface implements ActionListener{
         }
         else
         {
-            Steps = vectorY;
-            stepX = vectorX / vectorY;
-            stepY = 1;
-            if(vectorY < 0) stepY = -1;
-    
-            remainder = vectorX % vectorY;
-    
-            xLen = vectorX;
-            yLen = vectorY;
-    
-            if(xLen < 0)xLen = xLen * -1;
-            if(yLen < 0)yLen = yLen * -1;
+            Steps = vectorY;            //steps are as many as there are px on y
+            stepX = vectorX / vectorY;  //scale x to fit new path
+            stepY = 1;                  //scale y to fit new path
+            if(vectorY < 0) stepY = -1; //if y is negative make sure scaled path is as well
+            remainder = vectorX % vectorY;  //calculate the remainder from the stepX calculation
 
-    
+            //i case that y is longer do the same as before but in reverse
             if(xLen < yLen)
             {
                 stepX = 1;
@@ -325,12 +339,14 @@ public class UserInterface implements ActionListener{
         if(stackList.get(destIndex).size() > 0)destDisplayDepth = stackList.get(destIndex).get(stackList.get(destIndex).size()-1).displayDepth + 1;
         stackList.get(startIndex).get(startReach).displayDepth = destDisplayDepth;
 
-        double splitter = (double)remainder / (double)Steps;
-        double splitStart = splitter;
 
-        int extraY = 0;
-        int extraX = 0;
-        int remDirection = 1;
+        double splitter = (double)remainder / (double)Steps;  //var for compensating for int division
+        double splitStart = splitter; //remember start
+
+        int extraY = 0; //acumulative ekstra for x
+        int extraX = 0; //acumulative ekstra for y
+        //direction for the ekstra
+        int remDirection = 1; 
         if(remainder < 0)
         {
             remDirection = -1;
@@ -341,6 +357,7 @@ public class UserInterface implements ActionListener{
         {
             int reach = startReach;  //keep check of what card in stack is moving. start with first card
             int startGap;            //have a gap between first and second card
+            //if y and time to add extra
             if(xLen < yLen && (splitter > 1 || splitter < -1))
             {
                 extraY += remDirection; 
@@ -350,7 +367,7 @@ public class UserInterface implements ActionListener{
             {
                 splitter+= splitter;
             }
-
+            //if x and time to add extra
             if(xLen > yLen && (splitter > 1 || splitter < -1))
             {
                 extraX += remDirection; 
@@ -373,7 +390,7 @@ public class UserInterface implements ActionListener{
                 reach++;
             }
             int delay;
-            if(Steps < 30)delay = 500; else delay = 2000;
+            if(Steps < 30)delay = 500; else delay = 2000;  //in case og too few steps, speed up animation
             sleep(delay/Steps);
         }
 
@@ -390,6 +407,9 @@ public class UserInterface implements ActionListener{
        
     }
 
+        /*
+        *   debug function
+        */
     public void failCheck()
     {
         for(int i = 1; i < stackList.size(); i++)
@@ -403,21 +423,34 @@ public class UserInterface implements ActionListener{
         }
     }
 
+        /*
+        *   flip last card at index
+        *   i: index from AI
+        *   s: suit
+        *   r: rank
+        */
     private void stackEndFlip(int i, char s, char r)
     {
         int index = indexConverter(i);
         String suit = suitInterpreter(s);
         String rank = String.valueOf(r);
-        stackList.get(index).get(stackList.get(index).size()-1).doAFlip(suit, rank, ImgPath);
+        stackList.get(index).get(stackList.get(index).size()-1).doAFlip(suit, rank, ImgPath);  //flip card
     }
 
+        /*
+        *   move card to new spot
+        *   startIndex: Index in arraylist to start from
+        *   startReach: From what card in list to move from
+        *   destIndex:  Where to move to
+        */
     public void makeMove(int startIndex,int startReach,int destIndex)
     {
-        System.out.println(startIndex+" "+startReach+" "+destIndex);
-         //end x and y from longest reach on dest
+
+        //end x and y from longest reach on dest
         int endX = 0;
         int endY = 0;
         
+        //move to one of the stacks
         if(destIndex <= 7 && destIndex > 0)
         {
             if(stackList.get(destIndex).size() != 0)
@@ -429,36 +462,37 @@ public class UserInterface implements ActionListener{
             {
                 endX = 50 + std_stack_delta * (destIndex - 1);
                 endY = 200;
-            } 
+            }
+            
         }
-        else if (destIndex == 8)
+        else if (destIndex == 8)  //move to 1. foundation stack
         {
             endX = 611;
             endY = 20;
         }
-        else if (destIndex == 9)
+        else if (destIndex == 9)  //move to 2. foundation stack
         {
             endX = 611 + 116;
             endY = 20;
         }
-        else if (destIndex == 10)
+        else if (destIndex == 10) //move to 3. foundation stack
         {
             endX = 611 + 116 * 2;
             endY = 20;
         }
-        else if (destIndex == 11)
+        else if (destIndex == 11) //move to 4. foundation stack
         {
             endX = 611 + 116 * 3;
             endY = 20;
         }
-        else if (destIndex == 12)
+        else if (destIndex == 12) //move to flipped card spot
         {
             endX = 217;
             endY = 20;
         }
         else 
         {
-            System.out.println("yo dawg what you doin? you can't do that!");
+            System.out.println("Cant move card there");
         }
 
          int reach = startReach;  //set start point for moving
@@ -518,8 +552,14 @@ public class UserInterface implements ActionListener{
         
     }
 
+        /*
+        *   remove reshuffle label from panel
+        */
     public void resetSugRemove(){UIPanel.remove(reshuf);}
 
+        /*
+        *   suggest reshuffle
+        */
     public void reshuffleSug()
     {
         reshuf = new JLabel("reshuffle deck");
@@ -529,7 +569,10 @@ public class UserInterface implements ActionListener{
         reshuf.setOpaque(true);
         UIPanel.add(reshuf,new Integer(5000));
     }
-
+        /*
+        *   Read openCV output file and init to cards on board at start
+        *   return: af list of strings with info of what card to show
+        */
     private ArrayList<ArrayList<String>> initListRead()
     {
         System.out.println("UI device attempting fileread of tableFile");
@@ -578,7 +621,11 @@ public class UserInterface implements ActionListener{
         return cards;
     }
 
-
+        /*
+        *   convert suit char to fileusable wtring
+        *   s:      suit char
+        *   return: suit string
+        */
     private String suitInterpreter(char s)
     {
         switch(s)
@@ -596,18 +643,26 @@ public class UserInterface implements ActionListener{
         }
     }
 
+        /*
+        *   convert AI indexing to UI indexing
+        *   i:      index to convert
+        *   retrun: converted index
+        */
     private int indexConverter(int i)
     {
         if(0 <= i && i <= 7)return i + 1;
         else return 12;
     }
 
-
-    public void sleep(int s)
+        /*
+        *   sleep
+        *   ms: ms to sleep in
+        */
+    public void sleep(int ms)
     {
         try
         {
-            Thread.sleep(s);
+            Thread.sleep(ms);
         }
         catch(InterruptedException ex)
         {
@@ -615,14 +670,19 @@ public class UserInterface implements ActionListener{
         }
     }
 
-    
+        /*
+        *   actionlistener for input button
+        *   ae: action performed
+        */
     public void actionPerformed(ActionEvent ae) 
     {
-        inputMade = true;
+        inputMade = true;                             //an action was made
         System.out.println("You pushing me?");
     }
 
-
+        /*
+        *   update for a newly flipped card
+        */
     public void checkNewData()
     {
         if(Table.debugText)System.out.println("******* UPDATING UI *******");
