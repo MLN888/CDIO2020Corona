@@ -14,8 +14,8 @@ import time
 ### Constants ###
 
 # Adaptive threshold levels
-BKG_THRESH = 60
-CARD_THRESH = 30
+BKG_THRESH = 40
+CARD_THRESH = 40
 
 # Width and height of card corner, where rank and suit are
 CORNER_WIDTH = 32
@@ -119,7 +119,7 @@ def preprocess_image(image):
     # its intensity. The adaptive threshold is set at 50 (THRESH_ADDER) higher
     # than that. This allows the threshold to adapt to the lighting conditions.
     img_w, img_h = np.shape(image)[:2]
-    bkg_level = gray[int(img_h/100)][int(img_w/2)]
+    bkg_level = gray[int(img_h/50)][int(img_w/3)]
     thresh_level = bkg_level + BKG_THRESH
 
     retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
