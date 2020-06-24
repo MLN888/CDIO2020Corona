@@ -35,12 +35,19 @@ To exit the program, press escape while focused on the Python window, and simply
 Necessary Python packages:
 
 cv2
+
 numpy
+
 time
+
 os
+
 Cards
+
 csv
+
 tkinter
+
 
 -------------------------------------------------------
 
