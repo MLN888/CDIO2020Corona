@@ -25,8 +25,11 @@ solitaire set without human brainpower.
 **usage:**
 
 To start the program run startPython.bat. When all cards have been identfied press the r key.
-The next step is to start the java program by running the startJava.bat file. Then you move the coresponding card, take an new image by focusing on the Python windowd and pressing spacebar. Then click the button in the Java GUI, and repeat until the Solitaire has been solved.  
+The next step is to start the java program by running the startJava.bat file. The program is now up and running!
 
+To start playing, perform the move the Java GUI displays, and the focus on the Python window and press spacebar. Then press the button on the Java GUI, which in return will show the next move to perform. Repeat this until the solitarie is solved, or there isn't any more moves avalible.
+
+To exit the program, press escape while focused on the Python window, and simply close the Java window to exit it. 
 
 
 Necessary Python packages:
