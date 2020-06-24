@@ -1,6 +1,6 @@
 # CDIO2020Corona
 
-![7-Kabale](https://www.spilsolitaire.dk/uploads/thumbnails/solitaire_classic_big.jpg)
+![7-Kabale](https://cdn.discordapp.com/attachments/454248335189213187/725284283312373860/GUI_bord.png)
 
 the CDIO project for spring 2020
 
@@ -38,6 +38,7 @@ os
 Cards
 csv
 tkinter
+
 -------------------------------------------------------
 
 
