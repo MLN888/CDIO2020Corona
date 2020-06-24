@@ -1,10 +1,9 @@
-############## Python-OpenCV Playing Card Detector ###############
+############## Python-OpenCV Solitaire Camera ###############
 #
-# Author: Evan Juras
-# Date: 9/5/17
-# Description: Python script to detect and identify playing cards
-# from a PiCamera video feed.
-#
+# Author: Gruppe 10
+# Date: 24/6/20
+# Description: Python program to import an physical solitaire to our Java Program
+# Based on the work of Edje Electronics and his work on https://github.com/EdjeElectronics/OpenCV-Playing-Card-Detector
 
 # Import necessary packages
 import cv2
@@ -16,6 +15,8 @@ import csv
 import tkinter as tk
 from tkinter import simpledialog
 
+#Class to allow for colors in the debug terminal.
+#Based on: https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -28,10 +29,11 @@ class bcolors:
     DEFAULT ="\033[0;00m" 
 
 useRef = False
-unknowns = True
+unknowns = False
 
 ###################################
 
+#Check for unknowns when ref is disabled
 def checkUnknownsWithoutRef(piles):
 
     for h in range(0, len(piles)):
@@ -39,22 +41,18 @@ def checkUnknownsWithoutRef(piles):
         if piles[h][0] == 'U' or piles[h][1] == 'U' or piles[h] == 'UU' :
             piles[h] = userCardInput("pile " + str(h))
 
-            #if h == 0:
-                #print(bcolors.WARNING + "UNKNOWN CARD AT DRAWPILE. Prompting user for input: " + bcolors.OKBLUE + piles[h])
-            #else:
-                #print(bcolors.WARNING + "UNKNOWN CARD AT PILE " + str(h) + ". Prompting user for input: " + bcolors.OKBLUE + piles[h])
     
     return piles
 
+#Prompt the user to type in the unidentified card
+#Based on: https://djangocentral.com/creating-user-input-dialog/
 def userCardInput(location):
     ROOT = tk.Tk()
-
     ROOT.withdraw()
-    # the input dialog
-    USER_INP = simpledialog.askstring(title=('Unable to detect card at pillar ' + location),
-                                  prompt=('Type value of card at ' + location + ':'))
+    USER_INP = simpledialog.askstring(title=('Unable to detect card at pillar ' + location), prompt=('Type value of card at ' + location + ':'))
     return USER_INP
 
+#Compare the camera deck with the reference deck
 def compareDecks(camera, ref):
 
     j = 1
@@ -108,6 +106,7 @@ def compareDecks(camera, ref):
     print(bcolors.DEFAULT)
     return outputPiles
 
+#Checks the drawpile against the reference drawpile
 def checkDrawPile(drawPile, refCard):
 
     if (drawPile == refCard and refCard != 'UU' and refCard != 'XX'):
@@ -141,16 +140,19 @@ def checkDrawPile(drawPile, refCard):
 
     #print(bcolors.DEFAULT)
     return  drawPile[0] + drawPile[1]
-        
+
+#Displays the image on the screen        
 def displayImage(image, x, y):
     dim = (x, y)
     image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
     cv2.imshow("Solitaire Camera",image)
 
+
+#Reads the .txt file with comma seperation
+#Based on: https://realpython.com/python-csv/
 def fileReader():
     
     tokens = ['MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM', 'MM'] 
-    #f = open("Solitaire\\src\\fileToOpenCV.txt", "r")
     f = open("fileToOpenCV.txt", "r")
     csv_reader = csv.reader(f, delimiter=',')
 
@@ -161,12 +163,13 @@ def fileReader():
     f.close
     return tokens
 
+#Writes the file to the Java program
 def fileWriter(string):
-    #f = open("Solitaire\src\pythonOutput.txt", "w")
     f = open("pythonOutput.txt", "w")
     f.write(string)
     f.close
-    
+
+#Translate the rank to a single chracter
 def translateRankToString(e):
 
     ranks = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King']
@@ -179,6 +182,7 @@ def translateRankToString(e):
         index += 1
     return 'U'
 
+#Translates the suit to a single chracter
 def translateSuitToString(e):
 
     suits = ['Spades','Diamonds','Clubs','Hearts']
@@ -191,18 +195,19 @@ def translateSuitToString(e):
         index += 1
     return 'U'
 
+#Grabs the posistion of the card
 def getPos(e):
   return e.center[0]
 
+#Grabs a new image
 def GrabImage():
 
     ret, image = cap.read() #Used to clear buffer to grab fresh image
     ret, image = cap.read()
 
-    #image = cv2.imread('test.jpg')
-
     return image
 
+#Translates the array to an string ready for beeing written to the file
 def arrayToOutputString(array):
 
     outputString = array[0] + ",UU,UU,UU,UU"
@@ -212,24 +217,10 @@ def arrayToOutputString(array):
     
     return outputString
 
+
+#The function that performes the card recognition
+# Based on CardDetector.py from https://github.com/EdjeElectronics/OpenCV-Playing-Card-Detector
 def processImage(image):
-
-    #Create the identity filter, but with the 1 shifted to the right!
-    kernel = np.zeros( (9,9), np.float32)
-    kernel[4,4] = 2.0   #Identity, times two! 
-
-    #Create a box filter:
-    boxFilter = np.ones( (9,9), np.float32) / 81.0
-
-    #Subtract the two:
-    kernel = kernel - boxFilter
-
-    #Note that we are subject to overflow and underflow here...but I believe that
-    # filter2D clips top and bottom ranges on the output, plus you'd need a
-    # very bright or very dark pixel surrounded by the opposite type.
-
-    image = cv2.filter2D(image, -1, kernel)
-
     # Pre-process camera image (gray, blur, and threshold it)
     pre_proc = Cards.preprocess_image(image)
 
@@ -271,7 +262,14 @@ def processImage(image):
 
                 image = Cards.draw_results(image, cards[k])
                 k = k + 1
-        
+
+        # Draw card contours on image (have to do contours all at once or
+        # they do not show up properly for some reason)
+        if (len(cards) != 0):
+            temp_cnts = []
+            for i in range(len(cards)):
+                temp_cnts.append(cards[i].contour)
+            cv2.drawContours(image,temp_cnts, -1, (255,0,0), 2)
 
         displayImage(image,1280,720)
 
@@ -321,22 +319,7 @@ def processImage(image):
         print(bcolors.HEADER + '#########################################')
         print(bcolors.DEFAULT)
 
-        # Draw card contours on image (have to do contours all at once or
-        # they do not show up properly for some reason)
-        if (len(cards) != 0):
-            temp_cnts = []
-            for i in range(len(cards)):
-                temp_cnts.append(cards[i].contour)
-            cv2.drawContours(image,temp_cnts, -1, (255,0,0), 2)
 
-
-## Camera settings
-IM_WIDTH = 1920
-IM_HEIGHT = 1080 
-FRAME_RATE = 10
-
-
-## Define font to use
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -354,6 +337,8 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
 processImage(GrabImage())
 
 
+# Main loop
+#Key listener based on https://www.programcreek.com/python/example/72137/cv2.waitKey
 while True:
 
     key = cv2.waitKey(1) & 0xFF

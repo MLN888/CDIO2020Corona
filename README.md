@@ -24,7 +24,20 @@ solitaire set without human brainpower.
 -------------------------------------------------------
 **usage:**
 
-tbd
+To start the program run startPython.bat. When all cards have been identfied press the r key.
+The next step is to start the java program by running the startJava.bat file. Then you move the coresponding card, take an new image by focusing on the Python windowd and pressing spacebar. Then click the button in the Java GUI, and repeat until the Solitaire has been solved.  
+
+
+
+Necessary Python packages:
+
+cv2
+numpy
+time
+os
+Cards
+csv
+tkinter
 -------------------------------------------------------
 
 
