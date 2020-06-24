@@ -42,8 +42,6 @@ time
 
 os
 
-Cards
-
 csv
 
 tkinter
