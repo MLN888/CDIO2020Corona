@@ -31,6 +31,10 @@ To start playing, perform the move the Java GUI displays, and the focus on the P
 
 To exit the program, press escape while focused on the Python window, and simply close the Java window to exit it. 
 
+NB: You might need to change the number om line 331 in SolitaireCamera.py from *cap = cv2.VideoCapture(cv2.CAP_DSHOW + 2)* to *cap = cv2.VideoCapture(cv2.CAP_DSHOW + 1)* or *cap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)*.
+
+
+
 
 Necessary Python packages:
 
