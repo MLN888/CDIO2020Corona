@@ -328,7 +328,7 @@ train_suits = Cards.load_suits( path + '/Card_Imgs/')
 
 
 
-cap = cv2.VideoCapture(cv2.CAP_DSHOW + 2)
+cap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
